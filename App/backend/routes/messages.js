@@ -25,13 +25,13 @@ router.get("/", auth, async (req, res) => {
   console.log(result);
   res.json(result);
 });
-router.delete("/", async (req, res) => {
-  try {
-    const data = await Message.deleteMany();
-    res.json(data);
-  } catch (err) {
-    console.log(err);
-  }
-});
+// router.delete("/", async (req, res) => {
+//   try {
+//     const data = await Message.deleteMany();
+//     res.json(data);
+//   } catch (err) {
+//     console.log(err);
+//   }
+// });
 
 module.exports = router;
