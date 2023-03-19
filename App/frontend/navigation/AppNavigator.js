@@ -1,5 +1,6 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { Text, View, Animated, Dimensions, Image } from "react-native";
+import { Keyboard } from "react-native";
 // import { createStackNavigator } from "@react-navigation/native-stack";
 import {
   TransitionPresets,
@@ -14,6 +15,7 @@ import { Ionicons } from "@expo/vector-icons";
 import AccountScreen from "../screens/Account";
 import PastQuizScreen from "../screens/PastQuiz";
 import RecentQuizScreen from "../screens/RecentQuiz";
+import ChatsScreen from "../screens/Chats";
 // import ProductsOverviewScreen, {
 //   screenOptions as productsOverviewScreenOptions,
 // } from "../screens/shop/ProductsOverviewScreen";
@@ -119,6 +121,15 @@ export const AppNavigator = ({ onLayout }) => {
   const [position] = useState(new Animated.ValueXY());
 
   const { tabBarVisible } = useContext(AuthContext);
+  const [keyboardIsVisible, setKeyboardIsVisible] = useState(false);
+  useEffect(() => {
+    Keyboard.addListener("keyboardDidShow", () => {
+      setKeyboardIsVisible(true);
+    });
+    Keyboard.addListener("keyboardDidHide", () => {
+      setKeyboardIsVisible(false);
+    });
+  }, []);
 
   const animStyles = {
     position: "absolute",
@@ -130,7 +141,7 @@ export const AppNavigator = ({ onLayout }) => {
     width: width / 7,
     backgroundColor: Colors.tabSlider,
     transform: position.getTranslateTransform(),
-    display: tabBarVisible ? "flex" : "none",
+    display: tabBarVisible && !keyboardIsVisible ? "flex" : "none",
   };
 
   const animate = (value) => {
@@ -164,6 +175,9 @@ export const AppNavigator = ({ onLayout }) => {
             else if (route.name === "Account") {
               iconName = focused ? "person" : "person-outline";
               size = focused ? 23 : 21;
+            } else if (route.name === "Chats") {
+              iconName = focused ? "chatbubbles" : "chatbubbles-outline";
+              size = focused ? 23 : 21;
             }
 
             // You can return any component that you like here!
@@ -192,7 +206,7 @@ export const AppNavigator = ({ onLayout }) => {
           listeners={{
             tabPress: (e) => {
               // e.preventDefault();
-              animate(15);
+              animate(0);
             },
           }}
         />
@@ -213,7 +227,17 @@ export const AppNavigator = ({ onLayout }) => {
               // e.preventDefault();
               animate(width / 2 - width / 8);
             },
-            focus: () => animate(width / 2 - width / 8),
+            focus: () => animate(width / 4),
+          }}
+        />
+        <Tab.Screen
+          name="Chats"
+          component={ChatsScreen}
+          listeners={{
+            tabPress: (e) => {
+              // e.preventDefault();
+              animate(width / 2);
+            },
           }}
         />
         <Tab.Screen
@@ -222,7 +246,7 @@ export const AppNavigator = ({ onLayout }) => {
           listeners={{
             tabPress: (e) => {
               // e.preventDefault();
-              animate((2 * width) / 3 + width / 20);
+              animate(width / 2 + width / 4);
             },
           }}
         />
