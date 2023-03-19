@@ -13,6 +13,7 @@
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "jsonwebtoken": "^8.5.1",
-    "mongoose": "^6.6.7"
+    "mongoose": "^6.6.7",
+    "socket.io": "^4.6.1"
   }
 }
