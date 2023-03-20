@@ -18,6 +18,7 @@ import AuthContext from "../auth/context";
 import baseUrl from "../baseUrl";
 import CustomHeader from "../components/CustomHeader";
 import Loader from "../components/Loader";
+import Pagination from "../components/Pagination";
 import QuesCard from "../components/QuesCard";
 import Colors from "../constants/Colors";
 
@@ -37,6 +38,15 @@ const RecentQuiz = ({ navigation }) => {
   const [is100Submitted, setIs100Submitted] = useState(false);
   const [isCurrAffairSubmitted, setIsCurrAffairSubmitted] = useState(false);
   const [quizType, setQuizType] = useState(0);
+  const [page, setPage] = useState(0);
+  const [lastPage, setLastPage] = useState(0);
+  const [selected, setSelected] = useState([]);
+  const handleNext = () => {
+    setPage(page + 1);
+  };
+  const handlePrev = () => {
+    setPage(page - 1);
+  };
 
   const { token, setTabBarVisible } = useContext(AuthContext);
 
@@ -108,6 +118,9 @@ const RecentQuiz = ({ navigation }) => {
         setResponse(response);
       }
     }
+    // console.log("-------------------------------------------------");
+    // console.log("response......", response);
+    // console.log(quizData.quizDetails);
   };
 
   const submitHandler = async () => {
@@ -129,6 +142,7 @@ const RecentQuiz = ({ navigation }) => {
         setTabBarVisible(true);
         setQuizStarted(false);
         // setIs15Submitted(true);
+        setResponse([]);
         navigation.navigate("QuizDetailScreen", { quiz: quizData });
       })
       .catch((e) => {
@@ -205,9 +219,23 @@ const RecentQuiz = ({ navigation }) => {
   }, [quizStarted]);
 
   const selectQuiz = (type) => {
-    if (type === 0) setQuizData(data100);
-    else if (type === 1) setQuizData(dataCurrAffair);
-    else if (type === 2) setQuizData(data15);
+    if (type === 0) {
+      setQuizData(data100);
+      setLastPage(data100.quizDetails.length / 2);
+      var arr = Array(data100.quizDetails.length).fill(-1);
+      setSelected(arr);
+    } else if (type === 1) {
+      setQuizData(dataCurrAffair);
+      setLastPage(dataCurrAffair.quizDetails.length / 2);
+      var arr = Array(dataCurrAffair.quizDetails.length).fill(-1);
+      setSelected(arr);
+    } else if (type === 2) {
+      setQuizData(data15);
+      setLastPage(data15.quizDetails.length / 2);
+      var arr = Array(data15.quizDetails.length).fill(-1);
+      setSelected(arr);
+    }
+    console.log(selected);
   };
 
   return (
@@ -254,7 +282,7 @@ const RecentQuiz = ({ navigation }) => {
           </View>
 
           <View style={{ height: Dimensions.get("window").height - 140 }}>
-            <FlashList
+            {/* <FlashList
               data={quizData.quizDetails}
               key={quizData._id}
               // keyExtractor={(item) => item._id}
@@ -266,24 +294,143 @@ const RecentQuiz = ({ navigation }) => {
                   onSelect={onSelect}
                 />
               )}
+            /> */}
+
+            <Pagination
+              data={quizData.quizDetails}
+              onSelect={onSelect}
+              page={page}
+              selected={selected}
+              setSelected={setSelected}
             />
           </View>
-          <TouchableOpacity
+          <View
             style={{
-              ...styles.button,
-              width: "90%",
-              alignSelf: "center",
-              height: 40,
-              backgroundColor: isSubmitting ? "#aaa" : Colors.primary,
+              flexDirection: "row-reverse",
+              justifyContent: "space-between",
+              marginHorizontal: 10,
             }}
-            activeOpacity={0.6}
-            onPress={() => submitHandler()}
-            disabled={isSubmitting}
           >
-            <Text style={{ color: "#fff", fontSize: 18, fontWeight: "bold" }}>
-              Submit
-            </Text>
-          </TouchableOpacity>
+            {page < lastPage - 1 ? (
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  marginHorizontal: 10,
+                  width: "40%",
+                }}
+              >
+                <View>
+                  {page !== 0 && (
+                    <TouchableOpacity
+                      onPress={handlePrev}
+                      disabled={isSubmitting}
+                    >
+                      <Text
+                        style={{
+                          fontSize: 16,
+                          fontWeight: "600",
+                          justifyContent: "center",
+                        }}
+                      >
+                        <Ionicons
+                          name="chevron-back-outline"
+                          size={25}
+                          color="cyan"
+                        />{" "}
+                        Prev
+                      </Text>
+                    </TouchableOpacity>
+                  )}
+                </View>
+                <View>
+                  <TouchableOpacity
+                    onPress={handleNext}
+                    disabled={isSubmitting}
+                  >
+                    <Text
+                      style={{
+                        fontSize: 16,
+                        fontWeight: "600",
+                        justifyContent: "center",
+                      }}
+                    >
+                      Next{" "}
+                      <Ionicons
+                        name="chevron-forward-outline"
+                        size={25}
+                        color="cyan"
+                      />
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            ) : (
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  marginHorizontal: 10,
+                  marginBottom: 6,
+                  width: "40%",
+                }}
+              >
+                <TouchableOpacity
+                  onPress={handlePrev}
+                  disabled={isSubmitting}
+                  style={{ marginBottom: 6 }}
+                >
+                  <Text
+                    style={{
+                      fontSize: 16,
+                      fontWeight: "600",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <Ionicons
+                      name="chevron-back-outline"
+                      size={25}
+                      color="cyan"
+                    />{" "}
+                    Prev
+                  </Text>
+                </TouchableOpacity>
+                <View>
+                  <Text
+                    style={{
+                      fontSize: 16,
+                      fontWeight: "600",
+                      justifyContent: "center",
+                    }}
+                  >
+                    Next{" "}
+                    <Ionicons
+                      name="chevron-forward-outline"
+                      size={25}
+                      color="grey"
+                    />
+                  </Text>
+                </View>
+              </View>
+            )}
+            <TouchableOpacity
+              style={{
+                ...styles.button,
+                width: "40%",
+                alignSelf: "center",
+                height: 40,
+                backgroundColor: isSubmitting ? "#aaa" : Colors.primary,
+                marginHorizontal: 10,
+              }}
+              activeOpacity={0.6}
+              onPress={() => submitHandler()}
+              disabled={isSubmitting}
+            >
+              <Text style={{ color: "#fff", fontSize: 18, fontWeight: "bold" }}>
+                Submit
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
       ) : (
         <View style={styles.cardContainer}>

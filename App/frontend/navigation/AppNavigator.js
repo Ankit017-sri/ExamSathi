@@ -225,7 +225,7 @@ export const AppNavigator = ({ onLayout }) => {
           listeners={{
             tabPress: (e) => {
               // e.preventDefault();
-              animate(width / 2 - width / 8);
+              animate(width / 4);
             },
             focus: () => animate(width / 4),
           }}

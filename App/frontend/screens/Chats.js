@@ -44,12 +44,14 @@ const ChatsScreen = () => {
       .catch((e) => console.log(e));
   }
   async function fetchMessages() {
-    const data = await axios
+    await axios
       .get(`${baseUrl}/message`, {
         headers: { Authorization: `Bearer ${authContext.token}` },
       })
+      .then((data) => {
+        setMessages(data.data);
+      })
       .catch((e) => console.log(e));
-    setMessages(data.data);
   }
   useEffect(() => {
     fetchUser();
