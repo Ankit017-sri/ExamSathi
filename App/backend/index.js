@@ -88,13 +88,6 @@ io.on("connection", (socket) => {
     // Broadcast the message to all connected clients
     io.emit("message-recieve", data);
   });
-  socket.on("get-mem-length", () => {
-    console.log(`Received message: ${data.name}`);
-
-    // Broadcast the message to all connected clients
-    io.emit("message-recieve", data);
-  });
-
   // Handle disconnections
   socket.on("disconnect", () => {
     console.log("User disconnected");
