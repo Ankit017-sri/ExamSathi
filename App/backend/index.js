@@ -71,7 +71,7 @@ io.on("connection", (socket) => {
         socketId: socket.id,
       });
     }
-    io.emit("get-message-data", messageData);
+    io.emit("get-active-users", activeUsers.length);
   });
 
   // socket.on("send-message", (data) => {
@@ -83,6 +83,12 @@ io.on("connection", (socket) => {
   // });
 
   socket.on("message", (data) => {
+    console.log(`Received message: ${data.name}`);
+
+    // Broadcast the message to all connected clients
+    io.emit("message-recieve", data);
+  });
+  socket.on("get-mem-length", () => {
     console.log(`Received message: ${data.name}`);
 
     // Broadcast the message to all connected clients

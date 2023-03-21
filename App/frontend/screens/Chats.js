@@ -26,6 +26,7 @@ const ChatsScreen = () => {
   const [message, setMessage] = useState(null);
   const [messages, setMessages] = useState([]);
   const [receiveMessage, setRecieveMessage] = useState(null);
+  const [len, setLen] = useState(0);
 
   const socket = useRef();
   const scrollRef = useRef();
@@ -66,6 +67,9 @@ const ChatsScreen = () => {
 
     socket.current.emit("new-user-add", user?._id);
     console.log("connected...");
+    socket.current.on("get-active-users", (data) => {
+      setLen(data);
+    });
     socket.current.on("message-recieve", (data) => {
       // console.log("recieved", data);
       setRecieveMessage(data);
@@ -121,7 +125,7 @@ const ChatsScreen = () => {
           style={{
             minWidth: "55%",
             maxWidth: "95%",
-            backgroundColor: "black",
+            backgroundColor: "#00ABB3",
             borderRadius: 12,
             paddingHorizontal: 10,
             paddingVertical: 4,
@@ -152,16 +156,18 @@ const ChatsScreen = () => {
           style={{
             minWidth: "60%",
             maxWidth: "85%",
-            backgroundColor: "black",
+            backgroundColor: "#EAEAEA",
             borderRadius: 12,
             paddingHorizontal: 10,
           }}
         >
           <Text style={styles.name}>{msg.name}</Text>
 
-          <Text style={styles.messageText}>{msg.text}</Text>
+          <Text style={[styles.messageText, { color: "black" }]}>
+            {msg.text}
+          </Text>
 
-          <Text style={{ color: "cyan", textAlign: "right", fontSize: 10 }}>
+          <Text style={{ color: "#3C4048", textAlign: "right", fontSize: 10 }}>
             {format(msg.createdAt)}
           </Text>
         </View>
@@ -171,7 +177,7 @@ const ChatsScreen = () => {
 
   return (
     <View>
-      <CustomHeader title="Chats" />
+      <CustomHeader title="ExamSathi" sub={`${len} online`} />
       {!user ? (
         <Loader />
       ) : (
@@ -268,7 +274,7 @@ const styles = StyleSheet.create({
     marginBottom: 2,
   },
   name: {
-    color: "cyan",
+    color: "#00ABB3",
     borderRadius: 10,
   },
 });

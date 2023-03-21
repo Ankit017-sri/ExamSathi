@@ -5,7 +5,7 @@ import Constants from "expo-constants";
 import Colors from "../constants/Colors";
 import { Ionicons } from "@expo/vector-icons";
 
-const CustomHeader = ({ title, isBack, navigation }) => {
+const CustomHeader = ({ title, isBack, navigation, sub }) => {
   return (
     <View style={styles.headerContainer}>
       {isBack && (
@@ -25,7 +25,10 @@ const CustomHeader = ({ title, isBack, navigation }) => {
           />
         </TouchableOpacity>
       )}
-      <Text style={styles.title}>{title}</Text>
+      <View>
+        <Text style={styles.title}>{title}</Text>
+        {sub && <Text style={styles.sub}>{sub}</Text>}
+      </View>
     </View>
   );
 };
@@ -46,6 +49,12 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     color: Colors.text,
+  },
+  sub: {
+    fontSize: 14,
+    fontWeight: "bold",
+    color: Colors.text,
+    alignSelf: "center",
   },
 });
 
