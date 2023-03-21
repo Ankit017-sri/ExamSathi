@@ -49,6 +49,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     color: Colors.text,
+    alignSelf: "center",
   },
   sub: {
     fontSize: 14,

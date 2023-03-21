@@ -27,10 +27,22 @@ const ChatsScreen = () => {
   const [messages, setMessages] = useState([]);
   const [receiveMessage, setRecieveMessage] = useState(null);
   const [len, setLen] = useState(0);
+  const [memCount, setMemCount] = useState();
 
   const socket = useRef();
   const scrollRef = useRef();
 
+  async function fetchCounts() {
+    await axios
+      .get(`${baseUrl}/auth/users/count`, {
+        headers: { Authorization: `Bearer ${authContext.token}` },
+      })
+      .then((data) => {
+        console.log(data.data[0].count);
+        setMemCount(data.data[0].count);
+      })
+      .catch((e) => console.log(e));
+  }
   async function fetchUser() {
     // const userData = await cache.get("user").catch((e) => console.log(e));
     // setUser(userData)
@@ -56,6 +68,7 @@ const ChatsScreen = () => {
   }
   useEffect(() => {
     fetchUser();
+    fetchCounts();
   }, []);
   useEffect(() => {
     setId(user._id);
@@ -177,7 +190,10 @@ const ChatsScreen = () => {
 
   return (
     <View>
-      <CustomHeader title="ExamSathi" sub={`${len} online`} />
+      <CustomHeader
+        title="ExamSathi"
+        sub={`${memCount} members, ${len} online`}
+      />
       {!user ? (
         <Loader />
       ) : (

@@ -65,6 +65,18 @@ router.get("/user", auth, async (req, res) => {
     res.status(400).send({ message: "Please login" });
   }
 });
+router.get("/users/count", auth, async (req, res) => {
+  try {
+    const count = await User.aggregate([
+      { $group: { _id: "$phoneNumber", count: { $sum: 1 } } },
+      { $match: { count: 1 } },
+    ]).count("count");
+    console.log(count);
+    res.send(count);
+  } catch (error) {
+    res.status(500).send({ error: "Error getting count of users" });
+  }
+});
 
 router.delete("/delete", auth, async (req, res) => {
   const user = await User.deleteOne({ _id: req.user._id });
