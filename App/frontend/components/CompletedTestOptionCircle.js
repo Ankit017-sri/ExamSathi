@@ -4,16 +4,15 @@ import Colors from "../constants/Colors";
 
 const CompletedTestOptionCircle = ({ selectedOption, num, attempted }) => {
   let backgroundColor = "#fff";
-
-  if (attempted && selectedOption === num && attempted === num) {
+  console.log(selectedOption, num, attempted);
+  if (attempted && selectedOption == num && attempted == num) {
     backgroundColor = Colors.correctAns;
   } else if (
-    (attempted && selectedOption === num && attempted !== num) ||
-    selectedOption === num
-  )
-    backgroundColor = backgroundColor = Colors.correctAns;
-  else if (attempted && attempted === num) backgroundColor = "red";
-
+    (attempted && selectedOption == num && attempted !== num) ||
+    selectedOption == num
+  ) {
+    backgroundColor = Colors.correctAns;
+  } else if (attempted && attempted == num) backgroundColor = "red";
   return (
     <View
       style={{

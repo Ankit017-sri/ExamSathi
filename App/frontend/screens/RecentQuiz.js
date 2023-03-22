@@ -143,6 +143,7 @@ const RecentQuiz = ({ navigation }) => {
         setQuizStarted(false);
         // setIs15Submitted(true);
         setResponse([]);
+        setPage(0);
         navigation.navigate("QuizDetailScreen", { quiz: quizData });
       })
       .catch((e) => {
