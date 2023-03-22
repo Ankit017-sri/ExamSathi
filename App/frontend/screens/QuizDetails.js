@@ -41,10 +41,10 @@ const QuizDetails = ({ navigation }) => {
 
     data.quizDetails.map((data) => {
       const foundObject = submittedQuizData.find(
-        (e) => e.quesIndex === data.qNo - 1
+        (e) => e.quesIndex == data.qNo - 1
       );
 
-      if (foundObject?.value === data.correctOp) score++;
+      if (foundObject?.value == data.correctOp) score++;
     });
 
     return score;

@@ -25,7 +25,7 @@ const CompletedQuesCard = ({ quesData, submittedQuizData, navigation }) => {
 
       {!foundObject ? (
         <Text style={{ color: "red", fontWeight: "bold" }}>Not Attempted</Text>
-      ) : foundObject.value === quesData.correctOp ? (
+      ) : foundObject.value == quesData.correctOp ? (
         <Text style={{ color: Colors.correctAns, fontWeight: "bold" }}>
           Attempted and Correct answer
         </Text>
