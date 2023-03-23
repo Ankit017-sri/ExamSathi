@@ -15,9 +15,7 @@
       "fallbackToCacheTimeout": 0,
       "url": "https://u.expo.dev/ae4d5bd4-7f27-4d69-90ea-3eec1c4c8601"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true
     },
@@ -33,7 +31,7 @@
     },
     "extra": {
       "eas": {
-        "projectId": "2e7d0ef9-8844-46bf-a37c-e3941ca74c86"
+        "projectId": "ae4d5bd4-7f27-4d69-90ea-3eec1c4c8601"
       }
     }
   }
