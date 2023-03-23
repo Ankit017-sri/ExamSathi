@@ -14,7 +14,7 @@ import {
   ScrollView,
   KeyboardAvoidingView,
   Platform,
-  Button,
+  Modal,
   Image,
 } from "react-native";
 import { io } from "socket.io-client";
@@ -26,6 +26,8 @@ import Loader from "../components/Loader";
 import AuthContext from "../auth/context";
 import { format } from "timeago.js";
 import { Ionicons } from "@expo/vector-icons";
+import CloudURL from "../CloudURL";
+import FullscreenImage from "../components/ImageView";
 
 const ChatsScreen = () => {
   const authContext = useContext(AuthContext);
@@ -38,6 +40,8 @@ const ChatsScreen = () => {
   const [len, setLen] = useState(0);
   const [memCount, setMemCount] = useState();
   const [image, setImage] = useState();
+  const [modalVisible, setModalVisible] = useState(false);
+  const [uploading, setUploading] = useState(false);
 
   const socket = useRef();
   const scrollRef = useRef();
@@ -80,6 +84,7 @@ const ChatsScreen = () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
+      base64: true,
       // aspect: [4, 3],
       quality: 1,
     });
@@ -91,13 +96,36 @@ const ChatsScreen = () => {
     }
     if (!result.canceled) {
       setImage(result.assets[0].uri);
-      setMessages([
-        ...messages,
-        { senderId: user._id, uri: result.assets[0].uri, name: user.fullName },
-      ]);
+      UploadImage(result.assets[0]);
     }
   };
 
+  const UploadImage = async (data) => {
+    setUploading(true);
+    const source = data.base64;
+    let base64Img = `data:image/jpg;base64,${source}`;
+    let formdata = {
+      file: base64Img,
+      upload_preset: "lylmg545",
+    };
+    fetch(CloudURL, {
+      body: JSON.stringify(formdata),
+      headers: {
+        "content-type": "application/json",
+      },
+      method: "POST",
+    })
+      .then(async (response) => {
+        let data = await response.json();
+        if (data.secure_url) {
+          console.log(data.secure_url);
+          // setImage(data.secure_url);
+          handleUpload({ uri: data.secure_url });
+          // alert("Upload successful");
+        }
+      })
+      .catch((err) => alert("something went wrong"));
+  };
   useLayoutEffect(() => {
     fetchUser();
     fetchCounts();
@@ -173,6 +201,27 @@ const ChatsScreen = () => {
     }
   };
 
+  const handleUpload = async (data) => {
+    if (data) {
+      const res = await axios
+        .post(`${baseUrl}/message`, data, {
+          headers: { Authorization: `Bearer ${authContext.token}` },
+        })
+        .catch((e) => console.log(e));
+      // console.log(res.data);
+      if (!res.data.uri) {
+        return alert("something went wrong please try again !");
+      }
+      socket.current.emit("message", {
+        senderId: res.data.senderId,
+        uri: res.data.uri,
+        name: res.data.name,
+        createdAt: res.data.createdAt,
+      });
+      setUploading(false);
+    }
+  };
+
   const MessageSent = ({ msg }) => {
     return (
       <View>
@@ -187,11 +236,7 @@ const ChatsScreen = () => {
           }}
         >
           {msg.uri ? (
-            <Image
-              source={{ uri: msg.uri }}
-              style={{ width: 250, height: 200, borderRadius: 10 }}
-              // resizeMode="cover"
-            />
+            <FullscreenImage imageSource={msg.uri} />
           ) : (
             <Text
               style={{
@@ -227,11 +272,7 @@ const ChatsScreen = () => {
           <Text style={styles.name}>{msg.name}</Text>
 
           {msg.uri ? (
-            <Image
-              source={{ uri: msg.uri }}
-              style={{ width: 250, height: 200, borderRadius: 10 }}
-              // resizeMode="cover"
-            />
+            <FullscreenImage imageSource={msg.uri} />
           ) : (
             <Text style={[styles.messageText, { color: "black" }]}>
               {msg.text}
@@ -245,13 +286,13 @@ const ChatsScreen = () => {
       </View>
     );
   };
-
   return (
     <View>
       <CustomHeader
         title="ExamSathi"
         sub={`${memCount} members, ${len} online`}
       />
+
       {!user ? (
         <Loader />
       ) : (
@@ -259,6 +300,9 @@ const ChatsScreen = () => {
           behavior={Platform.OS === "ios" ? "padding" : "height"}
         >
           <View>
+            {uploading && (
+              <Text style={{ alignSelf: "center" }}>Sending media...</Text>
+            )}
             <ScrollView
               style={[styles.messages, { paddingBottom: 20 }]}
               ref={scrollRef}
@@ -368,6 +412,25 @@ const styles = StyleSheet.create({
   name: {
     color: "#00ABB3",
     borderRadius: 10,
+  },
+  modalContent: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "black",
+  },
+  fullscreenImage: {
+    width: "100%",
+    height: "100%",
+  },
+  closeButton: {
+    position: "absolute",
+    top: 50,
+    right: 20,
+  },
+  closeButtonText: {
+    color: "white",
+    fontSize: 20,
   },
 });
 

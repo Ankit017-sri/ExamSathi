@@ -83,7 +83,7 @@ io.on("connection", (socket) => {
   // });
 
   socket.on("message", (data) => {
-    console.log(`Received message: ${data.name}`);
+    console.log(`Received message: ${data}`);
 
     // Broadcast the message to all connected clients
     io.emit("message-recieve", data);

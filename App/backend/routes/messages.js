@@ -7,17 +7,29 @@ const { Message } = require("../models/message");
 const router = express.Router();
 
 router.post("/", auth, async (req, res) => {
-  const { text } = req.body;
-  const message = new Message({
-    senderId: req.user._id,
-    // senderId: "78787187981",
-    name: req.user.fullName,
-    text,
-  });
-
-  const result = await message.save();
-  console.log(result);
-  res.json(result);
+  const { text, uri } = req.body;
+  if (uri) {
+    console.log(uri);
+    const message = new Message({
+      senderId: req.user._id,
+      // senderId: "78787187981",
+      name: req.user.fullName,
+      uri,
+    });
+    const result = await message.save();
+    console.log(result);
+    return res.json(result);
+  } else if (text) {
+    const message = new Message({
+      senderId: req.user._id,
+      // senderId: "78787187981",
+      name: req.user.fullName,
+      text,
+    });
+    const result = await message.save();
+    console.log(result);
+    return res.json(result);
+  }
 });
 
 router.get("/", auth, async (req, res) => {
