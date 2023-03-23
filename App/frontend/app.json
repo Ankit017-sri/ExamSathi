@@ -2,7 +2,7 @@
   "expo": {
     "name": "Exam साथी",
     "slug": "examSathi",
-    "version": "2.0.0",
+    "version": "3.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -23,18 +23,18 @@
     },
     "android": {
       "package": "com.examSathi.examSathi",
-      "versionCode": 5
+      "versionCode": 6
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "extra": {
-      "eas": {
-        "projectId": "ae4d5bd4-7f27-4d69-90ea-3eec1c4c8601"
-      }
-    },
     "runtimeVersion": {
       "policy": "sdkVersion"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "2e7d0ef9-8844-46bf-a37c-e3941ca74c86"
+      }
     }
   }
 }
