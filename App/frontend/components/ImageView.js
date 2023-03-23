@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Modal, Image, TouchableOpacity, Text } from "react-native";
+import { View, Modal, Image, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import ImageViewer from "react-native-image-zoom-viewer";
 

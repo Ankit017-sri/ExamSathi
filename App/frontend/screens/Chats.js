@@ -210,15 +210,17 @@ const ChatsScreen = () => {
         .catch((e) => console.log(e));
       // console.log(res.data);
       if (!res.data.uri) {
+        setUploading(false);
         return alert("something went wrong please try again !");
+      } else {
+        socket.current.emit("message", {
+          senderId: res.data.senderId,
+          uri: res.data.uri,
+          name: res.data.name,
+          createdAt: res.data.createdAt,
+        });
+        setUploading(false);
       }
-      socket.current.emit("message", {
-        senderId: res.data.senderId,
-        uri: res.data.uri,
-        name: res.data.name,
-        createdAt: res.data.createdAt,
-      });
-      setUploading(false);
     }
   };
 
