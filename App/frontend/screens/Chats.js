@@ -301,10 +301,21 @@ const ChatsScreen = () => {
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : "height"}
         >
+          {uploading && (
+            <View
+              style={{
+                position: "absolute",
+                top: 0,
+                zIndex: 40,
+                width: "100%",
+                backgroundColor: "#f1f1f1",
+                paddingVertical: 4,
+              }}
+            >
+              <Text style={{ textAlign: "center" }}>Sending media...</Text>
+            </View>
+          )}
           <View>
-            {uploading && (
-              <Text style={{ alignSelf: "center" }}>Sending media...</Text>
-            )}
             <ScrollView
               style={[styles.messages, { paddingBottom: 20 }]}
               ref={scrollRef}
