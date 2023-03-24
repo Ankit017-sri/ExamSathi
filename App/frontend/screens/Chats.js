@@ -339,6 +339,7 @@ const ChatsScreen = () => {
               <TextInput
                 style={styles.input}
                 value={message}
+                multiline={true}
                 onChangeText={(text) => setMessage(text)}
                 placeholder="Type your message here"
               />

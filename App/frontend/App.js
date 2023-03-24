@@ -4,6 +4,8 @@ import { StatusBar } from "expo-status-bar";
 import { useCallback, useEffect, useState } from "react";
 import { enableScreens } from "react-native-screens";
 import * as SplashScreen from "expo-splash-screen";
+import * as Updates from "expo-updates";
+import { Alert } from "react-native";
 
 import { AppNavigator } from "./navigation/AppNavigator";
 import Login from "./screens/Login";
@@ -31,6 +33,34 @@ export default function App() {
     setPhone(data?.phoneNumber);
   };
 
+  const checkForUpdates = () => {
+    Updates.checkForUpdateAsync()
+      .then((update) => {
+        if (update.isAvailable) {
+          Alert.alert(
+            "Update Available",
+            "please press ok to update to latest version ",
+            [
+              {
+                text: "OK",
+                onPress: () =>
+                  Updates.fetchUpdateAsync()
+                    .then(() => {
+                      Updates.reloadAsync();
+                    })
+                    .catch((err) => console.log(err)),
+              },
+            ]
+          );
+        }
+      })
+      .catch((error) => {
+        console.log("An error occurred: ", error);
+      });
+  };
+  useEffect(() => {
+    checkForUpdates();
+  });
   useEffect(() => {
     async function prepare() {
       try {
@@ -43,7 +73,6 @@ export default function App() {
         setIsReady(true);
       }
     }
-
     prepare();
   }, []);
 

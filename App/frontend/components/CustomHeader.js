@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
   },
   sub: {
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: "bold",
     color: Colors.text,
     alignSelf: "center",

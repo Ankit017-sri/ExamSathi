@@ -29,6 +29,8 @@ router.post("/", auth, async (req, res) => {
     const result = await message.save();
     console.log(result);
     return res.json(result);
+  } else {
+    return res.status(400).send("no text or image sent");
   }
 });
 
