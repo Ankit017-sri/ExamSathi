@@ -5,6 +5,10 @@ import { useCallback, useEffect, useState } from "react";
 import { enableScreens } from "react-native-screens";
 import * as SplashScreen from "expo-splash-screen";
 import * as Updates from "expo-updates";
+import { Linking, Platform } from "react-native";
+import * as Application from "expo-application";
+import checkVersion from "react-native-store-version";
+
 import { Alert } from "react-native";
 
 import { AppNavigator } from "./navigation/AppNavigator";
@@ -34,34 +38,38 @@ export default function App() {
     setPhone(data?.phoneNumber);
   };
 
-  const checkForUpdates = () => {
-    Updates.checkForUpdateAsync()
-      .then((update) => {
-        console.log("checking....");
-        if (update.isAvailable) {
-          setUpdateAvailable(true);
-          Alert.alert(
-            "Update Available",
-            "please press ok to update to latest version ",
-            [
-              {
-                text: "OK",
-                onPress: () =>
-                  Updates.fetchUpdateAsync()
-                    .then(() => {
-                      Updates.reloadAsync();
-                      setUpdateAvailable(false);
-                    })
-                    .catch((err) => console.log(err)),
-              },
-            ]
-          );
-        }
-      })
-      .catch((error) => {
-        console.log("An error occurred: ", error);
+  const checkForUpdates = async () => {
+    const currentVersion = Application.nativeApplicationVersion;
+    console.log(currentVersion);
+    const storeUrl =
+      Platform.OS === "android"
+        ? `https://play.google.com/store/apps/details?id=com.examSathi.examSathi`
+        : `https://itunes.apple.com/lookup?bundleId=com.examSathi.examSathi`;
+
+    try {
+      const check = await checkVersion({
+        version: currentVersion, // app local version
+        iosStoreURL: storeUrl,
+        androidStoreURL: storeUrl,
+        country: "in", // default value is 'jp'
       });
+
+      if (check.result === "new") {
+        Alert.alert("Update Available", "please update to latest version ", [
+          {
+            text: "update",
+            onPress: () => {
+              Linking.openURL(storeUrl);
+            },
+          },
+        ]);
+      }
+      console.log(check);
+    } catch (e) {
+      console.log(e);
+    }
   };
+
   useEffect(() => {
     checkForUpdates();
   });
