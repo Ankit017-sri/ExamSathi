@@ -21,6 +21,7 @@ export default function App() {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [tabBarVisible, setTabBarVisible] = useState(true);
+  const [updateAvailable, setUpdateAvailable] = useState(false);
 
   const restoreToken = async () => {
     const storedTokens = await authStorage.getToken();
@@ -36,7 +37,9 @@ export default function App() {
   const checkForUpdates = () => {
     Updates.checkForUpdateAsync()
       .then((update) => {
+        console.log("checking....");
         if (update.isAvailable) {
+          setUpdateAvailable(true);
           Alert.alert(
             "Update Available",
             "please press ok to update to latest version ",
@@ -47,6 +50,7 @@ export default function App() {
                   Updates.fetchUpdateAsync()
                     .then(() => {
                       Updates.reloadAsync();
+                      setUpdateAvailable(false);
                     })
                     .catch((err) => console.log(err)),
               },
@@ -73,7 +77,9 @@ export default function App() {
         setIsReady(true);
       }
     }
-    prepare();
+    if (!updateAvailable) {
+      prepare();
+    }
   }, []);
 
   const onLayoutRootView = useCallback(async () => {

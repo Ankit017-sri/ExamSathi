@@ -12,7 +12,7 @@
       "backgroundColor": "#ffffff"
     },
     "updates": {
-      "checkOnLaunch": "NEVER",
+      "fallbackToCache": false,
       "url": "https://u.expo.dev/2e7d0ef9-8844-46bf-a37c-e3941ca74c86"
     },
     "assetBundlePatterns": ["**/*"],
