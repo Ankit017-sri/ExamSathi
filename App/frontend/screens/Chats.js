@@ -16,6 +16,8 @@ import {
   Platform,
   Modal,
   Image,
+  TouchableWithoutFeedback,
+  Keyboard,
 } from "react-native";
 import { io } from "socket.io-client";
 import axios from "axios";
@@ -316,35 +318,37 @@ const ChatsScreen = () => {
               <Text style={{ textAlign: "center" }}>Sending media...</Text>
             </View>
           )}
-          <View style={{ flex: 0.9 }}>
-            <ScrollView style={[styles.messages]} ref={scrollRef}>
-              {messages.length == 0 && (
-                <Text style={{ alignSelf: "center", color: "black" }}>
-                  No messages yet
-                </Text>
-              )}
-              {messages.map((data, index) => (
-                <View key={index} style={styles.message}>
-                  {data.senderId === id ? (
-                    <View style={styles.messageSent}>
-                      <MessageSent msg={data} />
-                    </View>
-                  ) : (
-                    <View style={styles.messageRecieved}>
-                      <MessageRecieved msg={data} />
-                    </View>
-                  )}
-                </View>
-              ))}
-              <View
-                style={{
-                  flex: 1,
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              ></View>
-            </ScrollView>
-          </View>
+          <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+            <View style={{ flex: 0.88 }}>
+              <ScrollView style={[styles.messages]} ref={scrollRef}>
+                {messages.length == 0 && (
+                  <Text style={{ alignSelf: "center", color: "black" }}>
+                    No messages yet
+                  </Text>
+                )}
+                {messages.map((data, index) => (
+                  <View key={index} style={styles.message}>
+                    {data.senderId === id ? (
+                      <View style={styles.messageSent}>
+                        <MessageSent msg={data} />
+                      </View>
+                    ) : (
+                      <View style={styles.messageRecieved}>
+                        <MessageRecieved msg={data} />
+                      </View>
+                    )}
+                  </View>
+                ))}
+                <View
+                  style={{
+                    flex: 1,
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                ></View>
+              </ScrollView>
+            </View>
+          </TouchableWithoutFeedback>
           <View style={styles.inputContainer}>
             <TextInput
               style={styles.input}
@@ -396,10 +400,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     position: "relative",
     top: 8,
+    bottom: 8,
   },
   input: {
     flex: 1,
     minHeight: 40,
+    maxHeight: 120,
     borderWidth: 1,
     borderColor: "#ccc",
     borderRadius: 5,
