@@ -318,8 +318,9 @@ const ChatsScreen = () => {
               <Text style={{ textAlign: "center" }}>Sending media...</Text>
             </View>
           )}
-          <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-            <View style={{ flex: 0.88 }}>
+
+          <View style={{ flex: 0.88 }}>
+            <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
               <ScrollView style={[styles.messages]} ref={scrollRef}>
                 {messages.length == 0 && (
                   <Text style={{ alignSelf: "center", color: "black" }}>
@@ -347,8 +348,8 @@ const ChatsScreen = () => {
                   }}
                 ></View>
               </ScrollView>
-            </View>
-          </TouchableWithoutFeedback>
+            </TouchableWithoutFeedback>
+          </View>
           <View style={styles.inputContainer}>
             <TextInput
               style={styles.input}

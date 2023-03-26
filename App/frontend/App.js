@@ -71,11 +71,13 @@ export default function App() {
   };
 
   const checkForOTAUpdates = async () => {
-    const update = await Updates.checkForUpdateAsync();
-    if (update.isAvailable) {
-      await Updates.fetchUpdateAsync();
-      // Wait for the new update to be downloaded and applied
-      await Updates.reloadAsync();
+    if (!__DEV__) {
+      const update = await Updates.checkForUpdateAsync();
+      if (update.isAvailable) {
+        await Updates.fetchUpdateAsync();
+        // Wait for the new update to be downloaded and applied
+        await Updates.reloadAsync();
+      }
     }
   };
 
