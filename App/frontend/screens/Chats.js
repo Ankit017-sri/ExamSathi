@@ -289,7 +289,7 @@ const ChatsScreen = () => {
     );
   };
   return (
-    <View>
+    <View style={{ flex: 1 }}>
       <CustomHeader
         title="ExamSathi"
         sub={`${memCount} members, ${len} online`}
@@ -300,6 +300,7 @@ const ChatsScreen = () => {
       ) : (
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : "height"}
+          style={{ flexGrow: 1 }}
         >
           {uploading && (
             <View
@@ -315,11 +316,8 @@ const ChatsScreen = () => {
               <Text style={{ textAlign: "center" }}>Sending media...</Text>
             </View>
           )}
-          <View>
-            <ScrollView
-              style={[styles.messages, { paddingBottom: 20 }]}
-              ref={scrollRef}
-            >
+          <View style={{ flex: 0.9 }}>
+            <ScrollView style={[styles.messages]} ref={scrollRef}>
               {messages.length == 0 && (
                 <Text style={{ alignSelf: "center", color: "black" }}>
                   No messages yet
@@ -346,26 +344,26 @@ const ChatsScreen = () => {
                 }}
               ></View>
             </ScrollView>
-            <View style={styles.inputContainer}>
-              <TextInput
-                style={styles.input}
-                value={message}
-                multiline={true}
-                onChangeText={(text) => setMessage(text)}
-                placeholder="Type your message here"
-              />
-              {message ? (
-                <TouchableOpacity style={styles.button} onPress={sendMessage}>
-                  {/* <Text style={styles.buttonText}>Send</Text> */}
-                  <Ionicons name="send-sharp" color="#fff" size={20} />
-                </TouchableOpacity>
-              ) : (
-                <TouchableOpacity style={styles.button} onPress={pickImage}>
-                  {/* <Text style={styles.buttonText}>Send</Text> */}
-                  <Ionicons name="camera-outline" color="#fff" size={20} />
-                </TouchableOpacity>
-              )}
-            </View>
+          </View>
+          <View style={styles.inputContainer}>
+            <TextInput
+              style={styles.input}
+              value={message}
+              multiline={true}
+              onChangeText={(text) => setMessage(text)}
+              placeholder="Type your message here"
+            />
+            {message ? (
+              <TouchableOpacity style={styles.button} onPress={sendMessage}>
+                {/* <Text style={styles.buttonText}>Send</Text> */}
+                <Ionicons name="send-sharp" color="#fff" size={20} />
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity style={styles.button} onPress={pickImage}>
+                {/* <Text style={styles.buttonText}>Send</Text> */}
+                <Ionicons name="camera-outline" color="#fff" size={20} />
+              </TouchableOpacity>
+            )}
           </View>
         </KeyboardAvoidingView>
       )}
@@ -376,7 +374,7 @@ const ChatsScreen = () => {
 const styles = StyleSheet.create({
   messages: {
     paddingHorizontal: 20,
-    height: "80%",
+    // height: "80%",
     // backgroundColor: "#fff",
     marginTop: 10,
   },
@@ -396,11 +394,12 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: 16,
-    paddingVertical: 10,
+    position: "relative",
+    top: 8,
   },
   input: {
     flex: 1,
-    height: 40,
+    minHeight: 40,
     borderWidth: 1,
     borderColor: "#ccc",
     borderRadius: 5,

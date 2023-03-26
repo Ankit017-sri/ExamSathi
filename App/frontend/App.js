@@ -70,8 +70,18 @@ export default function App() {
     }
   };
 
+  const checkForOTAUpdates = async () => {
+    const update = await Updates.checkForUpdateAsync();
+    if (update.isAvailable) {
+      await Updates.fetchUpdateAsync();
+      // Wait for the new update to be downloaded and applied
+      await Updates.reloadAsync();
+    }
+  };
+
   useEffect(() => {
     checkForUpdates();
+    checkForOTAUpdates();
   });
   useEffect(() => {
     async function prepare() {
