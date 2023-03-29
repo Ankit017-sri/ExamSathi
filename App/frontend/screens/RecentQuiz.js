@@ -42,7 +42,7 @@ const RecentQuiz = ({ navigation }) => {
   const [lastPage, setLastPage] = useState(0);
   const [selected, setSelected] = useState([]);
   const [dataPyq, setDataPyq] = useState([]);
-  const [isPyqSubmitted, setIsPyqSubmitted] = useState(true);
+  const [isPyqSubmitted, setIsPyqSubmitted] = useState(false);
   const [lastAttempted, setLastAttempted] = useState(-1);
 
   const handleNext = () => {
@@ -160,10 +160,6 @@ const RecentQuiz = ({ navigation }) => {
     }
     setLoading(false);
   };
-
-  useEffect(() => {
-    getPyq();
-  }, []);
 
   const onSelect = (index, crctOption) => {
     if (response.length === 0) {
@@ -473,7 +469,35 @@ const RecentQuiz = ({ navigation }) => {
       ) : (
         <View style={styles.cardContainer}>
           {/* previous year test card  */}
-          {!isPyqSubmitted && (
+          {isPyqSubmitted ? (
+            <View style={{ flexDirection: "row", marginBottom: 20 }}>
+              <View
+                style={{
+                  ...styles.card,
+                  width: "45%",
+                  alignItems: "center",
+                  // marginRight: 15,
+                  marginTop: -10,
+                }}
+              >
+                <Text
+                  style={{
+                    textAlign: "center",
+                    fontSize: 20,
+                    fontWeight: "bold",
+                    color: Colors.text,
+                  }}
+                >
+                  All Submitted
+                </Text>
+                <Ionicons
+                  name="checkmark-circle-outline"
+                  size={100}
+                  color={"#26b1bf"}
+                />
+              </View>
+            </View>
+          ) : (
             <View style={{ flexDirection: "row", marginBottom: 20 }}>
               <View
                 style={{
