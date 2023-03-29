@@ -483,6 +483,22 @@ const RecentQuiz = ({ navigation }) => {
                 <Text
                   style={{
                     textAlign: "center",
+                    fontSize: 18,
+                    fontWeight: "bold",
+                    color: Colors.text,
+                  }}
+                >
+                  नवीन मागील वर्षाची टेस्ट!
+                </Text>
+
+                <Ionicons
+                  name="checkmark-circle-outline"
+                  size={50}
+                  color={"#26b1bf"}
+                />
+                <Text
+                  style={{
+                    textAlign: "center",
                     fontSize: 20,
                     fontWeight: "bold",
                     color: Colors.text,
@@ -490,11 +506,6 @@ const RecentQuiz = ({ navigation }) => {
                 >
                   All Submitted
                 </Text>
-                <Ionicons
-                  name="checkmark-circle-outline"
-                  size={100}
-                  color={"#26b1bf"}
-                />
               </View>
             </View>
           ) : (
@@ -511,16 +522,14 @@ const RecentQuiz = ({ navigation }) => {
                   <TriangleCorner />
                   <Text
                     style={{
-                      transform: [{ rotateZ: "-30deg" }],
                       textAlign: "left",
                       fontSize: 18,
                       fontWeight: "bold",
                       color: "#990011FF",
                       position: "absolute",
                       width: 120,
-                      top: -10,
-                      left: 0,
-                      // paddingHorizontal: 10,
+                      top: 6,
+                      left: 4,
                       zIndex: 30,
                     }}
                   >
@@ -569,6 +578,21 @@ const RecentQuiz = ({ navigation }) => {
                   <Text
                     style={{
                       textAlign: "center",
+                      fontSize: 18,
+                      fontWeight: "bold",
+                      color: Colors.text,
+                    }}
+                  >
+                    नवीन १०० मार्क्स टेस्ट!
+                  </Text>
+                  <Ionicons
+                    name="checkmark-circle-outline"
+                    size={50}
+                    color={"#26b1bf"}
+                  />
+                  <Text
+                    style={{
+                      textAlign: "center",
                       fontSize: 20,
                       fontWeight: "bold",
                       color: Colors.text,
@@ -576,11 +600,6 @@ const RecentQuiz = ({ navigation }) => {
                   >
                     All Submitted
                   </Text>
-                  <Ionicons
-                    name="checkmark-circle-outline"
-                    size={100}
-                    color={"#26b1bf"}
-                  />
                 </>
               ) : (
                 <>
@@ -617,6 +636,21 @@ const RecentQuiz = ({ navigation }) => {
                   <Text
                     style={{
                       textAlign: "center",
+                      fontSize: 18,
+                      fontWeight: "bold",
+                      color: Colors.text,
+                    }}
+                  >
+                    Latest चालू घडामोडी टेस्ट!
+                  </Text>
+                  <Ionicons
+                    name="checkmark-circle-outline"
+                    size={50}
+                    color={"#26b1bf"}
+                  />
+                  <Text
+                    style={{
+                      textAlign: "center",
                       fontSize: 20,
                       fontWeight: "bold",
                       color: Colors.text,
@@ -624,11 +658,6 @@ const RecentQuiz = ({ navigation }) => {
                   >
                     All Submitted
                   </Text>
-                  <Ionicons
-                    name="checkmark-circle-outline"
-                    size={100}
-                    color={"#26b1bf"}
-                  />
                 </>
               ) : (
                 <>
@@ -664,6 +693,21 @@ const RecentQuiz = ({ navigation }) => {
                 <Text
                   style={{
                     textAlign: "center",
+                    fontSize: 18,
+                    fontWeight: "bold",
+                    color: Colors.text,
+                  }}
+                >
+                  नवीन १५ मार्क्स टेस्ट!
+                </Text>
+                <Ionicons
+                  name="checkmark-circle-outline"
+                  size={50}
+                  color={"#26b1bf"}
+                />
+                <Text
+                  style={{
+                    textAlign: "center",
                     fontSize: 20,
                     fontWeight: "bold",
                     color: Colors.text,
@@ -671,11 +715,6 @@ const RecentQuiz = ({ navigation }) => {
                 >
                   All Submitted
                 </Text>
-                <Ionicons
-                  name="checkmark-circle-outline"
-                  size={100}
-                  color={"#26b1bf"}
-                />
               </>
             ) : (
               <>

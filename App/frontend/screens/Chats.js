@@ -412,7 +412,7 @@ const ChatsScreen = () => {
         <View style={styles.bottomNavigationView}>
           <TouchableOpacity
             onPress={pickImage}
-            style={{ alignItems: "center", width: 50 }}
+            style={{ alignItems: "center" }}
           >
             <View style={styles.button}>
               <Ionicons name="camera-outline" color="#fff" size={20} />
@@ -421,7 +421,7 @@ const ChatsScreen = () => {
           </TouchableOpacity>
           <TouchableOpacity
             onPress={openGallery}
-            style={{ alignItems: "center", width: 50 }}
+            style={{ alignItems: "center" }}
           >
             <View style={styles.button}>
               <Ionicons name="images-outline" color="#fff" size={20} />
