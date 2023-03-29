@@ -41,6 +41,10 @@ const RecentQuiz = ({ navigation }) => {
   const [page, setPage] = useState(0);
   const [lastPage, setLastPage] = useState(0);
   const [selected, setSelected] = useState([]);
+  const [dataPyq, setDataPyq] = useState([]);
+  const [isPyqSubmitted, setIsPyqSubmitted] = useState(true);
+  const [lastAttempted, setLastAttempted] = useState(-1);
+
   const handleNext = () => {
     setPage(page + 1);
   };
@@ -50,7 +54,34 @@ const RecentQuiz = ({ navigation }) => {
 
   const { token, setTabBarVisible } = useContext(AuthContext);
 
-  const getData = async () => {
+  const getPyq = async () => {
+    setLoading(true);
+    const resultPyq = await axios.get(
+      `${baseUrl}/quizData/pyq`,
+
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+    setIsPyqSubmitted(false);
+    if (resultPyq.data.length === 0) {
+      setIsPyqSubmitted(true);
+      setLoading(false);
+    }
+    setDataPyq(...resultPyq.data);
+    if (resultPyq.data.length !== 0) {
+      setLoading(false);
+      setQuizData(...resultPyq.data);
+      setLastPage(resultPyq.data[0].quizDetails.length / 2);
+      var arr = Array(resultPyq.data[0].quizDetails.length).fill(-1);
+      setSelected(arr);
+      setTabBarVisible(false);
+      setQuizStarted(true);
+    }
+    setLoading(false);
+  };
+
+  const getData15 = async () => {
     setLoading(true);
     const result15 = await axios.get(
       `${baseUrl}/quizData/latest`,
@@ -59,7 +90,27 @@ const RecentQuiz = ({ navigation }) => {
         headers: { Authorization: `Bearer ${token}` },
       }
     );
+    setIs15Submitted(false);
+    if (result15.data.length === 0) {
+      setIs15Submitted(true);
+      setLoading(false);
+    }
+    setData15(...result15.data);
+    if (result15.data.length !== 0) {
+      setLoading(false);
+      setLastAttempted(2);
+      setQuizData(...result15.data);
+      setLastPage(result15.data[0].quizDetails.length / 2);
+      var arr = Array(result15.data[0].quizDetails.length).fill(-1);
+      setSelected(arr);
+      setTabBarVisible(false);
+      setQuizStarted(true);
+    }
+    setLoading(false);
+  };
 
+  const getData100 = async () => {
+    setLoading(true);
     const result100 = await axios.get(
       `${baseUrl}/quizData/latest/long`,
 
@@ -67,7 +118,25 @@ const RecentQuiz = ({ navigation }) => {
         headers: { Authorization: `Bearer ${token}` },
       }
     );
+    if (result100.data.length === 0) {
+      setIs100Submitted(true);
+      setLoading(false);
+    }
+    setData100(...result100.data);
+    if (result100.data.length !== 0) {
+      setLoading(false);
+      setQuizData(...result100.data);
+      setLastPage(result100.data[0].quizDetails.length / 2);
+      var arr = Array(result100.data[0].quizDetails.length).fill(-1);
+      setSelected(arr);
+      setTabBarVisible(false);
+      setQuizStarted(true);
+    }
+    setLoading(false);
+  };
 
+  const getDataCurr = async () => {
+    setLoading(true);
     const resultcurrAffairs = await axios.get(
       `${baseUrl}/quizData/latest/current-affairs`,
 
@@ -75,33 +144,26 @@ const RecentQuiz = ({ navigation }) => {
         headers: { Authorization: `Bearer ${token}` },
       }
     );
-
-    setIs15Submitted(false);
-    if (result15.data.length === 0) {
-      setIs15Submitted(true);
-      setLoading(false);
-    }
-    if (result100.data.length === 0) {
-      setIs100Submitted(true);
-      setLoading(false);
-    }
     if (resultcurrAffairs.data.length === 0) {
       setIsCurrAffairSubmitted(true);
       setLoading(false);
     }
-
-    // console.log(result);
-    setData15(...result15.data);
-    setData100(...result100.data);
     setDataCurrAffair(...resultcurrAffairs.data);
+    if (resultcurrAffairs.data.length !== 0) {
+      setLoading(false);
+      setQuizData(...resultcurrAffairs.data);
+      setLastPage(resultcurrAffairs.data[0].quizDetails.length / 2);
+      var arr = Array(resultcurrAffairs.data[0].quizDetails.length).fill(-1);
+      setSelected(arr);
+      setTabBarVisible(false);
+      setQuizStarted(true);
+    }
     setLoading(false);
   };
 
-  useFocusEffect(
-    useCallback(() => {
-      getData();
-    }, [])
-  );
+  useEffect(() => {
+    getPyq();
+  }, []);
 
   const onSelect = (index, crctOption) => {
     if (response.length === 0) {
@@ -219,24 +281,8 @@ const RecentQuiz = ({ navigation }) => {
     return () => backHandler.remove();
   }, [quizStarted]);
 
-  const selectQuiz = (type) => {
-    if (type === 0) {
-      setQuizData(data100);
-      setLastPage(data100.quizDetails.length / 2);
-      var arr = Array(data100.quizDetails.length).fill(-1);
-      setSelected(arr);
-    } else if (type === 1) {
-      setQuizData(dataCurrAffair);
-      setLastPage(dataCurrAffair.quizDetails.length / 2);
-      var arr = Array(dataCurrAffair.quizDetails.length).fill(-1);
-      setSelected(arr);
-    } else if (type === 2) {
-      setQuizData(data15);
-      setLastPage(data15.quizDetails.length / 2);
-      var arr = Array(data15.quizDetails.length).fill(-1);
-      setSelected(arr);
-    }
-    console.log(selected);
+  const TriangleCorner = () => {
+    return <View style={[styles.triangleCorner]} />;
   };
 
   return (
@@ -307,47 +353,40 @@ const RecentQuiz = ({ navigation }) => {
           </View>
           <View
             style={{
-              flexDirection: "row-reverse",
+              flexDirection: "row",
               justifyContent: "space-between",
-              marginHorizontal: 10,
+              paddingHorizontal: 10,
+              width: "100%",
             }}
           >
+            <TouchableOpacity
+              style={{
+                ...styles.button,
+                paddingHorizontal: 30,
+                alignSelf: "center",
+                height: 40,
+                backgroundColor: isSubmitting ? "#aaa" : Colors.primary,
+                marginHorizontal: 10,
+              }}
+              activeOpacity={0.6}
+              onPress={() => submitHandler()}
+              disabled={isSubmitting}
+            >
+              <Text style={{ color: "#fff", fontSize: 18, fontWeight: "bold" }}>
+                Submit
+              </Text>
+            </TouchableOpacity>
             {page < lastPage - 1 ? (
               <View
                 style={{
                   flexDirection: "row",
-                  justifyContent: "space-between",
-                  marginHorizontal: 10,
-                  width: "40%",
                 }}
               >
-                <View>
-                  {page !== 0 && (
-                    <TouchableOpacity
-                      onPress={handlePrev}
-                      disabled={isSubmitting}
-                    >
-                      <Text
-                        style={{
-                          fontSize: 16,
-                          fontWeight: "600",
-                          justifyContent: "center",
-                        }}
-                      >
-                        <Ionicons
-                          name="chevron-back-outline"
-                          size={25}
-                          color="cyan"
-                        />{" "}
-                        Prev
-                      </Text>
-                    </TouchableOpacity>
-                  )}
-                </View>
-                <View>
+                {page !== 0 && (
                   <TouchableOpacity
-                    onPress={handleNext}
+                    onPress={handlePrev}
                     disabled={isSubmitting}
+                    style={{ marginRight: 20 }}
                   >
                     <Text
                       style={{
@@ -356,36 +395,51 @@ const RecentQuiz = ({ navigation }) => {
                         justifyContent: "center",
                       }}
                     >
-                      Next{" "}
                       <Ionicons
-                        name="chevron-forward-outline"
+                        name="chevron-back-outline"
                         size={25}
                         color="cyan"
-                      />
+                      />{" "}
+                      Prev
                     </Text>
                   </TouchableOpacity>
-                </View>
+                )}
+
+                <TouchableOpacity onPress={handleNext} disabled={isSubmitting}>
+                  <Text
+                    style={{
+                      fontSize: 16,
+                      fontWeight: "600",
+                      justifyContent: "center",
+                    }}
+                  >
+                    Next
+                    <Ionicons
+                      name="chevron-forward-outline"
+                      size={25}
+                      color="cyan"
+                    />
+                  </Text>
+                </TouchableOpacity>
               </View>
             ) : (
               <View
                 style={{
                   flexDirection: "row",
-                  justifyContent: "space-between",
-                  marginHorizontal: 10,
                   marginBottom: 6,
-                  width: "40%",
                 }}
               >
                 <TouchableOpacity
                   onPress={handlePrev}
                   disabled={isSubmitting}
-                  style={{ marginBottom: 6 }}
+                  // style={{ marginBottom: 6 }}
                 >
                   <Text
                     style={{
                       fontSize: 16,
                       fontWeight: "600",
                       justifyContent: "center",
+                      marginRight: 20,
                     }}
                   >
                     <Ionicons
@@ -404,7 +458,7 @@ const RecentQuiz = ({ navigation }) => {
                       justifyContent: "center",
                     }}
                   >
-                    Next{" "}
+                    Next
                     <Ionicons
                       name="chevron-forward-outline"
                       size={25}
@@ -414,27 +468,69 @@ const RecentQuiz = ({ navigation }) => {
                 </View>
               </View>
             )}
-            <TouchableOpacity
-              style={{
-                ...styles.button,
-                width: "40%",
-                alignSelf: "center",
-                height: 40,
-                backgroundColor: isSubmitting ? "#aaa" : Colors.primary,
-                marginHorizontal: 10,
-              }}
-              activeOpacity={0.6}
-              onPress={() => submitHandler()}
-              disabled={isSubmitting}
-            >
-              <Text style={{ color: "#fff", fontSize: 18, fontWeight: "bold" }}>
-                Submit
-              </Text>
-            </TouchableOpacity>
           </View>
         </View>
       ) : (
         <View style={styles.cardContainer}>
+          {/* previous year test card  */}
+          {!isPyqSubmitted && (
+            <View style={{ flexDirection: "row", marginBottom: 20 }}>
+              <View
+                style={{
+                  ...styles.card,
+                  width: "45%",
+                  alignItems: "center",
+                  marginRight: 15,
+                }}
+              >
+                <>
+                  <TriangleCorner />
+                  <Text
+                    style={{
+                      transform: [{ rotateZ: "-30deg" }],
+                      textAlign: "left",
+                      fontSize: 18,
+                      fontWeight: "bold",
+                      color: "#990011FF",
+                      position: "absolute",
+                      width: 120,
+                      top: -10,
+                      left: 0,
+                      // paddingHorizontal: 10,
+                      zIndex: 30,
+                    }}
+                  >
+                    New
+                  </Text>
+                  <Text
+                    style={{
+                      textAlign: "center",
+                      fontSize: 18,
+                      fontWeight: "bold",
+                      color: Colors.text,
+                      marginBottom: 20,
+                      marginTop: 20,
+                      // transform: [{ rotateZ: "45deg" }]
+                    }}
+                  >
+                    नवीन मागील वर्षाची टेस्ट!
+                  </Text>
+                  <TouchableOpacity
+                    style={{ ...styles.button, width: "100%" }}
+                    activeOpacity={0.6}
+                    onPress={() => {
+                      getPyq();
+                    }}
+                  >
+                    <Text style={{ color: "#fff", fontSize: 16 }}>
+                      Start Now
+                    </Text>
+                  </TouchableOpacity>
+                </>
+              </View>
+            </View>
+          )}
+          {/* ----------------------------------------- */}
           <View style={{ flexDirection: "row", marginBottom: 20 }}>
             <View
               style={{
@@ -444,7 +540,7 @@ const RecentQuiz = ({ navigation }) => {
                 marginRight: 15,
               }}
             >
-              {is15Submitted ? (
+              {is100Submitted ? (
                 <>
                   <Text
                     style={{
@@ -479,9 +575,7 @@ const RecentQuiz = ({ navigation }) => {
                     style={{ ...styles.button, width: "100%" }}
                     activeOpacity={0.6}
                     onPress={() => {
-                      selectQuiz(0);
-                      setTabBarVisible(false);
-                      setQuizStarted(true);
+                      getData100();
                     }}
                   >
                     <Text style={{ color: "#fff", fontSize: 16 }}>
@@ -494,7 +588,7 @@ const RecentQuiz = ({ navigation }) => {
             <View
               style={{ ...styles.card, width: "45%", alignItems: "center" }}
             >
-              {is100Submitted ? (
+              {isCurrAffairSubmitted ? (
                 <>
                   <Text
                     style={{
@@ -529,9 +623,7 @@ const RecentQuiz = ({ navigation }) => {
                     style={{ ...styles.button, width: "100%" }}
                     activeOpacity={0.6}
                     onPress={() => {
-                      selectQuiz(1);
-                      setTabBarVisible(false);
-                      setQuizStarted(true);
+                      getDataCurr();
                     }}
                   >
                     <Text style={{ color: "#fff", fontSize: 16 }}>
@@ -543,7 +635,7 @@ const RecentQuiz = ({ navigation }) => {
             </View>
           </View>
           <View style={{ ...styles.card, width: "45%", alignItems: "center" }}>
-            {isCurrAffairSubmitted ? (
+            {is15Submitted ? (
               <>
                 <Text
                   style={{
@@ -578,9 +670,7 @@ const RecentQuiz = ({ navigation }) => {
                   style={{ ...styles.button, width: "100%" }}
                   activeOpacity={0.6}
                   onPress={() => {
-                    selectQuiz(2);
-                    setTabBarVisible(false);
-                    setQuizStarted(true);
+                    getData15();
                   }}
                 >
                   <Text style={{ color: "#fff", fontSize: 16 }}>Start Now</Text>
@@ -665,6 +755,19 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 10,
+  },
+  triangleCorner: {
+    width: 0,
+    height: 0,
+    backgroundColor: "transparent",
+    borderStyle: "solid",
+    borderRightWidth: 90,
+    borderTopWidth: 60,
+    borderRightColor: "transparent",
+    borderTopColor: "#FCF6F5FF",
+    zIndex: 20,
+    position: "absolute",
+    left: 0,
   },
 });
 

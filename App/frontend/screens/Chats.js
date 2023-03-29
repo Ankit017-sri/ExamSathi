@@ -14,8 +14,6 @@ import {
   ScrollView,
   KeyboardAvoidingView,
   Platform,
-  Modal,
-  Image,
   TouchableWithoutFeedback,
   Keyboard,
 } from "react-native";
@@ -30,6 +28,7 @@ import { format } from "timeago.js";
 import { Ionicons } from "@expo/vector-icons";
 import CloudURL from "../CloudURL";
 import FullscreenImage from "../components/ImageView";
+import { BottomSheet } from "react-native-btr";
 
 const ChatsScreen = () => {
   const authContext = useContext(AuthContext);
@@ -42,8 +41,9 @@ const ChatsScreen = () => {
   const [len, setLen] = useState(0);
   const [memCount, setMemCount] = useState();
   const [image, setImage] = useState();
-  const [modalVisible, setModalVisible] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [loadingChat, setLoadingChat] = useState(true);
+  const [visible, setVisible] = useState(false);
 
   const socket = useRef();
   const scrollRef = useRef();
@@ -78,11 +78,33 @@ const ChatsScreen = () => {
         headers: { Authorization: `Bearer ${authContext.token}` },
       })
       .then((data) => {
+        setLoadingChat(false);
         setMessages(data.data);
       })
-      .catch((e) => console.log(e));
+      .catch((e) => {
+        console.log(e);
+        setLoadingChat(false);
+      });
   }
+
   const pickImage = async () => {
+    let result = await ImagePicker.launchCameraAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      base64: true,
+      // aspect: [4, 3],
+      quality: 1,
+    });
+    if (result.canceled) {
+      // Handle cancellation...
+      return;
+    }
+    if (!result.canceled) {
+      setImage(result.assets[0].uri);
+      UploadImage(result.assets[0]);
+    }
+  };
+  const openGallery = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
@@ -290,6 +312,9 @@ const ChatsScreen = () => {
       </View>
     );
   };
+  const toggleBottomNavigationView = () => {
+    setVisible(!visible);
+  };
   return (
     <View style={{ flex: 1 }}>
       <CustomHeader
@@ -322,11 +347,12 @@ const ChatsScreen = () => {
           <View style={{ flex: 0.88 }}>
             <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
               <ScrollView style={[styles.messages]} ref={scrollRef}>
-                {messages.length == 0 && (
+                {messages.length == 0 && !loadingChat && (
                   <Text style={{ alignSelf: "center", color: "black" }}>
                     No messages yet
                   </Text>
                 )}
+                {loadingChat && <Loader />}
                 {messages.map((data, index) => (
                   <View key={index} style={styles.message}>
                     {data.senderId === id ? (
@@ -364,14 +390,46 @@ const ChatsScreen = () => {
                 <Ionicons name="send-sharp" color="#fff" size={20} />
               </TouchableOpacity>
             ) : (
-              <TouchableOpacity style={styles.button} onPress={pickImage}>
+              <TouchableOpacity
+                style={styles.button}
+                onPress={toggleBottomNavigationView}
+              >
                 {/* <Text style={styles.buttonText}>Send</Text> */}
-                <Ionicons name="camera-outline" color="#fff" size={20} />
+                <Ionicons name="images-outline" color="#fff" size={20} />
               </TouchableOpacity>
             )}
           </View>
         </KeyboardAvoidingView>
       )}
+      <BottomSheet
+        visible={visible}
+        //setting the visibility state of the bottom shee
+        onBackButtonPress={toggleBottomNavigationView}
+        //Toggling the visibility state on the click of the back botton
+        onBackdropPress={toggleBottomNavigationView}
+        //Toggling the visibility state on the clicking out side of the sheet
+      >
+        <View style={styles.bottomNavigationView}>
+          <TouchableOpacity
+            onPress={pickImage}
+            style={{ alignItems: "center", width: 50 }}
+          >
+            <View style={styles.button}>
+              <Ionicons name="camera-outline" color="#fff" size={20} />
+            </View>
+            <Text style={{ color: "black" }}>Camera</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={openGallery}
+            style={{ alignItems: "center", width: 50 }}
+          >
+            <View style={styles.button}>
+              <Ionicons name="images-outline" color="#fff" size={20} />
+            </View>
+            <Text style={{ color: "black" }}>Gallery</Text>
+          </TouchableOpacity>
+        </View>
+      </BottomSheet>
     </View>
   );
 };
@@ -451,6 +509,16 @@ const styles = StyleSheet.create({
   closeButtonText: {
     color: "white",
     fontSize: 20,
+  },
+  bottomNavigationView: {
+    backgroundColor: "#17cfe3",
+    width: "100%",
+    height: 150,
+    justifyContent: "space-around",
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    flexDirection: "row",
+    alignItems: "center",
   },
 });
 
