@@ -78,8 +78,8 @@ const ChatsScreen = () => {
         headers: { Authorization: `Bearer ${authContext.token}` },
       })
       .then((data) => {
-        setLoadingChat(false);
         setMessages(data.data);
+        setLoadingChat(false);
       })
       .catch((e) => {
         console.log(e);
@@ -160,6 +160,10 @@ const ChatsScreen = () => {
   }, [user]);
 
   useEffect(() => {
+    scrollRef?.current.scrollToEnd({ animated: false });
+  }, [loadingChat, messages]);
+
+  useEffect(() => {
     (async () => {
       const { status } =
         await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -184,15 +188,10 @@ const ChatsScreen = () => {
     });
   }, [user]);
   useEffect(() => {
-    if (messages) {
-      scrollRef.current.scrollToEnd({ animated: true });
-    }
-  }, [messages]);
-  useEffect(() => {
     if (receiveMessage) {
       setMessages([...messages, receiveMessage]);
       // console.log("messages : ", messages);
-      scrollRef.current.scrollToEnd({ animated: true });
+      scrollRef.current.scrollToEnd({ animated: false });
     }
   }, [receiveMessage?.createdAt]);
 
@@ -312,6 +311,21 @@ const ChatsScreen = () => {
       </View>
     );
   };
+
+  const chats = messages.map((data, index) => (
+    <View key={index} style={styles.message}>
+      {data.senderId === id ? (
+        <View style={styles.messageSent}>
+          <MessageSent msg={data} />
+        </View>
+      ) : (
+        <View style={styles.messageRecieved}>
+          <MessageRecieved msg={data} />
+        </View>
+      )}
+    </View>
+  ));
+
   const toggleBottomNavigationView = () => {
     setVisible(!visible);
   };
@@ -346,35 +360,42 @@ const ChatsScreen = () => {
 
           <View style={{ flex: 0.88 }}>
             <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-              <ScrollView style={[styles.messages]} ref={scrollRef}>
+              <ScrollView
+                style={[styles.messages]}
+                ref={scrollRef}
+                onContentSizeChange={() =>
+                  scrollRef.current.scrollToEnd({ animated: false })
+                }
+              >
                 {messages.length == 0 && !loadingChat && (
                   <Text style={{ alignSelf: "center", color: "black" }}>
                     No messages yet
                   </Text>
                 )}
+                {chats}
                 {loadingChat && <Loader />}
-                {messages.map((data, index) => (
-                  <View key={index} style={styles.message}>
-                    {data.senderId === id ? (
-                      <View style={styles.messageSent}>
-                        <MessageSent msg={data} />
-                      </View>
-                    ) : (
-                      <View style={styles.messageRecieved}>
-                        <MessageRecieved msg={data} />
-                      </View>
-                    )}
-                  </View>
-                ))}
-                <View
-                  style={{
-                    flex: 1,
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                ></View>
+                <View></View>
               </ScrollView>
             </TouchableWithoutFeedback>
+            <TouchableOpacity
+              onPress={() => scrollRef.current.scrollToEnd({ animated: false })}
+              style={{
+                position: "absolute",
+                bottom: 10,
+                right: 16,
+                backgroundColor: "black",
+                borderRadius: 15,
+                width: 30,
+                height: 30,
+                opacity: 0.4,
+                justifyContent: "center",
+                alignItems: "center",
+                zIndex: 30,
+              }}
+              disabled={loadingChat}
+            >
+              <Ionicons name="arrow-down" size={25} />
+            </TouchableOpacity>
           </View>
           <View style={styles.inputContainer}>
             <TextInput
@@ -463,7 +484,6 @@ const styles = StyleSheet.create({
   },
   input: {
     flex: 1,
-    minHeight: 40,
     maxHeight: 120,
     borderWidth: 1,
     borderColor: "#ccc",
