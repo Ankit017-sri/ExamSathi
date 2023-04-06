@@ -39,34 +39,36 @@ export default function App() {
   };
 
   const checkForUpdates = async () => {
-    const currentVersion = Application.nativeApplicationVersion;
-    console.log(currentVersion);
-    const storeUrl =
-      Platform.OS === "android"
-        ? `https://play.google.com/store/apps/details?id=com.examSathi.examSathi`
-        : `https://itunes.apple.com/lookup?bundleId=com.examSathi.examSathi`;
+    if (!__DEV__) {
+      const currentVersion = Application.nativeApplicationVersion;
+      console.log(currentVersion);
+      const storeUrl =
+        Platform.OS === "android"
+          ? `https://play.google.com/store/apps/details?id=com.examSathi.examSathi`
+          : `https://itunes.apple.com/lookup?bundleId=com.examSathi.examSathi`;
 
-    try {
-      const check = await checkVersion({
-        version: currentVersion, // app local version
-        iosStoreURL: storeUrl,
-        androidStoreURL: storeUrl,
-        country: "in", // default value is 'jp'
-      });
+      try {
+        const check = await checkVersion({
+          version: currentVersion, // app local version
+          iosStoreURL: storeUrl,
+          androidStoreURL: storeUrl,
+          country: "in", // default value is 'jp'
+        });
 
-      if (check.result === "new") {
-        Alert.alert("Update Available", "please update to latest version ", [
-          {
-            text: "update",
-            onPress: () => {
-              Linking.openURL(storeUrl);
+        if (check.result === "new") {
+          Alert.alert("Update Available", "please update to latest version ", [
+            {
+              text: "update",
+              onPress: () => {
+                Linking.openURL(storeUrl);
+              },
             },
-          },
-        ]);
+          ]);
+        }
+        console.log(check);
+      } catch (e) {
+        console.log(e);
       }
-      console.log(check);
-    } catch (e) {
-      console.log(e);
     }
   };
 
@@ -82,7 +84,7 @@ export default function App() {
   };
 
   useEffect(() => {
-    // checkForUpdates();
+    checkForUpdates();
     checkForOTAUpdates();
   });
   useEffect(() => {
