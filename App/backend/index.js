@@ -9,6 +9,7 @@ const submitQuizRouter = require("./routes/submitQuiz");
 const quizDataRouter = require("./routes/quizData");
 const analyticRouter = require("./routes/analytic");
 const messageRouter = require("./routes/messages");
+const feedbackRouter = require("./routes/feedback");
 
 if (!process.env.DB) {
   console.error("!!FATAL ERROR!! Database not connected.");
@@ -34,6 +35,7 @@ app.use("/submitQuiz", submitQuizRouter);
 app.use("/quizData", quizDataRouter);
 app.use("/analytic", analyticRouter);
 app.use("/message", messageRouter);
+app.use("/feedback", feedbackRouter);
 
 mongoose
   .connect(process.env.DB)

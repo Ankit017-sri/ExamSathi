@@ -1,5 +1,5 @@
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import {
   View,
   Text,
@@ -18,11 +18,13 @@ import AuthContext from "../auth/context";
 import authStorage from "../auth/storage";
 import axios from "axios";
 import baseUrl from "../baseUrl";
+import Feedback from "./Feedback";
 
 const AccountScreen = () => {
   const authContext = useContext(AuthContext);
 
   const { name, phone } = useContext(AuthContext);
+  const [isFeedback, setIsFeedback] = useState(false);
 
   const deleteAccountHandler = async () => {
     const res = await axios.delete(`${baseUrl}/auth/delete`, {
@@ -50,191 +52,237 @@ const AccountScreen = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <CustomHeader title="Account" />
-      <View
-        style={{
-          flex: 1,
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <View style={styles.cardContainer}>
-          <View style={styles.profileContainer}>
-            <Image
-              source={require("../assets/avatar.png")}
-              style={styles.profileImage}
-            />
-            <View>
-              <Text style={styles.name}>{name}</Text>
-              <Text style={styles.phone}>{phone}</Text>
+    <>
+      {isFeedback ? (
+        <Feedback setIsFeedBack={setIsFeedback} />
+      ) : (
+        <View style={styles.container}>
+          <CustomHeader title="Account" />
+          <View
+            style={{
+              flex: 1,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <View style={styles.cardContainer}>
+              <View style={styles.profileContainer}>
+                <Image
+                  source={require("../assets/avatar.png")}
+                  style={styles.profileImage}
+                />
+                <View>
+                  <Text style={styles.name}>{name}</Text>
+                  <Text style={styles.phone}>{phone}</Text>
+                </View>
+              </View>
+              <TouchableOpacity
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  borderWidth: 1,
+                  borderColor: Colors.primary,
+                  borderRadius: 5,
+                  height: 40,
+                  width: "100%",
+                  backgroundColor: "rgba(23, 207, 227, 0.1)",
+                }}
+                activeOpacity={0.6}
+                onPress={async () => {
+                  await cache.clear();
+                  authStorage.removeToken();
+                  authContext.setToken(null);
+                  authContext.setName(null);
+                }}
+              >
+                <Text
+                  style={{
+                    fontSize: 17,
+                    color: "#26b1bf",
+                    marginRight: 10,
+                  }}
+                >
+                  Logout
+                </Text>
+                <Ionicons
+                  name={"log-out-outline"}
+                  size={27}
+                  color={"#26b1bf"}
+                />
+              </TouchableOpacity>
             </View>
+            <View
+              style={[
+                styles.cardContainer,
+                {
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  // padding: 10,
+                  marginTop: 10,
+                },
+              ]}
+            >
+              <TouchableOpacity
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  borderWidth: 1,
+                  borderColor: Colors.primary,
+                  borderRadius: 5,
+                  height: 40,
+                  width: "48%",
+                  backgroundColor: "rgba(23, 207, 227, 0.1)",
+                }}
+                activeOpacity={0.6}
+                onPress={async () => {
+                  Linking.openURL("https://t.me/maharshtrapolicebhartiES");
+                }}
+              >
+                <Text
+                  style={{
+                    fontSize: 17,
+                    color: "#26b1bf",
+                    marginRight: 10,
+                  }}
+                >
+                  Join
+                </Text>
+                <FontAwesome name={"telegram"} size={25} color={"#26b1bf"} />
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  borderWidth: 1,
+                  borderColor: Colors.primary,
+                  borderRadius: 5,
+                  height: 40,
+                  width: "48%",
+                  backgroundColor: "rgba(23, 207, 227, 0.1)",
+                }}
+                activeOpacity={0.6}
+                onPress={async () => {
+                  Linking.openURL(
+                    "https://chat.whatsapp.com/GISQhkKkVKg8z0z9rbqF9l"
+                  );
+                }}
+              >
+                <Text
+                  style={{
+                    fontSize: 17,
+                    color: "#26b1bf",
+                    marginRight: 10,
+                  }}
+                >
+                  Join
+                </Text>
+                <Ionicons name={"logo-whatsapp"} size={23} color={"#26b1bf"} />
+              </TouchableOpacity>
+            </View>
+            <TouchableOpacity
+              style={{
+                flexDirection: "row",
+                justifyContent: "center",
+                alignItems: "center",
+                borderWidth: 1,
+                borderColor: Colors.primary,
+                borderRadius: 5,
+                height: 40,
+                width: "85%",
+                backgroundColor: "rgba(23, 207, 227, 0.1)",
+                marginTop: 30,
+                // marginRight: 40,
+              }}
+              activeOpacity={0.6}
+              onPress={async () =>
+                await Share.share({
+                  message:
+                    "Hey! Download this app and start practising right away.\n\nhttps://play.google.com/store/apps/details?id=com.examSathi.examSathi",
+                })
+              }
+            >
+              <Text
+                style={{
+                  fontSize: 17,
+                  color: "#26b1bf",
+                  marginRight: 10,
+                }}
+              >
+                Share App
+              </Text>
+              <Ionicons
+                name="share-social-outline"
+                size={20}
+                color={"#26b1bf"}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{
+                flexDirection: "row",
+                justifyContent: "center",
+                alignItems: "center",
+                borderWidth: 1,
+                borderColor: Colors.primary,
+                borderRadius: 5,
+                height: 40,
+                width: "85%",
+                backgroundColor: "rgba(23, 207, 227, 0.1)",
+                marginTop: 30,
+                // marginRight: 40,
+              }}
+              activeOpacity={0.6}
+              onPress={() => setIsFeedback(true)}
+            >
+              <Text
+                style={{
+                  fontSize: 17,
+                  color: "#26b1bf",
+                  marginRight: 10,
+                }}
+              >
+                Feedback
+              </Text>
+              {/* <Ionicons name="share-social-outline" size={20} color={"#26b1bf"} /> */}
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{
+                flexDirection: "row",
+                justifyContent: "center",
+                alignItems: "center",
+                borderWidth: 1,
+                borderColor: Colors.danger,
+                borderRadius: 5,
+                height: 40,
+                width: "85%",
+                backgroundColor: "rgba(173, 2, 2, 0.1)",
+                marginTop: 30,
+                // marginRight: 40,
+              }}
+              activeOpacity={0.6}
+              onPress={deleteHandler}
+            >
+              <Text
+                style={{
+                  fontSize: 17,
+                  color: Colors.danger,
+                  marginRight: 10,
+                }}
+              >
+                Delete Account
+              </Text>
+              <Ionicons
+                name={"trash-outline"}
+                size={22}
+                color={Colors.danger}
+              />
+            </TouchableOpacity>
           </View>
-          <TouchableOpacity
-            style={{
-              flexDirection: "row",
-              justifyContent: "center",
-              alignItems: "center",
-              borderWidth: 1,
-              borderColor: Colors.primary,
-              borderRadius: 5,
-              height: 40,
-              width: "100%",
-              backgroundColor: "rgba(23, 207, 227, 0.1)",
-            }}
-            activeOpacity={0.6}
-            onPress={async () => {
-              await cache.clear();
-              authStorage.removeToken();
-              authContext.setToken(null);
-              authContext.setName(null);
-            }}
-          >
-            <Text
-              style={{
-                fontSize: 17,
-                color: "#26b1bf",
-                marginRight: 10,
-              }}
-            >
-              Logout
-            </Text>
-            <Ionicons name={"log-out-outline"} size={27} color={"#26b1bf"} />
-          </TouchableOpacity>
         </View>
-        <View
-          style={[
-            styles.cardContainer,
-            {
-              flexDirection: "row",
-              justifyContent: "space-between",
-              // padding: 10,
-              marginTop: 10,
-            },
-          ]}
-        >
-          <TouchableOpacity
-            style={{
-              flexDirection: "row",
-              justifyContent: "center",
-              alignItems: "center",
-              borderWidth: 1,
-              borderColor: Colors.primary,
-              borderRadius: 5,
-              height: 40,
-              width: "48%",
-              backgroundColor: "rgba(23, 207, 227, 0.1)",
-            }}
-            activeOpacity={0.6}
-            onPress={async () => {
-              Linking.openURL("https://t.me/maharshtrapolicebhartiES");
-            }}
-          >
-            <Text
-              style={{
-                fontSize: 17,
-                color: "#26b1bf",
-                marginRight: 10,
-              }}
-            >
-              Join
-            </Text>
-            <FontAwesome name={"telegram"} size={25} color={"#26b1bf"} />
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{
-              flexDirection: "row",
-              justifyContent: "center",
-              alignItems: "center",
-              borderWidth: 1,
-              borderColor: Colors.primary,
-              borderRadius: 5,
-              height: 40,
-              width: "48%",
-              backgroundColor: "rgba(23, 207, 227, 0.1)",
-            }}
-            activeOpacity={0.6}
-            onPress={async () => {
-              Linking.openURL(
-                "https://chat.whatsapp.com/GISQhkKkVKg8z0z9rbqF9l"
-              );
-            }}
-          >
-            <Text
-              style={{
-                fontSize: 17,
-                color: "#26b1bf",
-                marginRight: 10,
-              }}
-            >
-              Join
-            </Text>
-            <Ionicons name={"logo-whatsapp"} size={23} color={"#26b1bf"} />
-          </TouchableOpacity>
-        </View>
-        <TouchableOpacity
-          style={{
-            flexDirection: "row",
-            justifyContent: "center",
-            alignItems: "center",
-            borderWidth: 1,
-            borderColor: Colors.primary,
-            borderRadius: 5,
-            height: 40,
-            width: "85%",
-            backgroundColor: "rgba(23, 207, 227, 0.1)",
-            marginTop: 30,
-            // marginRight: 40,
-          }}
-          activeOpacity={0.6}
-          onPress={async () =>
-            await Share.share({
-              message:
-                "Hey! Download this app and start practising right away.\n\nhttps://play.google.com/store/apps/details?id=com.examSathi.examSathi",
-            })
-          }
-        >
-          <Text
-            style={{
-              fontSize: 17,
-              color: "#26b1bf",
-              marginRight: 10,
-            }}
-          >
-            Share App
-          </Text>
-          <Ionicons name="share-social-outline" size={20} color={"#26b1bf"} />
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={{
-            flexDirection: "row",
-            justifyContent: "center",
-            alignItems: "center",
-            borderWidth: 1,
-            borderColor: Colors.danger,
-            borderRadius: 5,
-            height: 40,
-            width: "85%",
-            backgroundColor: "rgba(173, 2, 2, 0.1)",
-            marginTop: 30,
-            // marginRight: 40,
-          }}
-          activeOpacity={0.6}
-          onPress={deleteHandler}
-        >
-          <Text
-            style={{
-              fontSize: 17,
-              color: Colors.danger,
-              marginRight: 10,
-            }}
-          >
-            Delete Account
-          </Text>
-          <Ionicons name={"trash-outline"} size={22} color={Colors.danger} />
-        </TouchableOpacity>
-      </View>
-    </View>
+      )}
+    </>
   );
 };
 
@@ -279,7 +327,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     // marginBottom: 5,
     flexWrap: "wrap",
-    maxWidth: "85%",
+    // maxWidth: "85%",
     // borderWidth: 1,
   },
   phone: {

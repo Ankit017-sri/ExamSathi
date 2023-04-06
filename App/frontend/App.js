@@ -82,7 +82,7 @@ export default function App() {
   };
 
   useEffect(() => {
-    checkForUpdates();
+    // checkForUpdates();
     checkForOTAUpdates();
   });
   useEffect(() => {
