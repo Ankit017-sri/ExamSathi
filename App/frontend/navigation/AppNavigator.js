@@ -42,6 +42,8 @@ import Colors from "../constants/Colors";
 import QuizDetails from "../screens/QuizDetails";
 import Solution from "../screens/Solution";
 import AuthContext from "../auth/context";
+import ChatGroups from "../screens/ChatGroups";
+import NewGroup from "../screens/NewGroup";
 
 let defaultNavOptions = {
   ...TransitionPresets.SlideFromRightIOS,
@@ -111,6 +113,18 @@ export const QuizNavigator = () => {
         // options={productDetailScreenOptions}
       />
     </QuizStackNavigator.Navigator>
+  );
+};
+
+const ChatStackNavigator = createStackNavigator();
+
+const ChatsNavigator = () => {
+  return (
+    <ChatStackNavigator.Navigator screenOptions={defaultNavOptions}>
+      <ChatStackNavigator.Screen name="Chat Groups" component={ChatGroups} />
+      <ChatStackNavigator.Screen name="Chat" component={ChatsScreen} />
+      <ChatStackNavigator.Screen name="New Group" component={NewGroup} />
+    </ChatStackNavigator.Navigator>
   );
 };
 
@@ -232,7 +246,7 @@ export const AppNavigator = ({ onLayout }) => {
         />
         <Tab.Screen
           name="Chats"
-          component={ChatsScreen}
+          component={ChatsNavigator}
           listeners={{
             tabPress: (e) => {
               // e.preventDefault();
