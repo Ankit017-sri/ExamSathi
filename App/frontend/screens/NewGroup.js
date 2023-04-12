@@ -7,16 +7,24 @@ import {
   Pressable,
   FlatList,
   TouchableOpacity,
+  Modal,
+  TextInput,
+  Alert,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import CustomHeader from "../components/CustomHeader";
 import * as Contacts from "expo-contacts";
 import { Ionicons } from "@expo/vector-icons";
+import ChatContext from "../chat/context";
 
 const NewGroup = ({ navigation }) => {
+  const { handleGroup, groups } = useContext(ChatContext);
+
   const [contacts, setContacts] = useState([]);
   const [newGroup, setNewGroup] = useState([]);
+  const [groupName, setGroupName] = useState("");
   const [refArray, setRefArray] = useState([]);
+  const [modalVisible, setModalVisible] = useState(false);
 
   const getContacts = async () => {
     const { status } = await Contacts.requestPermissionsAsync();
@@ -54,6 +62,29 @@ const NewGroup = ({ navigation }) => {
   useEffect(() => {
     getContacts();
   }, []);
+
+  const showModal = () => {
+    setModalVisible(true);
+  };
+
+  const hideModal = () => {
+    setModalVisible(false);
+  };
+
+  const handleCreate = () => {
+    console.log(groupName, newGroup);
+    setNewGroup([]);
+    setGroupName("");
+    hideModal();
+    let found = groups.find((item) => item === groupName);
+    console.log(found);
+    if (found) {
+      Alert.alert("Group name", "Group name already exists!");
+    } else {
+      handleGroup(groupName);
+      navigation.navigate("Chat Groups");
+    }
+  };
 
   const AddedContacts = ({ contact }) => {
     return (
@@ -97,6 +128,47 @@ const NewGroup = ({ navigation }) => {
         isBack
         navigation={navigation}
       />
+      <Modal visible={modalVisible} animationType="fade" transparent={true}>
+        <View style={styles.modalContainer}>
+          <View style={styles.content}>
+            <Pressable onPress={hideModal} style={{ alignSelf: "flex-end" }}>
+              <Ionicons name="close" size={30} />
+            </Pressable>
+            <Text style={styles.modalText}>Group name</Text>
+            <TextInput
+              placeholder=" Enter group name "
+              style={{
+                borderColor: "grey",
+                borderWidth: 1,
+                borderRadius: 10,
+                paddingHorizontal: 6,
+                paddingVertical: 2,
+                height: 40,
+                minWidth: "90%",
+              }}
+              onChangeText={(text) => setGroupName(text)}
+            />
+            <Pressable
+              onPress={handleCreate}
+              style={{
+                marginTop: 20,
+                justifyContent: "center",
+                backgroundColor: "#17cfe3",
+                borderRadius: 10,
+                borderColor: "black",
+                borderWidth: 1,
+                padding: 8,
+              }}
+            >
+              <Text
+                style={{ fontWeight: "600", fontSize: 16, alignSelf: "center" }}
+              >
+                Create
+              </Text>
+            </Pressable>
+          </View>
+        </View>
+      </Modal>
       <ScrollView style={{ paddingVertical: 8, paddingHorizontal: 20 }}>
         {newGroup.length > 0 && (
           <FlatList
@@ -174,7 +246,7 @@ const NewGroup = ({ navigation }) => {
           justifyContent: "center",
           alignItems: "center",
         }}
-        onPress={() => console.log(newGroup)}
+        onPress={showModal}
       >
         <Ionicons name="arrow-forward-outline" size={30} />
       </TouchableOpacity>
@@ -203,5 +275,27 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderColor: "black",
     borderWidth: 1,
+  },
+  text: {
+    fontSize: 24,
+    marginBottom: 20,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0,0,0,0.5)",
+    marginTop: 30,
+  },
+  modalText: {
+    fontSize: 24,
+    marginBottom: 10,
+  },
+  content: {
+    backgroundColor: "#fff",
+    elevation: 20,
+    borderRadius: 12,
+    paddingVertical: 20,
+    paddingHorizontal: 20,
   },
 });

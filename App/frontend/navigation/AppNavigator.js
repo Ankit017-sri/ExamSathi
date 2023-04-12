@@ -1,7 +1,6 @@
 import React, { useContext, useState, useEffect } from "react";
 import { Text, View, Animated, Dimensions, Image } from "react-native";
 import { Keyboard } from "react-native";
-// import { createStackNavigator } from "@react-navigation/native-stack";
 import {
   TransitionPresets,
   CardStyleInterpolators,
@@ -42,8 +41,10 @@ import Colors from "../constants/Colors";
 import QuizDetails from "../screens/QuizDetails";
 import Solution from "../screens/Solution";
 import AuthContext from "../auth/context";
+import ChatContext from "../chat/context";
 import ChatGroups from "../screens/ChatGroups";
 import NewGroup from "../screens/NewGroup";
+import GroupDescription from "../screens/GroupDescription";
 
 let defaultNavOptions = {
   ...TransitionPresets.SlideFromRightIOS,
@@ -119,12 +120,22 @@ export const QuizNavigator = () => {
 const ChatStackNavigator = createStackNavigator();
 
 const ChatsNavigator = () => {
+  const [groups, setGroups] = useState([]);
+  const handleGroup = (group) => {
+    setGroups([...groups, group]);
+  };
   return (
-    <ChatStackNavigator.Navigator screenOptions={defaultNavOptions}>
-      <ChatStackNavigator.Screen name="Chat Groups" component={ChatGroups} />
-      <ChatStackNavigator.Screen name="Chat" component={ChatsScreen} />
-      <ChatStackNavigator.Screen name="New Group" component={NewGroup} />
-    </ChatStackNavigator.Navigator>
+    <ChatContext.Provider value={{ handleGroup, groups }}>
+      <ChatStackNavigator.Navigator screenOptions={defaultNavOptions}>
+        <ChatStackNavigator.Screen name="Chat Groups" component={ChatGroups} />
+        <ChatStackNavigator.Screen name="Chat" component={ChatsScreen} />
+        <ChatStackNavigator.Screen name="New Group" component={NewGroup} />
+        <ChatStackNavigator.Screen
+          name="Group Description"
+          component={GroupDescription}
+        />
+      </ChatStackNavigator.Navigator>
+    </ChatContext.Provider>
   );
 };
 

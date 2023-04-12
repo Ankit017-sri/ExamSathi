@@ -30,7 +30,7 @@ import CloudURL from "../CloudURL";
 import FullscreenImage from "../components/ImageView";
 import { BottomSheet } from "react-native-btr";
 
-const ChatsScreen = () => {
+const ChatsScreen = ({ navigation }) => {
   const authContext = useContext(AuthContext);
 
   const [user, setUser] = useState({});
@@ -334,6 +334,8 @@ const ChatsScreen = () => {
       <CustomHeader
         title="ExamSathi"
         sub={`${memCount} members, ${len} online`}
+        isBack={true}
+        navigation={navigation}
       />
 
       {!user ? (
