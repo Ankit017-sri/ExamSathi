@@ -86,33 +86,33 @@ router.get("/:id", auth, async (req, res) => {
 });
 
 // Route to delete a specific group by ID
-// router.delete("/:id", auth, async (req, res) => {
-//   try {
-//     const groupId = req.params.id;
+router.delete("/:id", auth, async (req, res) => {
+  try {
+    const groupId = req.params.id;
 
-//     // Find the group by ID
-//     const group = await Group.findById(groupId);
-//     if (!group) {
-//       return res.status(404).json({ error: "Group not found" });
-//     }
+    // Find the group by ID
+    const group = await Group.findById(groupId);
+    if (!group) {
+      return res.status(404).json({ error: "Group not found" });
+    }
 
-//     // Remove the group ID from the groups array of each user
-//     await User.updateMany(
-//       { _id: { $in: group.members } },
-//       { $pull: { groups: groupId } }
-//     );
+    // Remove the group ID from the groups array of each user
+    await User.updateMany(
+      { _id: { $in: group.members } },
+      { $pull: { groups: groupId } }
+    );
 
-//     //Delete messages from database
-//     await GroupMessage.deleteMany({ groupId: group._id });
-//     // Delete the group
-//     await Group.findByIdAndDelete(groupId);
+    //Delete messages from database
+    await GroupMessage.deleteMany({ groupId: group._id });
+    // Delete the group
+    await Group.findByIdAndDelete(groupId);
 
-//     res.json({ message: "Group deleted successfully" });
-//   } catch (err) {
-//     console.error(err);
-//     res.status(500).json({ error: "Server error" });
-//   }
-// });
+    res.json({ message: "Group deleted successfully" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Server error" });
+  }
+});
 
 // Route to add a member to a group by ID
 // router.put("/groups/:id/add-member", auth, async (req, res) => {

@@ -17,7 +17,6 @@ import * as Contacts from "expo-contacts";
 import { Ionicons } from "@expo/vector-icons";
 import ChatContext from "../chat/context";
 import AuthContext from "../auth/context";
-import io from "socket.io-client";
 import axios from "axios";
 import baseUrl from "../baseUrl";
 
@@ -101,9 +100,14 @@ const NewGroup = ({ navigation }) => {
           }
         )
         .catch((e) => console.log(e));
-      console.log(res.data);
+      // console.log(res.data);
       if (res.data) {
-        handleGroup(res.data);
+        handleGroup({
+          groupId: res.data._id,
+          groupMembers: res.data.members,
+          messages: [],
+          name: res.data.name,
+        });
         setNewGroup([]);
         setGroupName("");
         navigation.navigate("Chat Groups");

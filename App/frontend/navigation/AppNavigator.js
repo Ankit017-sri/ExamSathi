@@ -136,7 +136,7 @@ const ChatsNavigator = () => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .catch((e) => console.log(e));
-    // console.log(res.data);
+    console.log(res.data);
     if (res.data) {
       setGroups(res.data);
     }

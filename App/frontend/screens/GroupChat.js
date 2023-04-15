@@ -45,7 +45,7 @@ const GroupChat = ({ navigation, route }) => {
     if (messages) {
       setMessageArray(messages);
     }
-    console.log(Id);
+    console.log(groupId);
   }, [groupId]);
 
   useEffect(() => {
