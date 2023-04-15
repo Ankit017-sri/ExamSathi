@@ -1,11 +1,17 @@
 import React from "react";
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  Keyboard,
+} from "react-native";
 import Constants from "expo-constants";
 
 import Colors from "../constants/Colors";
 import { Ionicons } from "@expo/vector-icons";
 
-const CustomHeader = ({ title, isBack, navigation, sub }) => {
+const CustomHeader = ({ title, isBack, navigation, sub, setTabBarVisible }) => {
   return (
     <View style={styles.headerContainer}>
       {isBack && (
@@ -16,7 +22,11 @@ const CustomHeader = ({ title, isBack, navigation, sub }) => {
             alignSelf: "flex-end",
             bottom: 5,
           }}
-          onPress={() => navigation.goBack()}
+          onPress={() => {
+            Keyboard.dismiss();
+            navigation.goBack();
+            setTabBarVisible && setTabBarVisible(true);
+          }}
         >
           <Ionicons
             name="arrow-back-circle-outline"

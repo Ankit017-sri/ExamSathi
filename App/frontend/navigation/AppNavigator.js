@@ -1,5 +1,7 @@
 import React, { useContext, useState, useEffect } from "react";
 import { Text, View, Animated, Dimensions, Image } from "react-native";
+import axios from "axios";
+import baseUrl from "../baseUrl";
 import { Keyboard } from "react-native";
 import {
   TransitionPresets,
@@ -45,6 +47,7 @@ import ChatContext from "../chat/context";
 import ChatGroups from "../screens/ChatGroups";
 import NewGroup from "../screens/NewGroup";
 import GroupDescription from "../screens/GroupDescription";
+import GroupChat from "../screens/GroupChat";
 
 let defaultNavOptions = {
   ...TransitionPresets.SlideFromRightIOS,
@@ -120,15 +123,61 @@ export const QuizNavigator = () => {
 const ChatStackNavigator = createStackNavigator();
 
 const ChatsNavigator = () => {
+  const { token } = useContext(AuthContext);
   const [groups, setGroups] = useState([]);
+  const [messages, setMessages] = useState([]);
+  const [memCount, setMemCount] = useState();
   const handleGroup = (group) => {
     setGroups([...groups, group]);
   };
+  const fetchGroups = async () => {
+    const res = await axios
+      .get(`${baseUrl}/group`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .catch((e) => console.log(e));
+    // console.log(res.data);
+    if (res.data) {
+      setGroups(res.data);
+    }
+  };
+  async function fetchMessages() {
+    await axios
+      .get(`${baseUrl}/message`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((data) => {
+        // console.log(data.data);
+        setMessages(data.data);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  }
+
+  async function fetchCounts() {
+    await axios
+      .get(`${baseUrl}/auth/users/count`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((data) => {
+        console.log(data.data[0].count);
+        setMemCount(data.data[0].count);
+      })
+      .catch((e) => console.log(e));
+  }
+
+  useEffect(() => {
+    fetchGroups();
+    fetchMessages();
+    fetchCounts();
+  }, []);
   return (
-    <ChatContext.Provider value={{ handleGroup, groups }}>
+    <ChatContext.Provider value={{ handleGroup, groups, messages, memCount }}>
       <ChatStackNavigator.Navigator screenOptions={defaultNavOptions}>
         <ChatStackNavigator.Screen name="Chat Groups" component={ChatGroups} />
         <ChatStackNavigator.Screen name="Chat" component={ChatsScreen} />
+        <ChatStackNavigator.Screen name="Group Chat" component={GroupChat} />
         <ChatStackNavigator.Screen name="New Group" component={NewGroup} />
         <ChatStackNavigator.Screen
           name="Group Description"

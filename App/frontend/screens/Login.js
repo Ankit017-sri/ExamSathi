@@ -52,6 +52,7 @@ const Login = () => {
       authContext.setToken(result?.data.token);
       authContext.setPhone(result.data.user.phoneNumber);
       authContext.setName(result.data.user.fullName);
+      authContext.setId(result.data.user._id);
       await cache.store("user", result?.data.user);
       setLoading(false);
     }

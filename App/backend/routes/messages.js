@@ -36,16 +36,19 @@ router.post("/", auth, async (req, res) => {
 
 router.get("/", auth, async (req, res) => {
   const result = await Message.find();
-  console.log(result);
   res.json(result);
 });
-// router.delete("/", async (req, res) => {
-//   try {
-//     const data = await Message.deleteMany();
-//     res.json(data);
-//   } catch (err) {
-//     console.log(err);
-//   }
-// });
+
+router.post("/latest", auth, async (req, res) => {
+  const { date } = req.body;
+  try {
+    const result = await Message.find({ createdAt: { $gt: date } });
+    console.log(result);
+    res.json(result);
+  } catch (error) {
+    console.log(error);
+    res.status(500).send("something went wrong!");
+  }
+});
 
 module.exports = router;

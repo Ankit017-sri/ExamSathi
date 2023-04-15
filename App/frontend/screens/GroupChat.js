@@ -1,61 +1,76 @@
-import React, {
-  useState,
-  useEffect,
-  useRef,
-  useContext,
-  useLayoutEffect,
-} from "react";
 import {
-  View,
+  StyleSheet,
   Text,
+  View,
+  ScrollView,
   TextInput,
   TouchableOpacity,
-  StyleSheet,
-  ScrollView,
   KeyboardAvoidingView,
   Platform,
   TouchableWithoutFeedback,
   Keyboard,
 } from "react-native";
-import { io } from "socket.io-client";
-import axios from "axios";
-import baseUrl from "../baseUrl";
-import CustomHeader from "../components/CustomHeader";
-import * as ImagePicker from "expo-image-picker";
-import Loader from "../components/Loader";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import AuthContext from "../auth/context";
 import { format } from "timeago.js";
 import { Ionicons } from "@expo/vector-icons";
+import CustomHeader from "../components/CustomHeader";
 import CloudURL from "../CloudURL";
+import axios from "axios";
 import FullscreenImage from "../components/ImageView";
 import { BottomSheet } from "react-native-btr";
+import * as ImagePicker from "expo-image-picker";
+import baseUrl from "../baseUrl";
+import { io } from "socket.io-client";
 
-const ChatsScreen = ({ navigation, route }) => {
+const GroupChat = ({ navigation, route }) => {
   const {
+    Id,
     token,
     setTabBarVisible,
-    Id,
     name: fullName,
   } = useContext(AuthContext);
-  const fetchedData = route.params.messages;
-  const counts = route.params.memCount;
-
+  const { groupId, groupMembers, messages, name } = route.params.groupData;
   const [message, setMessage] = useState(null);
-  const [messages, setMessages] = useState([]);
-  const [receiveMessage, setRecieveMessage] = useState(null);
-  const [len, setLen] = useState(0);
-  const [memCount, setMemCount] = useState();
-  const [image, setImage] = useState();
-  const [uploading, setUploading] = useState(false);
   const [visible, setVisible] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [messageArray, setMessageArray] = useState([]);
+  const [recieved, setRecieved] = useState();
 
   const socket = useRef();
   const scrollRef = useRef();
 
   useEffect(() => {
     setTabBarVisible(false);
-    setMessages(fetchedData);
-  }, []);
+    if (messages) {
+      setMessageArray(messages);
+    }
+    console.log(Id);
+  }, [groupId]);
+
+  useEffect(() => {
+    socket.current = io(baseUrl);
+    socket.current.emit("joinGroup", { groupId, members: groupMembers });
+    socket.current.on("groupMessage", (data) => {
+      // Update the messages state with the new message
+      // setMessages(prevMessages => [...prevMessages, data]);
+
+      setRecieved(data);
+      console.log("recieved data ", data);
+    });
+    return () => {
+      socket.current.emit("leaveGroup", groupId);
+      socket.current.disconnect();
+    };
+  }, [groupId]);
+
+  useEffect(() => {
+    if (recieved) {
+      setMessageArray([...messageArray, recieved]);
+      messages.push(recieved);
+      setRecieved();
+    }
+  }, [recieved?._id]);
 
   const pickImage = async () => {
     let result = await ImagePicker.launchCameraAsync({
@@ -86,15 +101,17 @@ const ChatsScreen = ({ navigation, route }) => {
     // console.log(result);
     if (result.canceled) {
       // Handle cancellation...
+      setVisible(false);
       return;
     }
     if (!result.canceled) {
-      setImage(result.assets[0].uri);
+      // setImage(result.assets[0].uri);
       UploadImage(result.assets[0]);
     }
   };
 
   const UploadImage = async (data) => {
+    setVisible(false);
     setUploading(true);
     const source = data.base64;
     let base64Img = `data:image/jpg;base64,${source}`;
@@ -120,97 +137,47 @@ const ChatsScreen = ({ navigation, route }) => {
       })
       .catch((err) => alert("something went wrong"));
   };
-  useLayoutEffect(() => {
-    setMemCount(counts);
-    scrollRef.current.scrollToEnd({ animated: false });
-  }, []);
 
-  useEffect(() => {
-    (async () => {
-      const { status } =
-        await ImagePicker.requestMediaLibraryPermissionsAsync();
-      if (status !== "granted") {
-        alert("Sorry, we need camera roll permissions to make this work!");
+  const handleUpload = async (data) => {
+    if (data) {
+      const res = await axios
+        .post(`${baseUrl}/group/${groupId}/messages`, data, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        .catch((e) => console.log(e));
+
+      if (!res.data.uri) {
+        setUploading(false);
+        return alert("something went wrong please try again !");
+      } else {
+        socket.current.emit("groupChatMessage", res.data);
+        console.log(res.data);
+        setUploading(false);
       }
-    })();
-  }, []);
-
-  useEffect(() => {
-    socket.current = io(baseUrl);
-
-    socket.current.emit("new-user-add", Id);
-    console.log("connected...");
-    socket.current.on("get-active-users", (data) => {
-      setLen(data);
-    });
-    socket.current.on("message-recieve", (data) => {
-      // console.log("recieved", data);
-      setRecieveMessage(data);
-      // console.log("recieve data", receiveMessage);
-    });
-    return () => {
-      socket.current.disconnect();
-    };
-  }, [Id]);
-  useEffect(() => {
-    if (receiveMessage) {
-      setMessages([...messages, receiveMessage]);
-      fetchedData.push(receiveMessage);
-      // console.log("messages : ", messages);
-      scrollRef.current.scrollToEnd({ animated: false });
     }
-  }, [receiveMessage?.createdAt]);
-
-  const sendMessage = () => {
-    if (message) {
-      handleSend(message);
-      socket.current.emit("message", {
-        text: message,
-        senderId: Id,
-        // senderId: "54187867143118",
-        name: fullName,
-        createdAt: new Date(),
-      });
-      setMessage("");
-    }
-
-    // socket.current.disconnect();
   };
-  const handleSend = async (message) => {
+
+  const sendMessage = async () => {
     if (message) {
       const res = await axios
         .post(
-          `${baseUrl}/message`,
+          `${baseUrl}/group/${groupId}/messages`,
           { text: message },
           {
             headers: { Authorization: `Bearer ${token}` },
           }
         )
         .catch((e) => console.log(e));
-    }
-  };
-
-  const handleUpload = async (data) => {
-    if (data) {
-      const res = await axios
-        .post(`${baseUrl}/message`, data, {
-          headers: { Authorization: `Bearer ${token}` },
-        })
-        .catch((e) => console.log(e));
-      // console.log(res.data);
-      if (!res.data.uri) {
-        setUploading(false);
+      if (!res.data.text) {
         return alert("something went wrong please try again !");
       } else {
-        socket.current.emit("message", {
-          senderId: res.data.senderId,
-          uri: res.data.uri,
-          name: res.data.name,
-          createdAt: res.data.createdAt,
-        });
-        setUploading(false);
+        console.log(res.data);
+        socket.current.emit("groupChatMessage", res.data);
+        setMessage("");
       }
     }
+
+    // socket.current.disconnect();
   };
 
   const MessageSent = ({ msg }) => {
@@ -278,28 +245,14 @@ const ChatsScreen = ({ navigation, route }) => {
     );
   };
 
-  const chats = messages.map((data, index) => (
-    <View key={index} style={styles.message}>
-      {data.senderId == Id ? (
-        <View style={styles.messageSent}>
-          <MessageSent msg={data} />
-        </View>
-      ) : (
-        <View style={styles.messageRecieved}>
-          <MessageRecieved msg={data} />
-        </View>
-      )}
-    </View>
-  ));
-
   const toggleBottomNavigationView = () => {
     setVisible(!visible);
   };
+
   return (
     <View style={{ flex: 1 }}>
       <CustomHeader
-        title="ExamSathi"
-        sub={`${memCount} members, ${len} online`}
+        title={name}
         isBack={true}
         navigation={navigation}
         setTabBarVisible={setTabBarVisible}
@@ -332,12 +285,24 @@ const ChatsScreen = ({ navigation, route }) => {
                 scrollRef.current.scrollToEnd({ animated: false })
               }
             >
-              {messages.length == 0 && (
+              {messages.length === 0 && !uploading && (
                 <Text style={{ alignSelf: "center", color: "black" }}>
                   No messages yet
                 </Text>
               )}
-              {chats}
+              {messageArray.map((data, index) => (
+                <View key={index} style={styles.message}>
+                  {data.senderId == Id ? (
+                    <View style={styles.messageSent}>
+                      <MessageSent msg={data} />
+                    </View>
+                  ) : (
+                    <View style={styles.messageRecieved}>
+                      <MessageRecieved msg={data} />
+                    </View>
+                  )}
+                </View>
+              ))}
               <View></View>
             </ScrollView>
           </TouchableWithoutFeedback>
@@ -386,7 +351,6 @@ const ChatsScreen = ({ navigation, route }) => {
       </KeyboardAvoidingView>
       <BottomSheet
         visible={visible}
-        //setting the visibility state of the bottom shee
         onBackButtonPress={toggleBottomNavigationView}
         //Toggling the visibility state on the click of the back botton
         onBackdropPress={toggleBottomNavigationView}
@@ -416,6 +380,8 @@ const ChatsScreen = ({ navigation, route }) => {
     </View>
   );
 };
+
+export default GroupChat;
 
 const styles = StyleSheet.create({
   messages: {
@@ -503,5 +469,3 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
 });
-
-export default ChatsScreen;

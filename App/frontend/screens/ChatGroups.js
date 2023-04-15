@@ -1,22 +1,66 @@
 import {
-  FlatList,
-  Pressable,
   ScrollView,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
 } from "react-native";
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import CustomHeader from "../components/CustomHeader";
 import { Ionicons } from "@expo/vector-icons";
 import ChatContext from "../chat/context";
+import axios from "axios";
+import baseUrl from "../baseUrl";
+import AuthContext from "../auth/context";
 
 const ChatGroups = ({ navigation }) => {
-  const { groups } = useContext(ChatContext);
+  const { groups, messages, memCount } = useContext(ChatContext);
+  const { token, setTabBarVisible } = useContext(AuthContext);
 
   const newGroup = () => {
     navigation.navigate("New Group");
   };
+
+  const chats = async (groupData) => {
+    const lastmessage = groupData.messages[groupData.messages.length - 1];
+    if (lastmessage) {
+      const messages = await axios.post(
+        `${baseUrl}/group/${groupData.groupId}/latest-messages`,
+        { date: lastmessage.createdAt },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      if (messages.data) {
+        groupData.messages.push(...messages.data);
+      }
+    }
+    navigation.navigate("Group Chat", { groupData });
+  };
+
+  async function fetchMessages() {
+    const lastmessage = messages[messages.length - 1];
+    if (lastmessage) {
+      await axios
+        .post(
+          `${baseUrl}/message/latest`,
+          { date: lastmessage.createdAt },
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        )
+        .then((data) => {
+          messages.push(...data.data);
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    }
+  }
+
+  useEffect(() => {
+    setTabBarVisible(true);
+  }, []);
 
   return (
     <View style={{ position: "relative", flex: 0.9 }}>
@@ -24,8 +68,11 @@ const ChatGroups = ({ navigation }) => {
       <View style={styles.container}>
         <View>
           <ScrollView>
-            <Pressable
-              onPress={() => navigation.navigate("Chat")}
+            <TouchableOpacity
+              onPress={() => {
+                fetchMessages();
+                navigation.navigate("Chat", { messages, memCount });
+              }}
               style={styles.group}
             >
               <View style={{ flexDirection: "row" }}>
@@ -33,29 +80,29 @@ const ChatGroups = ({ navigation }) => {
                 <Text style={styles.groupName}>ExamSathi</Text>
               </View>
               <Ionicons name="chevron-forward-outline" size={30} />
-            </Pressable>
+            </TouchableOpacity>
             {groups
               .slice(0)
               .reverse()
               .map((item, index) => {
                 return (
-                  <Pressable
+                  <TouchableOpacity
                     key={index}
                     style={styles.group}
-                    onPress={() => console.log("pressed")}
+                    onPress={() => chats(item)}
                   >
                     <View style={{ flexDirection: "row" }}>
                       <Ionicons name="people" size={30} />
-                      <Text style={styles.groupName}>{item}</Text>
+                      <Text style={styles.groupName}>{item.name}</Text>
                     </View>
                     <Ionicons name="chevron-forward-outline" size={30} />
-                  </Pressable>
+                  </TouchableOpacity>
                 );
               })}
           </ScrollView>
         </View>
       </View>
-      <Pressable
+      <TouchableOpacity
         onPress={newGroup}
         style={{
           flexDirection: "row",
@@ -85,7 +132,7 @@ const ChatGroups = ({ navigation }) => {
         >
           Create New Group
         </Text>
-      </Pressable>
+      </TouchableOpacity>
     </View>
   );
 };

@@ -16,9 +16,14 @@ import CustomHeader from "../components/CustomHeader";
 import * as Contacts from "expo-contacts";
 import { Ionicons } from "@expo/vector-icons";
 import ChatContext from "../chat/context";
+import AuthContext from "../auth/context";
+import io from "socket.io-client";
+import axios from "axios";
+import baseUrl from "../baseUrl";
 
 const NewGroup = ({ navigation }) => {
   const { handleGroup, groups } = useContext(ChatContext);
+  const { token, name, phone, setTabBarVisible } = useContext(AuthContext);
 
   const [contacts, setContacts] = useState([]);
   const [newGroup, setNewGroup] = useState([]);
@@ -71,18 +76,40 @@ const NewGroup = ({ navigation }) => {
     setModalVisible(false);
   };
 
-  const handleCreate = () => {
-    console.log(groupName, newGroup);
-    setNewGroup([]);
-    setGroupName("");
+  const handleCreate = async () => {
+    // console.log(groupName, newGroup);
+    if (newGroup.length < 1) {
+      return Alert.alert("Group", "please add atleast one member!");
+    }
     hideModal();
-    let found = groups.find((item) => item === groupName);
-    console.log(found);
+    let found = groups.find((item) => item.groupName === groupName);
+    // console.log(found);
     if (found) {
       Alert.alert("Group name", "Group name already exists!");
     } else {
-      handleGroup(groupName);
-      navigation.navigate("Chat Groups");
+      const phoneNumbers = newGroup.map((item) => {
+        return item.phoneNumber.split(" ")[1] + item.phoneNumber.split(" ")[2];
+      });
+      phoneNumbers.push(`${phone}`);
+      console.log("phonenumbers ", phoneNumbers);
+      const res = await axios
+        .post(
+          `${baseUrl}/group/new`,
+          { name: groupName, phoneNumbers: phoneNumbers },
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        )
+        .catch((e) => console.log(e));
+      console.log(res.data);
+      if (res.data) {
+        handleGroup(res.data);
+        setNewGroup([]);
+        setGroupName("");
+        navigation.navigate("Chat Groups");
+      } else {
+        Alert.alert("Group not created", "something went wrong!");
+      }
     }
   };
 

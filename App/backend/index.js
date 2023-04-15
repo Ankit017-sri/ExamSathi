@@ -10,6 +10,7 @@ const quizDataRouter = require("./routes/quizData");
 const analyticRouter = require("./routes/analytic");
 const messageRouter = require("./routes/messages");
 const feedbackRouter = require("./routes/feedback");
+const groupRouter = require("./routes/groups");
 
 if (!process.env.DB) {
   console.error("!!FATAL ERROR!! Database not connected.");
@@ -36,6 +37,7 @@ app.use("/quizData", quizDataRouter);
 app.use("/analytic", analyticRouter);
 app.use("/message", messageRouter);
 app.use("/feedback", feedbackRouter);
+app.use("/group", groupRouter);
 
 mongoose
   .connect(process.env.DB)
@@ -60,6 +62,7 @@ const io = new Server(httpServer, {
 
 let activeUsers = [];
 let messageData = [];
+const groups = [];
 
 io.on("connection", (socket) => {
   console.log("socket connected ....");
@@ -90,6 +93,49 @@ io.on("connection", (socket) => {
     // Broadcast the message to all connected clients
     io.emit("message-recieve", data);
   });
+
+  // --------------------------------------Group Chats ----------------------------
+
+  // Event handler for handling group chat messages
+  socket.on("groupChatMessage", (data) => {
+    // Find the group by ID
+    const group = groups.find((group) => group.id === data.groupId);
+    if (group) {
+      // Broadcast the group chat message to all connected clients in the same group
+      io.to(group.id).emit("groupMessage", data);
+    }
+  });
+
+  // Event handler for handling room join
+  socket.on("joinGroup", (data) => {
+    // Find the group by ID
+    const group = groups.find((group) => group.id === data.groupId);
+    if (group) {
+      // Join the group
+      socket.join(group.id);
+      console.log(group);
+    } else {
+      groups.push({ id: data.groupId, members: data.members });
+      socket.join(data.groupId);
+    }
+  });
+
+  // Event handler for handling room leave
+  socket.on("leaveGroup", (groupId) => {
+    // Leave the group
+    socket.leave(groupId);
+  });
+
+  // Event handler for creating a new group
+  // socket.on("createGroup", (groupData) => {
+  //   // Generate a unique ID for the group
+  //   const groupId = Date.now().toString();
+  //   // Add the group to the groups array
+  //   groups.push({ id: groupId, members: groupData.members });
+  //   // Emit the group ID to the client
+  //   socket.emit("groupCreated", { groupId });
+  // });
+  //------------------------------------- End of groupchats ----------------------------------------
   // Handle disconnections
   socket.on("disconnect", () => {
     console.log("User disconnected");

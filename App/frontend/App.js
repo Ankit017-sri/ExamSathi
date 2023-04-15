@@ -22,6 +22,7 @@ enableScreens();
 export default function App() {
   const [isReady, setIsReady] = useState(false);
   const [token, setToken] = useState();
+  const [Id, setId] = useState();
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [tabBarVisible, setTabBarVisible] = useState(true);
@@ -34,6 +35,7 @@ export default function App() {
 
   const restoreUser = async () => {
     const data = await cache.get("user");
+    setId(data?._id);
     setName(data?.fullName);
     setPhone(data?.phoneNumber);
   };
@@ -124,6 +126,8 @@ export default function App() {
       value={{
         setToken,
         token,
+        Id,
+        setId,
         name,
         phone,
         setPhone,
