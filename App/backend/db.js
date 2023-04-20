@@ -2,12 +2,12 @@ const fs = require("fs");
 
 const objectsArray = [];
 
-const { Sheet3: allObjects } = require("./localization.json");
+const { Sheet5: allObjects } = require("./localization (5).json");
 
 console.log(allObjects);
 
-for (let i = 0; i < allObjects.length; i += 15) {
-  let end = i + 15;
+for (let i = 0; i < allObjects.length; i += 100) {
+  let end = i + 100;
   if (end > allObjects.length) {
     end = allObjects.length;
   }
@@ -15,11 +15,12 @@ for (let i = 0; i < allObjects.length; i += 15) {
     obj.qNo = index + 1;
     return obj;
   });
+
   objectsArray.push({
     quizDetails,
-    quizTitle: "चालू घडामोडी टेस्ट! " + (i / 15 + 1),
+    quizTitle: "PYQ " + (i / 100 + 1),
     createdAt: new Date().toJSON(),
-    maxMarks: 15,
+    maxMarks: 100,
   });
 }
 

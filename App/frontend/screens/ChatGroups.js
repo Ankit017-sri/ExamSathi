@@ -5,16 +5,24 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useContext, useState, useEffect } from "react";
+import React, {
+  useContext,
+  useState,
+  useEffect,
+  useLayoutEffect,
+  useCallback,
+} from "react";
 import CustomHeader from "../components/CustomHeader";
 import { Ionicons } from "@expo/vector-icons";
 import ChatContext from "../chat/context";
 import axios from "axios";
 import baseUrl from "../baseUrl";
 import AuthContext from "../auth/context";
+import { useFocusEffect } from "@react-navigation/native";
+import cache from "../utilities/cache";
 
 const ChatGroups = ({ navigation }) => {
-  const { groups, messages, memCount } = useContext(ChatContext);
+  const { groups, setGroups } = useContext(ChatContext);
   const { token, setTabBarVisible } = useContext(AuthContext);
 
   const newGroup = () => {
@@ -22,45 +30,62 @@ const ChatGroups = ({ navigation }) => {
   };
 
   const chats = async (groupData) => {
-    const lastmessage = groupData.messages[groupData.messages.length - 1];
-    if (lastmessage) {
-      const messages = await axios.post(
-        `${baseUrl}/group/${groupData.groupId}/latest-messages`,
+    let messages = await cache.get(`${groupData._id}`);
+    if (messages !== null) {
+      console.log("passing...");
+      const lastmessage = messages[messages.length - 1];
+      const res = await axios.post(
+        `${baseUrl}/group/${groupData._id}/latest-messages`,
         { date: lastmessage.createdAt },
         {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-      if (messages.data) {
-        groupData.messages.push(...messages.data);
+      if (res.data) {
+        messages.push(...res.data);
+        return navigation.navigate("Group Chat", {
+          groupData: { ...groupData, messages: messages },
+        });
+      } else {
+        navigation.navigate("Group Chat", {
+          groupData: { ...groupData, messages: messages },
+        });
+      }
+    } else {
+      console.log("fetching....");
+      const res = await axios.get(
+        `${baseUrl}/group/${groupData._id}/messages`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      if (res.data) {
+        messages = res.data.messages;
+        await cache.store(`${groupData._id}`, res.data.messages);
+        navigation.navigate("Group Chat", {
+          groupData: { ...groupData, messages: messages },
+        });
       }
     }
-    navigation.navigate("Group Chat", { groupData });
   };
 
-  async function fetchMessages() {
-    const lastmessage = messages[messages.length - 1];
-    if (lastmessage) {
-      await axios
-        .post(
-          `${baseUrl}/message/latest`,
-          { date: lastmessage.createdAt },
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        )
-        .then((data) => {
-          messages.push(...data.data);
-        })
-        .catch((e) => {
-          console.log(e);
-        });
-    }
-  }
+  const fetchGroups = async () => {
+    const res = await axios.get(`${baseUrl}/group/names`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    setGroups(res.data);
+    await cache.store("groups", groups);
+  };
 
   useEffect(() => {
     setTabBarVisible(true);
   }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchGroups();
+    }, [])
+  );
 
   return (
     <View style={{ position: "relative", flex: 0.9 }}>
@@ -70,8 +95,7 @@ const ChatGroups = ({ navigation }) => {
           <ScrollView>
             <TouchableOpacity
               onPress={() => {
-                fetchMessages();
-                navigation.navigate("Chat", { messages, memCount });
+                navigation.navigate("Chat");
               }}
               style={styles.group}
             >

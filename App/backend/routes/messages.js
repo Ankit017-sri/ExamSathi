@@ -7,7 +7,8 @@ const { Message } = require("../models/message");
 const router = express.Router();
 
 router.post("/", auth, async (req, res) => {
-  const { text, uri } = req.body;
+  const { text, uri, replyOn } = req.body;
+  console.log(req.body);
   if (uri) {
     console.log(uri);
     const message = new Message({
@@ -15,6 +16,7 @@ router.post("/", auth, async (req, res) => {
       // senderId: "78787187981",
       name: req.user.fullName,
       uri,
+      replyOn,
     });
     const result = await message.save();
     console.log(result);
@@ -25,6 +27,7 @@ router.post("/", auth, async (req, res) => {
       // senderId: "78787187981",
       name: req.user.fullName,
       text,
+      replyOn,
     });
     const result = await message.save();
     console.log(result);

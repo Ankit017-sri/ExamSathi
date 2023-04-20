@@ -125,16 +125,6 @@ io.on("connection", (socket) => {
     // Leave the group
     socket.leave(groupId);
   });
-
-  // Event handler for creating a new group
-  // socket.on("createGroup", (groupData) => {
-  //   // Generate a unique ID for the group
-  //   const groupId = Date.now().toString();
-  //   // Add the group to the groups array
-  //   groups.push({ id: groupId, members: groupData.members });
-  //   // Emit the group ID to the client
-  //   socket.emit("groupCreated", { groupId });
-  // });
   //------------------------------------- End of groupchats ----------------------------------------
   // Handle disconnections
   socket.on("disconnect", () => {

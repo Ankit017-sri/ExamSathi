@@ -6,6 +6,7 @@ const messageSchema = new mongoose.Schema(
     text: String,
     name: String,
     uri: String,
+    replyOn: {},
   },
   { timestamps: true }
 );

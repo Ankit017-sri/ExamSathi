@@ -68,6 +68,9 @@ const NewGroup = ({ navigation }) => {
   }, []);
 
   const showModal = () => {
+    if (newGroup.length < 1) {
+      return Alert.alert("Group", "please add atleast one member!");
+    }
     setModalVisible(true);
   };
 
@@ -77,9 +80,7 @@ const NewGroup = ({ navigation }) => {
 
   const handleCreate = async () => {
     // console.log(groupName, newGroup);
-    if (newGroup.length < 1) {
-      return Alert.alert("Group", "please add atleast one member!");
-    }
+
     hideModal();
     let found = groups.find((item) => item.groupName === groupName);
     // console.log(found);
@@ -102,12 +103,7 @@ const NewGroup = ({ navigation }) => {
         .catch((e) => console.log(e));
       // console.log(res.data);
       if (res.data) {
-        handleGroup({
-          groupId: res.data._id,
-          groupMembers: res.data.members,
-          messages: [],
-          name: res.data.name,
-        });
+        handleGroup(res.data);
         setNewGroup([]);
         setGroupName("");
         navigation.navigate("Chat Groups");

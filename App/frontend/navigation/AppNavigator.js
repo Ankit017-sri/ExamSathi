@@ -48,6 +48,7 @@ import ChatGroups from "../screens/ChatGroups";
 import NewGroup from "../screens/NewGroup";
 import GroupDescription from "../screens/GroupDescription";
 import GroupChat from "../screens/GroupChat";
+import cache from "../utilities/cache";
 
 let defaultNavOptions = {
   ...TransitionPresets.SlideFromRightIOS,
@@ -127,32 +128,66 @@ const ChatsNavigator = () => {
   const [groups, setGroups] = useState([]);
   const [messages, setMessages] = useState([]);
   const [memCount, setMemCount] = useState();
+  const [replyMessage, setReplyMessage] = useState({});
   const handleGroup = (group) => {
     setGroups([...groups, group]);
   };
   const fetchGroups = async () => {
-    const res = await axios
-      .get(`${baseUrl}/group`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      .catch((e) => console.log(e));
-    console.log(res.data);
-    if (res.data) {
-      setGroups(res.data);
+    const groupDetails = await cache.get("groups");
+    if (groupDetails !== null) {
+      setGroups(groupDetails);
+    } else {
+      const res = await axios
+        .get(`${baseUrl}/group/names`, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        .catch((e) => console.log(e));
+      // console.log(res.data);
+      if (res.data) {
+        setGroups(res.data);
+      }
     }
   };
   async function fetchMessages() {
-    await axios
-      .get(`${baseUrl}/message`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      .then((data) => {
-        // console.log(data.data);
-        setMessages(data.data);
-      })
-      .catch((e) => {
-        console.log(e);
-      });
+    const data = await cache.get("messages");
+    if (data) {
+      setMessages(data);
+      const lastmessage = data[data.length - 1];
+      if (lastmessage) {
+        await axios
+          .post(
+            `${baseUrl}/message/latest`,
+            { date: lastmessage.createdAt },
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          )
+          .then((messages) => {
+            setMessages([...data, ...messages.data]);
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+      }
+    } else {
+      const date = new Date(Date.now() - 1.814e9);
+      await axios
+        .get(`${baseUrl}/message`, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        .then((data) => {
+          // console.log(data.data);
+          setMessages(data.data);
+          const cacheMessage = data.data.filter(
+            (message) => new Date(message.createdAt) >= date
+          );
+          // console.log("cacheMessage ", cacheMessage);
+          cache.store("messages", cacheMessage);
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    }
   }
 
   async function fetchCounts() {
@@ -161,7 +196,7 @@ const ChatsNavigator = () => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((data) => {
-        console.log(data.data[0].count);
+        // console.log(data.data[0].count);
         setMemCount(data.data[0].count);
       })
       .catch((e) => console.log(e));
@@ -173,7 +208,17 @@ const ChatsNavigator = () => {
     fetchCounts();
   }, []);
   return (
-    <ChatContext.Provider value={{ handleGroup, groups, messages, memCount }}>
+    <ChatContext.Provider
+      value={{
+        handleGroup,
+        groups,
+        setGroups,
+        messages,
+        memCount,
+        replyMessage,
+        setReplyMessage,
+      }}
+    >
       <ChatStackNavigator.Navigator screenOptions={defaultNavOptions}>
         <ChatStackNavigator.Screen name="Chat Groups" component={ChatGroups} />
         <ChatStackNavigator.Screen name="Chat" component={ChatsScreen} />

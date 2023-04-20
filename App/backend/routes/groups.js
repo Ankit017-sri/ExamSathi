@@ -35,6 +35,33 @@ router.post("/new", auth, async (req, res) => {
   }
 });
 
+// Route to get only groups ids
+router.get("/names", auth, async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const groups = await Group.find(
+      { members: userId },
+      { members: 1, name: 1 }
+    ).populate("members", "fullName phoneNumber");
+    return res.status(200).send(groups);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send("something went wrong on our side!");
+  }
+
+  // const { groups } = req.user;
+  // const groupsData = await Promise.all(
+  //   groups.map(async (groupID) => {
+  //     const group = await Group.findById(groupID).populate(
+  //       "members",
+  //       "fullName phoneNumber"
+  //     );
+  //     group.messages = [];
+  //     return group;
+  //   })
+  // );
+  // console.log(groupsData);
+});
 // Route to get all groups
 router.get("/", auth, async (req, res) => {
   try {
@@ -188,7 +215,7 @@ router.delete("/:id", auth, async (req, res) => {
 router.post("/:id/messages", auth, async (req, res) => {
   try {
     const groupId = req.params.id;
-    const { text, uri } = req.body;
+    const { text, uri, replyOn } = req.body;
     console.log(req.body);
     // Find the group by ID
     const group = await Group.findById(groupId);
@@ -203,6 +230,7 @@ router.post("/:id/messages", auth, async (req, res) => {
         senderId: req.user._id,
         name: req.user.fullName,
         uri,
+        replyOn,
       });
       // Save the message to the database
       const result = await message.save();
@@ -217,6 +245,7 @@ router.post("/:id/messages", auth, async (req, res) => {
         senderId: req.user._id,
         name: req.user.fullName,
         text,
+        replyOn,
       });
       // Save the message to the database
       const result = await message.save();
@@ -237,7 +266,7 @@ router.post("/:id/messages", auth, async (req, res) => {
 router.get("/:id/messages", auth, async (req, res) => {
   try {
     const groupId = req.params.id;
-
+    console.log(groupId);
     // Find the group by ID
     const group = await Group.findById(groupId);
     if (!group) {

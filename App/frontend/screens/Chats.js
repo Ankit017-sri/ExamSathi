@@ -4,6 +4,7 @@ import React, {
   useRef,
   useContext,
   useLayoutEffect,
+  useCallback,
 } from "react";
 import {
   View,
@@ -16,6 +17,7 @@ import {
   Platform,
   TouchableWithoutFeedback,
   Keyboard,
+  Image,
 } from "react-native";
 import { io } from "socket.io-client";
 import axios from "axios";
@@ -29,16 +31,24 @@ import { Ionicons } from "@expo/vector-icons";
 import CloudURL from "../CloudURL";
 import FullscreenImage from "../components/ImageView";
 import { BottomSheet } from "react-native-btr";
+import cache from "../utilities/cache";
+import { useFocusEffect } from "@react-navigation/native";
+import ChatContext from "../chat/context";
+import SwipeableMessage from "../components/SwipeableMessage";
 
-const ChatsScreen = ({ navigation, route }) => {
+const ChatsScreen = ({ navigation }) => {
   const {
     token,
     setTabBarVisible,
     Id,
     name: fullName,
   } = useContext(AuthContext);
-  const fetchedData = route.params.messages;
-  const counts = route.params.memCount;
+  const {
+    messages: fetchedData,
+    memCount: counts,
+    replyMessage,
+    setReplyMessage,
+  } = useContext(ChatContext);
 
   const [message, setMessage] = useState(null);
   const [messages, setMessages] = useState([]);
@@ -51,11 +61,80 @@ const ChatsScreen = ({ navigation, route }) => {
 
   const socket = useRef();
   const scrollRef = useRef();
+  const inputRef = useRef();
 
   useEffect(() => {
     setTabBarVisible(false);
     setMessages(fetchedData);
+    setMemCount(counts);
+    scrollRef.current.scrollToEnd({ animated: false });
+    (async () => {
+      const { status } =
+        await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (status !== "granted") {
+        alert("Sorry, we need camera roll permissions to make this work!");
+      }
+    })();
+
+    return async () => {
+      await cache.store("messages", fetchedData);
+      setReplyMessage({});
+    };
   }, []);
+
+  useEffect(() => {
+    socket.current = io(baseUrl);
+
+    socket.current.emit("new-user-add", Id);
+    socket.current.on("get-active-users", (data) => {
+      setLen(data);
+    });
+    socket.current.on("message-recieve", (data) => {
+      // console.log("recieved", data);
+      setRecieveMessage(data);
+      // console.log("recieve data", receiveMessage);
+    });
+  }, [Id]);
+  useEffect(() => {
+    if (receiveMessage) {
+      setMessages([...messages, receiveMessage]);
+      fetchedData.push(receiveMessage);
+      // console.log("messages : ", messages);
+      scrollRef.current.scrollToEnd({ animated: false });
+    }
+  }, [receiveMessage?.createdAt]);
+
+  async function fetchMessages() {
+    const lastmessage = fetchedData[fetchedData.length - 1];
+    if (lastmessage) {
+      await axios
+        .post(
+          `${baseUrl}/message/latest`,
+          { date: lastmessage.createdAt },
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        )
+        .then((data) => {
+          fetchedData.push(...data.data);
+          setMessages(fetchedData);
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    }
+  }
+  useFocusEffect(
+    useCallback(() => {
+      fetchMessages();
+    }, [])
+  );
+
+  useEffect(() => {
+    if (replyMessage.name) {
+      inputRef.current.focus();
+    }
+  }, [replyMessage]);
 
   const pickImage = async () => {
     let result = await ImagePicker.launchCameraAsync({
@@ -120,74 +199,29 @@ const ChatsScreen = ({ navigation, route }) => {
       })
       .catch((err) => alert("something went wrong"));
   };
-  useLayoutEffect(() => {
-    setMemCount(counts);
-    scrollRef.current.scrollToEnd({ animated: false });
-  }, []);
 
-  useEffect(() => {
-    (async () => {
-      const { status } =
-        await ImagePicker.requestMediaLibraryPermissionsAsync();
-      if (status !== "granted") {
-        alert("Sorry, we need camera roll permissions to make this work!");
-      }
-    })();
-  }, []);
-
-  useEffect(() => {
-    socket.current = io(baseUrl);
-
-    socket.current.emit("new-user-add", Id);
-    console.log("connected...");
-    socket.current.on("get-active-users", (data) => {
-      setLen(data);
-    });
-    socket.current.on("message-recieve", (data) => {
-      // console.log("recieved", data);
-      setRecieveMessage(data);
-      // console.log("recieve data", receiveMessage);
-    });
-    return () => {
-      socket.current.disconnect();
-    };
-  }, [Id]);
-  useEffect(() => {
-    if (receiveMessage) {
-      setMessages([...messages, receiveMessage]);
-      fetchedData.push(receiveMessage);
-      // console.log("messages : ", messages);
-      scrollRef.current.scrollToEnd({ animated: false });
-    }
-  }, [receiveMessage?.createdAt]);
-
-  const sendMessage = () => {
-    if (message) {
-      handleSend(message);
-      socket.current.emit("message", {
-        text: message,
-        senderId: Id,
-        // senderId: "54187867143118",
-        name: fullName,
-        createdAt: new Date(),
-      });
-      setMessage("");
-    }
-
-    // socket.current.disconnect();
-  };
-  const handleSend = async (message) => {
+  const sendMessage = async () => {
     if (message) {
       const res = await axios
         .post(
           `${baseUrl}/message`,
-          { text: message },
+          { text: message, replyOn: replyMessage._id ? replyMessage : {} },
           {
             headers: { Authorization: `Bearer ${token}` },
           }
         )
         .catch((e) => console.log(e));
+      if (!res.data.text) {
+        return alert("something went wrong please try again !");
+      } else {
+        console.log(res.data);
+        setReplyMessage({});
+        socket.current.emit("message", res.data);
+        setMessage("");
+      }
     }
+
+    // socket.current.disconnect();
   };
 
   const handleUpload = async (data) => {
@@ -216,6 +250,39 @@ const ChatsScreen = ({ navigation, route }) => {
   const MessageSent = ({ msg }) => {
     return (
       <View>
+        {msg.replyOn?.name && (
+          <View
+            style={{
+              minWidth: "55%",
+              maxWidth: "95%",
+              backgroundColor: "#00ABB3",
+              borderRadius: 12,
+              borderBottomRightRadius: 0,
+              borderBottomLeftRadius: 0,
+            }}
+          >
+            <View
+              style={{
+                borderLeftColor: "cyan",
+                borderLeftWidth: 4,
+                // backgroundColor: "#D6E4E5",
+                borderRadius: 8,
+                padding: 4,
+              }}
+            >
+              <View>
+                <Text style={{ color: "#5837D0", fontWeight: "600" }}>
+                  {msg.replyOn.senderId == Id ? "you" : msg.replyOn.name}
+                </Text>
+              </View>
+              {msg.replyOn.uri ? (
+                <FullscreenImage imageSource={msg.replyOn.uri} />
+              ) : (
+                <Text style={{ fontSize: 16 }}>{msg.replyOn.text}</Text>
+              )}
+            </View>
+          </View>
+        )}
         <View
           style={{
             minWidth: "55%",
@@ -224,6 +291,8 @@ const ChatsScreen = ({ navigation, route }) => {
             borderRadius: 12,
             paddingHorizontal: 10,
             paddingVertical: 4,
+            borderTopRightRadius: msg.replyOn?.name ? 0 : 12,
+            borderTopLeftRadius: msg.replyOn?.name ? 0 : 12,
           }}
         >
           {msg.uri ? (
@@ -250,7 +319,48 @@ const ChatsScreen = ({ navigation, route }) => {
 
   const MessageRecieved = ({ msg }) => {
     return (
-      <View>
+      <View
+        style={{
+          backgroundColor: "#EAEAEA",
+          marginBottom: 8,
+          borderRadius: 10,
+        }}
+      >
+        <Text style={styles.name}>{msg.name}</Text>
+        {msg.replyOn?.name && (
+          <View
+            style={{
+              minWidth: "55%",
+              maxWidth: "95%",
+              backgroundColor: "#EAEAEA",
+              borderRadius: 12,
+              borderBottomRightRadius: 0,
+              borderBottomLeftRadius: 0,
+              marginHorizontal: 8,
+            }}
+          >
+            <View
+              style={{
+                borderLeftColor: "cyan",
+                borderLeftWidth: 4,
+                // backgroundColor: "#D6E4E5",
+                borderRadius: 8,
+                padding: 4,
+              }}
+            >
+              <View>
+                <Text style={{ color: "#5837D0", fontWeight: "600" }}>
+                  {msg.replyOn.name}
+                </Text>
+              </View>
+              {msg.replyOn.uri ? (
+                <FullscreenImage imageSource={msg.replyOn.uri} />
+              ) : (
+                <Text style={{ fontSize: 16 }}>{msg.replyOn.text}</Text>
+              )}
+            </View>
+          </View>
+        )}
         <View
           style={{
             minWidth: "60%",
@@ -260,8 +370,6 @@ const ChatsScreen = ({ navigation, route }) => {
             paddingHorizontal: 10,
           }}
         >
-          <Text style={styles.name}>{msg.name}</Text>
-
           {msg.uri ? (
             <FullscreenImage imageSource={msg.uri} />
           ) : (
@@ -277,20 +385,6 @@ const ChatsScreen = ({ navigation, route }) => {
       </View>
     );
   };
-
-  const chats = messages.map((data, index) => (
-    <View key={index} style={styles.message}>
-      {data.senderId == Id ? (
-        <View style={styles.messageSent}>
-          <MessageSent msg={data} />
-        </View>
-      ) : (
-        <View style={styles.messageRecieved}>
-          <MessageRecieved msg={data} />
-        </View>
-      )}
-    </View>
-  ));
 
   const toggleBottomNavigationView = () => {
     setVisible(!visible);
@@ -337,7 +431,15 @@ const ChatsScreen = ({ navigation, route }) => {
                   No messages yet
                 </Text>
               )}
-              {chats}
+              {messages.map((data, index) => (
+                <SwipeableMessage
+                  key={index}
+                  data={data}
+                  Id={Id}
+                  MessageRecieved={MessageRecieved}
+                  MessageSent={MessageSent}
+                />
+              ))}
               <View></View>
             </ScrollView>
           </TouchableWithoutFeedback>
@@ -361,12 +463,69 @@ const ChatsScreen = ({ navigation, route }) => {
           </TouchableOpacity>
         </View>
         <View style={styles.inputContainer}>
+          {replyMessage.name && (
+            <View
+              style={{
+                position: "absolute",
+                top: -68,
+                marginHorizontal: 16,
+                backgroundColor: "white",
+                width: "87%",
+                paddingHorizontal: 4,
+                paddingVertical: 4,
+                borderTopRightRadius: 8,
+                borderTopLeftRadius: 8,
+                borderWidth: 1,
+                borderBottomWidth: 0,
+                borderColor: "#ccc",
+              }}
+            >
+              <View
+                style={{
+                  borderLeftColor: "cyan",
+                  borderLeftWidth: 4,
+                  height: 60,
+                  backgroundColor: "#D6E4E5",
+                  borderRadius: 8,
+                  padding: 4,
+                  overflow: "hidden",
+                }}
+              >
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <Text style={{ color: "#5837D0" }}>{replyMessage.name}</Text>
+                  <TouchableOpacity onPress={() => setReplyMessage({})}>
+                    <Ionicons name="close" size={20} />
+                  </TouchableOpacity>
+                </View>
+                {replyMessage.uri && (
+                  <Image
+                    source={{ uri: replyMessage.uri }}
+                    style={{ width: 40, height: 40 }}
+                  />
+                )}
+                <Text style={{ fontSize: 12 }}>{replyMessage.text}</Text>
+              </View>
+            </View>
+          )}
           <TextInput
-            style={styles.input}
+            style={[
+              styles.input,
+              {
+                borderTopWidth: replyMessage.name ? 0 : 1,
+                borderTopLeftRadius: replyMessage.name ? 0 : 5,
+                borderTopRightRadius: replyMessage.name ? 0 : 5,
+              },
+            ]}
             value={message}
             multiline={true}
             onChangeText={(text) => setMessage(text)}
             placeholder="Type your message here"
+            ref={inputRef}
           />
           {message ? (
             <TouchableOpacity style={styles.button} onPress={sendMessage}>
@@ -495,7 +654,7 @@ const styles = StyleSheet.create({
   bottomNavigationView: {
     backgroundColor: "#17cfe3",
     width: "100%",
-    height: 150,
+    height: 200,
     justifyContent: "space-around",
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
