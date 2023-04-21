@@ -24,7 +24,9 @@ import axios from "axios";
 import baseUrl from "../baseUrl";
 import CustomHeader from "../components/CustomHeader";
 import * as ImagePicker from "expo-image-picker";
-import Loader from "../components/Loader";
+import * as DocumentPicker from "expo-document-picker";
+import * as FileSystem from "expo-file-system";
+import * as Linking from "expo-linking";
 import AuthContext from "../auth/context";
 import { format } from "timeago.js";
 import { Ionicons } from "@expo/vector-icons";
@@ -136,6 +138,20 @@ const ChatsScreen = ({ navigation }) => {
     }
   }, [replyMessage]);
 
+  const getBase64 = async (uri) => {
+    try {
+      const fileUri = uri; // Replace with your file URI
+      const base64 = await FileSystem.readAsStringAsync(fileUri, {
+        encoding: FileSystem.EncodingType.Base64,
+      });
+
+      return base64;
+    } catch (error) {
+      console.log(error);
+      return "";
+    }
+  };
+
   const pickImage = async () => {
     let result = await ImagePicker.launchCameraAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -170,6 +186,56 @@ const ChatsScreen = ({ navigation }) => {
     if (!result.canceled) {
       setImage(result.assets[0].uri);
       UploadImage(result.assets[0]);
+    }
+  };
+
+  const openPdf = async ({ pdfUri }) => {
+    try {
+      const supported = await Linking.canOpenURL(pdfUri);
+
+      if (!supported) {
+        console.log(`Can't handle url: ${pdfUri}`);
+      } else {
+        await Linking.openURL(pdfUri);
+      }
+    } catch (error) {
+      console.log(`An error occurred: ${error}`);
+    }
+  };
+
+  const pickDocument = async () => {
+    try {
+      let result = await DocumentPicker.getDocumentAsync({
+        type: "application/pdf",
+      });
+
+      if (result.type == "success") {
+        console.log(result);
+        const base64 = await getBase64(result.uri);
+
+        if (base64 !== "") {
+          let base64PDF = `data:application/pdf;base64,${base64}`;
+          let formdata = {
+            file: base64PDF,
+            upload_preset: "lylmg545",
+          };
+          const response = await axios.post(CloudURL, formdata);
+          console.log(response.data);
+          if (response.data.secure_url) {
+            console.log(response.data.secure_url);
+            // setImage(data.secure_url);
+            setVisible(false);
+            setUploading(true);
+            handleUpload({
+              uri: response.data.secure_url,
+              pdfName: result.name,
+            });
+            // alert("Upload successful");
+          }
+        }
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -236,12 +302,7 @@ const ChatsScreen = ({ navigation }) => {
         setUploading(false);
         return alert("something went wrong please try again !");
       } else {
-        socket.current.emit("message", {
-          senderId: res.data.senderId,
-          uri: res.data.uri,
-          name: res.data.name,
-          createdAt: res.data.createdAt,
-        });
+        socket.current.emit("message", res.data);
         setUploading(false);
       }
     }
@@ -296,7 +357,45 @@ const ChatsScreen = ({ navigation }) => {
           }}
         >
           {msg.uri ? (
-            <FullscreenImage imageSource={msg.uri} />
+            <>
+              {msg.uri.split(".").slice(-1)[0] == "pdf" ? (
+                <TouchableOpacity onPress={() => openPdf({ pdfUri: msg.uri })}>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                      backgroundColor: "#EFF5F5",
+                      padding: 4,
+                      borderRadius: 4,
+                    }}
+                  >
+                    <View>
+                      <Ionicons
+                        name="document-outline"
+                        size={25}
+                        color={"red"}
+                      />
+                      <Text
+                        style={{
+                          fontSize: 10,
+                          textTransform: "uppercase",
+                          alignSelf: "center",
+                        }}
+                      >
+                        {msg.uri.split(".").slice(-1)[0]}
+                      </Text>
+                    </View>
+                    <Text style={{ marginTop: 8, fontSize: 16 }}>
+                      {msg.pdfName?.length > 0
+                        ? msg.pdfName
+                        : msg.uri.split("/").pop()}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              ) : (
+                <FullscreenImage imageSource={msg.uri} />
+              )}
+            </>
           ) : (
             <Text
               style={{
@@ -371,7 +470,45 @@ const ChatsScreen = ({ navigation }) => {
           }}
         >
           {msg.uri ? (
-            <FullscreenImage imageSource={msg.uri} />
+            <>
+              {msg.uri.split(".").slice(-1)[0] == "pdf" ? (
+                <TouchableOpacity onPress={() => openPdf({ pdfUri: msg.uri })}>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                      backgroundColor: "#EFF5F5",
+                      padding: 4,
+                      borderRadius: 4,
+                    }}
+                  >
+                    <View>
+                      <Ionicons
+                        name="document-outline"
+                        size={25}
+                        color={"red"}
+                      />
+                      <Text
+                        style={{
+                          fontSize: 10,
+                          textTransform: "uppercase",
+                          alignSelf: "center",
+                        }}
+                      >
+                        {msg.uri.split(".").slice(-1)[0]}
+                      </Text>
+                    </View>
+                    <Text style={{ marginTop: 8, fontSize: 16 }}>
+                      {msg.pdfName?.length > 0
+                        ? msg.pdfName
+                        : msg.uri.split("/").pop()}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              ) : (
+                <FullscreenImage imageSource={msg.uri} />
+              )}
+            </>
           ) : (
             <Text style={[styles.messageText, { color: "black" }]}>
               {msg.text}
@@ -503,10 +640,45 @@ const ChatsScreen = ({ navigation }) => {
                   </TouchableOpacity>
                 </View>
                 {replyMessage.uri && (
-                  <Image
-                    source={{ uri: replyMessage.uri }}
-                    style={{ width: 40, height: 40 }}
-                  />
+                  <>
+                    {replyMessage.uri.split(".").slice(-1)[0] == "pdf" ? (
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          backgroundColor: "#EFF5F5",
+                          padding: 4,
+                          borderRadius: 4,
+                        }}
+                      >
+                        <View>
+                          <Ionicons
+                            name="document-outline"
+                            size={16}
+                            color={"red"}
+                          />
+                          <Text
+                            style={{
+                              fontSize: 10,
+                              textTransform: "uppercase",
+                              alignSelf: "center",
+                            }}
+                          >
+                            {replyMessage.uri.split(".").slice(-1)[0]}
+                          </Text>
+                        </View>
+                        <Text style={{ fontSize: 14 }}>
+                          {replyMessage.pdfName?.length > 0
+                            ? replyMessage.pdfName
+                            : replyMessage.uri.split("/").pop()}
+                        </Text>
+                      </View>
+                    ) : (
+                      <Image
+                        source={{ uri: replyMessage.uri }}
+                        style={{ width: 40, height: 40 }}
+                      />
+                    )}
+                  </>
                 )}
                 <Text style={{ fontSize: 12 }}>{replyMessage.text}</Text>
               </View>
@@ -569,6 +741,15 @@ const ChatsScreen = ({ navigation }) => {
               <Ionicons name="images-outline" color="#fff" size={20} />
             </View>
             <Text style={{ color: "black" }}>Gallery</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={pickDocument}
+            style={{ alignItems: "center" }}
+          >
+            <View style={styles.button}>
+              <Ionicons name="document-attach-outline" color="#fff" size={20} />
+            </View>
+            <Text style={{ color: "black" }}>Document</Text>
           </TouchableOpacity>
         </View>
       </BottomSheet>

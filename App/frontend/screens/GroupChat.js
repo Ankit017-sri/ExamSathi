@@ -9,7 +9,6 @@ import {
   Platform,
   TouchableWithoutFeedback,
   Keyboard,
-  Animated,
   Image,
 } from "react-native";
 import React, { useState, useEffect, useRef, useContext } from "react";
@@ -23,6 +22,9 @@ import FullscreenImage from "../components/ImageView";
 import { BottomSheet } from "react-native-btr";
 import * as ImagePicker from "expo-image-picker";
 import * as DocumentPicker from "expo-document-picker";
+import * as FileSystem from "expo-file-system";
+import * as Linking from "expo-linking";
+
 import baseUrl from "../baseUrl";
 import { io } from "socket.io-client";
 import cache from "../utilities/cache";
@@ -48,7 +50,6 @@ const GroupChat = ({ navigation, route }) => {
   const [uploading, setUploading] = useState(false);
   const [messageArray, setMessageArray] = useState([]);
   const [recieved, setRecieved] = useState();
-  const [pan] = useState(new Animated.ValueXY());
 
   const socket = useRef();
   const scrollRef = useRef();
@@ -96,6 +97,20 @@ const GroupChat = ({ navigation, route }) => {
     }
   }, [replyMessage]);
 
+  const getBase64 = async (uri) => {
+    try {
+      const fileUri = uri; // Replace with your file URI
+      const base64 = await FileSystem.readAsStringAsync(fileUri, {
+        encoding: FileSystem.EncodingType.Base64,
+      });
+
+      return base64;
+    } catch (error) {
+      console.log(error);
+      return "";
+    }
+  };
+
   const pickImage = async () => {
     let result = await ImagePicker.launchCameraAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -109,7 +124,7 @@ const GroupChat = ({ navigation, route }) => {
       return;
     }
     if (!result.canceled) {
-      setImage(result.assets[0].uri);
+      // setImage(result.assets[0].uri);
       UploadImage(result.assets[0]);
     }
   };
@@ -135,12 +150,38 @@ const GroupChat = ({ navigation, route }) => {
   };
 
   const pickDocument = async () => {
-    let result = await DocumentPicker.getDocumentAsync({
-      type: "application/pdf",
-    });
+    try {
+      let result = await DocumentPicker.getDocumentAsync({
+        type: "application/pdf",
+      });
 
-    if (!result.cancelled) {
-      console.log(result.uri);
+      if (result.type == "success") {
+        console.log(result);
+        const base64 = await getBase64(result.uri);
+
+        if (base64 !== "") {
+          let base64PDF = `data:application/pdf;base64,${base64}`;
+          let formdata = {
+            file: base64PDF,
+            upload_preset: "lylmg545",
+          };
+          const response = await axios.post(CloudURL, formdata);
+          console.log(response.data);
+          if (response.data.secure_url) {
+            console.log(response.data.secure_url);
+            // setImage(data.secure_url);
+            setVisible(false);
+            setUploading(true);
+            handleUpload({
+              uri: response.data.secure_url,
+              pdfName: result.name,
+            });
+            // alert("Upload successful");
+          }
+        }
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -169,7 +210,10 @@ const GroupChat = ({ navigation, route }) => {
           // alert("Upload successful");
         }
       })
-      .catch((err) => alert("something went wrong"));
+      .catch((err) => {
+        setUploading(false);
+        alert("something went wrong");
+      });
   };
 
   const handleUpload = async (data) => {
@@ -179,7 +223,7 @@ const GroupChat = ({ navigation, route }) => {
           headers: { Authorization: `Bearer ${token}` },
         })
         .catch((e) => console.log(e));
-
+      console.log(res.data);
       if (!res.data.uri) {
         setUploading(false);
         return alert("something went wrong please try again !");
@@ -213,6 +257,20 @@ const GroupChat = ({ navigation, route }) => {
     }
 
     // socket.current.disconnect();
+  };
+
+  const openPdf = async ({ pdfUri }) => {
+    try {
+      const supported = await Linking.canOpenURL(pdfUri);
+
+      if (!supported) {
+        console.log(`Can't handle url: ${pdfUri}`);
+      } else {
+        await Linking.openURL(pdfUri);
+      }
+    } catch (error) {
+      console.log(`An error occurred: ${error}`);
+    }
   };
 
   const MessageSent = ({ msg }) => {
@@ -264,8 +322,50 @@ const GroupChat = ({ navigation, route }) => {
           }}
         >
           {msg.uri ? (
-            <FullscreenImage imageSource={msg.uri} />
+            <>
+              {msg.uri.split(".").slice(-1)[0] == "pdf" ? (
+                <TouchableOpacity onPress={() => openPdf({ pdfUri: msg.uri })}>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                      backgroundColor: "#EFF5F5",
+                      padding: 4,
+                      borderRadius: 4,
+                    }}
+                  >
+                    <View>
+                      <Ionicons
+                        name="document-outline"
+                        size={25}
+                        color={"red"}
+                      />
+                      <Text
+                        style={{
+                          fontSize: 10,
+                          textTransform: "uppercase",
+                          alignSelf: "center",
+                        }}
+                      >
+                        {msg.uri.split(".").slice(-1)[0]}
+                      </Text>
+                    </View>
+                    <Text style={{ marginTop: 8, fontSize: 16 }}>
+                      {msg.pdfName?.length > 0
+                        ? msg.pdfName
+                        : msg.uri.split("/").pop()}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              ) : (
+                <FullscreenImage imageSource={msg.uri} />
+              )}
+            </>
           ) : (
+            // <TouchableOpacity onPress={() => openPdf({ pdfUri: msg.uri })}>
+            //   <PdfThumbnail pdfUri={msg.uri} />
+            // </TouchableOpacity>
+            // <FullscreenImage imageSource={msg.uri} />
             <Text
               style={{
                 color: "#fff",
@@ -339,7 +439,45 @@ const GroupChat = ({ navigation, route }) => {
           }}
         >
           {msg.uri ? (
-            <FullscreenImage imageSource={msg.uri} />
+            <>
+              {msg.uri.split(".").slice(-1)[0] == "pdf" ? (
+                <TouchableOpacity onPress={() => openPdf({ pdfUri: msg.uri })}>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                      backgroundColor: "#EFF5F5",
+                      padding: 4,
+                      borderRadius: 4,
+                    }}
+                  >
+                    <View>
+                      <Ionicons
+                        name="document-outline"
+                        size={25}
+                        color={"red"}
+                      />
+                      <Text
+                        style={{
+                          fontSize: 10,
+                          textTransform: "uppercase",
+                          alignSelf: "center",
+                        }}
+                      >
+                        {msg.uri.split(".").slice(-1)[0]}
+                      </Text>
+                    </View>
+                    <Text style={{ marginTop: 8, fontSize: 16 }}>
+                      {msg.pdfName?.length > 0
+                        ? msg.pdfName
+                        : msg.uri.split("/").pop()}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              ) : (
+                <FullscreenImage imageSource={msg.uri} />
+              )}
+            </>
           ) : (
             <Text style={[styles.messageText, { color: "black" }]}>
               {msg.text}
@@ -471,10 +609,45 @@ const GroupChat = ({ navigation, route }) => {
                   </TouchableOpacity>
                 </View>
                 {replyMessage.uri && (
-                  <Image
-                    source={{ uri: replyMessage.uri }}
-                    style={{ width: 40, height: 40 }}
-                  />
+                  <>
+                    {replyMessage.uri.split(".").slice(-1)[0] == "pdf" ? (
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          backgroundColor: "#EFF5F5",
+                          padding: 4,
+                          borderRadius: 4,
+                        }}
+                      >
+                        <View>
+                          <Ionicons
+                            name="document-outline"
+                            size={16}
+                            color={"red"}
+                          />
+                          <Text
+                            style={{
+                              fontSize: 10,
+                              textTransform: "uppercase",
+                              alignSelf: "center",
+                            }}
+                          >
+                            {replyMessage.uri.split(".").slice(-1)[0]}
+                          </Text>
+                        </View>
+                        <Text style={{ fontSize: 14 }}>
+                          {replyMessage.pdfName?.length > 0
+                            ? replyMessage.pdfName
+                            : replyMessage.uri.split("/").pop()}
+                        </Text>
+                      </View>
+                    ) : (
+                      <Image
+                        source={{ uri: replyMessage.uri }}
+                        style={{ width: 40, height: 40 }}
+                      />
+                    )}
+                  </>
                 )}
                 <Text style={{ fontSize: 12 }}>{replyMessage.text}</Text>
               </View>
@@ -542,7 +715,7 @@ const GroupChat = ({ navigation, route }) => {
             style={{ alignItems: "center" }}
           >
             <View style={styles.button}>
-              <Ionicons name="images-outline" color="#fff" size={20} />
+              <Ionicons name="document-attach-outline" color="#fff" size={20} />
             </View>
             <Text style={{ color: "black" }}>Document</Text>
           </TouchableOpacity>

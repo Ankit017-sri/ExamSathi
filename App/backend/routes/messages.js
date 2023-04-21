@@ -7,7 +7,7 @@ const { Message } = require("../models/message");
 const router = express.Router();
 
 router.post("/", auth, async (req, res) => {
-  const { text, uri, replyOn } = req.body;
+  const { text, uri, replyOn, pdfName } = req.body;
   console.log(req.body);
   if (uri) {
     console.log(uri);
@@ -17,6 +17,7 @@ router.post("/", auth, async (req, res) => {
       name: req.user.fullName,
       uri,
       replyOn,
+      pdfName: pdfName ? pdfName : "",
     });
     const result = await message.save();
     console.log(result);

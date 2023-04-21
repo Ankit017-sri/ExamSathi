@@ -215,7 +215,7 @@ router.delete("/:id", auth, async (req, res) => {
 router.post("/:id/messages", auth, async (req, res) => {
   try {
     const groupId = req.params.id;
-    const { text, uri, replyOn } = req.body;
+    const { text, uri, replyOn, pdfName } = req.body;
     console.log(req.body);
     // Find the group by ID
     const group = await Group.findById(groupId);
@@ -231,6 +231,7 @@ router.post("/:id/messages", auth, async (req, res) => {
         name: req.user.fullName,
         uri,
         replyOn,
+        pdfName: pdfName ? pdfName : "",
       });
       // Save the message to the database
       const result = await message.save();
