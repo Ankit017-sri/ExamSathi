@@ -2,7 +2,13 @@ import { Ionicons } from "@expo/vector-icons";
 import { useFocusEffect } from "@react-navigation/native";
 import { FlashList } from "@shopify/flash-list";
 import axios from "axios";
-import React, { useCallback, useContext, useEffect, useState } from "react";
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import {
   StyleSheet,
   Text,
@@ -12,6 +18,7 @@ import {
   Dimensions,
   BackHandler,
   Alert,
+  ScrollView,
 } from "react-native";
 
 import AuthContext from "../auth/context";
@@ -44,6 +51,19 @@ const RecentQuiz = ({ navigation }) => {
   const [dataPyq, setDataPyq] = useState([]);
   const [isPyqSubmitted, setIsPyqSubmitted] = useState(false);
   const [lastAttempted, setLastAttempted] = useState(-1);
+  const [viewAll, setViewAll] = useState(false);
+  const [title, setTitle] = useState("");
+  const SampleArr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+  const [allQuiz, setAllQuiz] = useState([]);
+
+  const [latest15All, setLatest15All] = useState([]);
+  const [latest15Feed, setLatest15Feed] = useState([]);
+  const [currentAffairsAll, setCurrentAffairsAll] = useState([]);
+  const [currentAffairsFeed, setCurrentAffairsFeed] = useState([]);
+  const [PYQAll, setPYQAll] = useState([]);
+  const [PYQFeed, setPYQFeed] = useState([]);
+  const [latest100All, setLatest100All] = useState([]);
+  const [latest100Feed, setLatest100Feed] = useState([]);
 
   const handleNext = () => {
     setPage(page + 1);
@@ -53,113 +73,207 @@ const RecentQuiz = ({ navigation }) => {
   };
 
   const { token, setTabBarVisible } = useContext(AuthContext);
+  const scrollRef = useRef();
 
-  const getPyq = async () => {
+  // const getPyq = async () => {
+  //   setLoading(true);
+  //   const resultPyq = await axios.get(
+  //     `${baseUrl}/quizData/pyq`,
+
+  //     {
+  //       headers: { Authorization: `Bearer ${token}` },
+  //     }
+  //   );
+  //   setIsPyqSubmitted(false);
+  //   if (resultPyq.data.length === 0) {
+  //     setIsPyqSubmitted(true);
+  //     setLoading(false);
+  //   }
+  //   setDataPyq(...resultPyq.data);
+  //   if (resultPyq.data.length !== 0) {
+  //     setLoading(false);
+  //     setQuizData(...resultPyq.data);
+  //     setLastPage(resultPyq.data[0].quizDetails.length / 2);
+  //     var arr = Array(resultPyq.data[0].quizDetails.length).fill(-1);
+  //     setSelected(arr);
+  //     setTabBarVisible(false);
+  //     setQuizStarted(true);
+  //   }
+  //   setLoading(false);
+  // };
+
+  // const getData15 = async () => {
+  //   setLoading(true);
+  //   const result15 = await axios.get(
+  //     `${baseUrl}/quizData/latest`,
+
+  //     {
+  //       headers: { Authorization: `Bearer ${token}` },
+  //     }
+  //   );
+  //   setIs15Submitted(false);
+  //   if (result15.data.length === 0) {
+  //     setIs15Submitted(true);
+  //     setLoading(false);
+  //   }
+  //   setData15(...result15.data);
+  //   if (result15.data.length !== 0) {
+  //     setLoading(false);
+  //     setLastAttempted(2);
+  //     setQuizData(...result15.data);
+  //     setLastPage(result15.data[0].quizDetails.length / 2);
+  //     var arr = Array(result15.data[0].quizDetails.length).fill(-1);
+  //     setSelected(arr);
+  //     setTabBarVisible(false);
+  //     setQuizStarted(true);
+  //   }
+  //   setLoading(false);
+  // };
+
+  const getData15All = async () => {
     setLoading(true);
-    const resultPyq = await axios.get(
-      `${baseUrl}/quizData/pyq`,
+    const result15All = await axios.get(
+      `${baseUrl}/quizData/latest/all`,
 
       {
         headers: { Authorization: `Bearer ${token}` },
       }
     );
-    setIsPyqSubmitted(false);
-    if (resultPyq.data.length === 0) {
-      setIsPyqSubmitted(true);
+    if (result15All.data) {
+      console.log(result15All.data.length);
+      setLatest15All(result15All.data);
+      setLatest15Feed(result15All.data.slice(0, 10));
+      setLoading(false);
+    } else {
       setLoading(false);
     }
-    setDataPyq(...resultPyq.data);
-    if (resultPyq.data.length !== 0) {
-      setLoading(false);
-      setQuizData(...resultPyq.data);
-      setLastPage(resultPyq.data[0].quizDetails.length / 2);
-      var arr = Array(resultPyq.data[0].quizDetails.length).fill(-1);
-      setSelected(arr);
-      setTabBarVisible(false);
-      setQuizStarted(true);
-    }
-    setLoading(false);
   };
 
-  const getData15 = async () => {
+  const getData100All = async () => {
     setLoading(true);
-    const result15 = await axios.get(
-      `${baseUrl}/quizData/latest`,
+    const result100All = await axios.get(
+      `${baseUrl}/quizData/latest/long/all`,
 
       {
         headers: { Authorization: `Bearer ${token}` },
       }
     );
-    setIs15Submitted(false);
-    if (result15.data.length === 0) {
-      setIs15Submitted(true);
+    if (result100All.data) {
+      console.log(result100All.data.length);
+      setLatest100All(result100All.data);
+      setLatest100Feed(result100All.data.slice(0, 10));
+      setLoading(false);
+    } else {
       setLoading(false);
     }
-    setData15(...result15.data);
-    if (result15.data.length !== 0) {
-      setLoading(false);
-      setLastAttempted(2);
-      setQuizData(...result15.data);
-      setLastPage(result15.data[0].quizDetails.length / 2);
-      var arr = Array(result15.data[0].quizDetails.length).fill(-1);
-      setSelected(arr);
-      setTabBarVisible(false);
-      setQuizStarted(true);
-    }
-    setLoading(false);
   };
-
-  const getData100 = async () => {
+  const getDataCurrAfAll = async () => {
     setLoading(true);
-    const result100 = await axios.get(
-      `${baseUrl}/quizData/latest/long`,
+    const resultCurrAfAll = await axios.get(
+      `${baseUrl}/quizData/latest/current-affairs/all`,
 
       {
         headers: { Authorization: `Bearer ${token}` },
       }
     );
-    if (result100.data.length === 0) {
-      setIs100Submitted(true);
+    if (resultCurrAfAll.data) {
+      console.log(resultCurrAfAll.data.length);
+      setCurrentAffairsAll(resultCurrAfAll.data);
+      setCurrentAffairsFeed(resultCurrAfAll.data.slice(0, 10));
+      setLoading(false);
+    } else {
       setLoading(false);
     }
-    setData100(...result100.data);
-    if (result100.data.length !== 0) {
-      setLoading(false);
-      setQuizData(...result100.data);
-      setLastPage(result100.data[0].quizDetails.length / 2);
-      var arr = Array(result100.data[0].quizDetails.length).fill(-1);
-      setSelected(arr);
-      setTabBarVisible(false);
-      setQuizStarted(true);
-    }
-    setLoading(false);
   };
-
-  const getDataCurr = async () => {
+  const getDataPyqAll = async () => {
     setLoading(true);
-    const resultcurrAffairs = await axios.get(
-      `${baseUrl}/quizData/latest/current-affairs`,
+    const resultPyqAll = await axios.get(
+      `${baseUrl}/quizData//pyq/all`,
 
       {
         headers: { Authorization: `Bearer ${token}` },
       }
     );
-    if (resultcurrAffairs.data.length === 0) {
-      setIsCurrAffairSubmitted(true);
+    if (resultPyqAll.data) {
+      console.log(resultPyqAll.data.length);
+      setPYQAll(resultPyqAll.data);
+      setPYQFeed(resultPyqAll.data.slice(0, 10));
+      setLoading(false);
+    } else {
       setLoading(false);
     }
-    setDataCurrAffair(...resultcurrAffairs.data);
-    if (resultcurrAffairs.data.length !== 0) {
-      setLoading(false);
-      setQuizData(...resultcurrAffairs.data);
-      setLastPage(resultcurrAffairs.data[0].quizDetails.length / 2);
-      var arr = Array(resultcurrAffairs.data[0].quizDetails.length).fill(-1);
-      setSelected(arr);
-      setTabBarVisible(false);
-      setQuizStarted(true);
-    }
-    setLoading(false);
   };
+
+  const startQuiz = async (quizId) => {
+    setLoading(true);
+    const quizDetails = await axios.get(
+      `${baseUrl}/quizData/quiz/${quizId}`,
+
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+    console.log(quizDetails.data);
+    setLoading(false);
+    setQuizData(quizDetails.data);
+    setLastPage(quizDetails.data.quizDetails.length / 2);
+    var arr = Array(quizDetails.data.quizDetails.length).fill(-1);
+    setSelected(arr);
+    setTabBarVisible(false);
+    setQuizStarted(true);
+  };
+
+  // const getData100 = async () => {
+  //   setLoading(true);
+  //   const result100 = await axios.get(
+  //     `${baseUrl}/quizData/latest/long`,
+
+  //     {
+  //       headers: { Authorization: `Bearer ${token}` },
+  //     }
+  //   );
+  //   if (result100.data.length === 0) {
+  //     setIs100Submitted(true);
+  //     setLoading(false);
+  //   }
+  //   setData100(...result100.data);
+  //   if (result100.data.length !== 0) {
+  //     setLoading(false);
+  //     setQuizData(...result100.data);
+  //     setLastPage(result100.data[0].quizDetails.length / 2);
+  //     var arr = Array(result100.data[0].quizDetails.length).fill(-1);
+  //     setSelected(arr);
+  //     setTabBarVisible(false);
+  //     setQuizStarted(true);
+  //   }
+  //   setLoading(false);
+  // };
+
+  // const getDataCurr = async () => {
+  //   setLoading(true);
+  //   const resultcurrAffairs = await axios.get(
+  //     `${baseUrl}/quizData/latest/current-affairs`,
+
+  //     {
+  //       headers: { Authorization: `Bearer ${token}` },
+  //     }
+  //   );
+  //   if (resultcurrAffairs.data.length === 0) {
+  //     setIsCurrAffairSubmitted(true);
+  //     setLoading(false);
+  //   }
+  //   setDataCurrAffair(...resultcurrAffairs.data);
+  //   if (resultcurrAffairs.data.length !== 0) {
+  //     setLoading(false);
+  //     setQuizData(...resultcurrAffairs.data);
+  //     setLastPage(resultcurrAffairs.data[0].quizDetails.length / 2);
+  //     var arr = Array(resultcurrAffairs.data[0].quizDetails.length).fill(-1);
+  //     setSelected(arr);
+  //     setTabBarVisible(false);
+  //     setQuizStarted(true);
+  //   }
+  //   setLoading(false);
+  // };
 
   const onSelect = (index, crctOption) => {
     if (response.length === 0) {
@@ -202,6 +316,35 @@ const RecentQuiz = ({ navigation }) => {
         // setIs15Submitted(true);
         setResponse([]);
         setPage(0);
+        let newAll;
+        switch (title) {
+          case "नवीन मागील वर्षाची टेस्ट!":
+            newAll = PYQAll.filter((data) => data._id !== quizData._id);
+            setPYQAll(newAll);
+            setPYQFeed(newAll.slice(0, 10));
+            break;
+          case "नवीन १५ मार्क्स टेस्ट!":
+            newAll = latest15All.filter((data) => data._id !== quizData._id);
+            setLatest15All(newAll);
+            setLatest15Feed(newAll.slice(0, 10));
+            break;
+          case "नवीन १०० मार्क्स टेस्ट!":
+            newAll = latest100All.filter((data) => data._id !== quizData._id);
+            setLatest100All(newAll);
+            setLatest100Feed(newAll.slice(0, 10));
+
+            break;
+          case "Latest चालू घडामोडी टेस्ट!":
+            newAll = currentAffairsAll.filter(
+              (data) => data._id !== quizData._id
+            );
+            setCurrentAffairsAll(newAll);
+            setCurrentAffairsFeed(newAll.slice(0, 10));
+            break;
+          default:
+            break;
+        }
+
         navigation.navigate("QuizDetailScreen", { quiz: quizData });
       })
       .catch((e) => {
@@ -240,6 +383,12 @@ const RecentQuiz = ({ navigation }) => {
       }
     }, 1000);
   };
+  useEffect(() => {
+    getDataPyqAll();
+    getData15All();
+    getData100All();
+    getDataCurrAfAll();
+  }, []);
 
   useEffect(() => {
     if (quizStarted) startTimer();
@@ -280,7 +429,176 @@ const RecentQuiz = ({ navigation }) => {
   const TriangleCorner = () => {
     return <View style={[styles.triangleCorner]} />;
   };
+  const Card = ({ item, title }) => {
+    return (
+      <View style={{ flexDirection: "row", marginLeft: 10, marginVertical: 4 }}>
+        <View
+          style={{
+            ...styles.card,
+            // width: "45%",
+            width: viewAll ? 180 : 210,
+            alignItems: "center",
+          }}
+        >
+          <>
+            {/* {!viewAll && (
+              <>
+                <TriangleCorner />
+                <Text
+                  style={{
+                    textAlign: "left",
+                    fontSize: 18,
+                    fontWeight: "bold",
+                    color: "#990011FF",
+                    position: "absolute",
+                    width: 120,
+                    top: 6,
+                    left: 4,
+                    zIndex: 30,
+                  }}
+                >
+                  New
+                </Text>
+              </>
+            )} */}
+            <Text
+              style={{
+                textAlign: "center",
+                fontSize: 18,
+                fontWeight: "bold",
+                color: Colors.text,
+                marginBottom: 20,
+                marginTop: 10,
+                // transform: [{ rotateZ: "45deg" }]
+              }}
+            >
+              {/* नवीन मागील वर्षाची टेस्ट! */}
+              {item.quizTitle}
+            </Text>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                marginBottom: 10,
+              }}
+            >
+              <Text>Time: {item.maxMarks == 100 ? 90 : item.maxMarks} min</Text>
+              <Text style={{ marginLeft: 16 }}>Marks: {item.maxMarks}</Text>
+            </View>
+            <TouchableOpacity
+              style={{ ...styles.button, width: "100%" }}
+              activeOpacity={0.6}
+              onPress={() => {
+                setTitle(title);
+                startQuiz(item._id);
+              }}
+            >
+              <Text style={{ color: "#fff", fontSize: 16 }}>Start Test</Text>
+            </TouchableOpacity>
+          </>
+        </View>
+      </View>
+    );
+  };
 
+  const TestLists = ({ data, title }) => {
+    return (
+      <View
+        style={{
+          padding: 6,
+        }}
+      >
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            marginHorizontal: 10,
+          }}
+        >
+          <Text style={styles.title}>{title}</Text>
+          <TouchableOpacity
+            onPress={() => {
+              switch (title) {
+                case "नवीन मागील वर्षाची टेस्ट!":
+                  setAllQuiz(PYQAll);
+                  break;
+                case "नवीन १५ मार्क्स टेस्ट!":
+                  setAllQuiz(latest15All);
+                  break;
+                case "नवीन १०० मार्क्स टेस्ट!":
+                  setAllQuiz(latest100All);
+                  break;
+                case "Latest चालू घडामोडी टेस्ट!":
+                  setAllQuiz(currentAffairsAll);
+                  break;
+                default:
+                  break;
+              }
+              setTitle(title);
+              scrollRef.current.scrollTo({ y: 0, animated: false });
+              setViewAll(true);
+            }}
+          >
+            <Text>View All</Text>
+          </TouchableOpacity>
+        </View>
+        {data && (
+          <FlatList
+            renderItem={({ item }) => <Card item={item} title={title} />}
+            data={data}
+            keyExtractor={(item) => item._id}
+            horizontal
+          />
+        )}
+        {data.length == 0 && (
+          <View
+            style={{
+              flexDirection: "row",
+              marginBottom: 20,
+              justifyContent: "center",
+            }}
+          >
+            <View
+              style={{
+                ...styles.card,
+                width: "80%",
+                alignItems: "center",
+                // marginRight: 15,
+                // marginTop: -10,
+              }}
+            >
+              <Text
+                style={{
+                  textAlign: "center",
+                  fontSize: 18,
+                  fontWeight: "bold",
+                  color: Colors.text,
+                }}
+              >
+                {title}
+              </Text>
+
+              <Ionicons
+                name="checkmark-circle-outline"
+                size={50}
+                color={"#26b1bf"}
+              />
+              <Text
+                style={{
+                  textAlign: "center",
+                  fontSize: 20,
+                  fontWeight: "bold",
+                  color: Colors.text,
+                }}
+              >
+                All Submitted
+              </Text>
+            </View>
+          </View>
+        )}
+      </View>
+    );
+  };
   return (
     <View style={styles.container}>
       <CustomHeader title="New Quiz" />
@@ -467,280 +785,392 @@ const RecentQuiz = ({ navigation }) => {
           </View>
         </View>
       ) : (
-        <View style={styles.cardContainer}>
-          {/* previous year test card  */}
-          {isPyqSubmitted ? (
-            <View style={{ flexDirection: "row", marginBottom: 20 }}>
-              <View
-                style={{
-                  ...styles.card,
-                  width: "45%",
-                  alignItems: "center",
-                  // marginRight: 15,
-                  marginTop: -10,
-                }}
-              >
-                <Text
-                  style={{
-                    textAlign: "center",
-                    fontSize: 18,
-                    fontWeight: "bold",
-                    color: Colors.text,
-                  }}
-                >
-                  नवीन मागील वर्षाची टेस्ट!
-                </Text>
-
-                <Ionicons
-                  name="checkmark-circle-outline"
-                  size={50}
-                  color={"#26b1bf"}
-                />
-                <Text
-                  style={{
-                    textAlign: "center",
-                    fontSize: 20,
-                    fontWeight: "bold",
-                    color: Colors.text,
-                  }}
-                >
-                  All Submitted
-                </Text>
-              </View>
-            </View>
-          ) : (
-            <View style={{ flexDirection: "row", marginBottom: 20 }}>
-              <View
-                style={{
-                  ...styles.card,
-                  width: "45%",
-                  alignItems: "center",
-                  marginRight: 15,
-                }}
-              >
-                <>
-                  <TriangleCorner />
-                  <Text
-                    style={{
-                      textAlign: "left",
-                      fontSize: 18,
-                      fontWeight: "bold",
-                      color: "#990011FF",
-                      position: "absolute",
-                      width: 120,
-                      top: 6,
-                      left: 4,
-                      zIndex: 30,
-                    }}
-                  >
-                    New
-                  </Text>
-                  <Text
-                    style={{
-                      textAlign: "center",
-                      fontSize: 18,
-                      fontWeight: "bold",
-                      color: Colors.text,
-                      marginBottom: 20,
-                      marginTop: 20,
-                      // transform: [{ rotateZ: "45deg" }]
-                    }}
-                  >
-                    नवीन मागील वर्षाची टेस्ट!
-                  </Text>
-                  <TouchableOpacity
-                    style={{ ...styles.button, width: "100%" }}
-                    activeOpacity={0.6}
-                    onPress={() => {
-                      getPyq();
-                    }}
-                  >
-                    <Text style={{ color: "#fff", fontSize: 16 }}>
-                      Start Now
-                    </Text>
-                  </TouchableOpacity>
-                </>
-              </View>
-            </View>
-          )}
-          {/* ----------------------------------------- */}
-          <View style={{ flexDirection: "row", marginBottom: 20 }}>
+        <View style={{ flex: 0.9 }}>
+          {viewAll && (
             <View
               style={{
-                ...styles.card,
-                width: "45%",
-                alignItems: "center",
-                marginRight: 15,
+                flexDirection: "row",
+                // justifyContent: "space-between",
+                paddingVertical: 4,
+                paddingHorizontal: 6,
               }}
             >
-              {is100Submitted ? (
-                <>
-                  <Text
-                    style={{
-                      textAlign: "center",
-                      fontSize: 18,
-                      fontWeight: "bold",
-                      color: Colors.text,
-                    }}
-                  >
-                    नवीन १०० मार्क्स टेस्ट!
-                  </Text>
-                  <Ionicons
-                    name="checkmark-circle-outline"
-                    size={50}
-                    color={"#26b1bf"}
-                  />
-                  <Text
-                    style={{
-                      textAlign: "center",
-                      fontSize: 20,
-                      fontWeight: "bold",
-                      color: Colors.text,
-                    }}
-                  >
-                    All Submitted
-                  </Text>
-                </>
-              ) : (
-                <>
-                  <Text
-                    style={{
-                      textAlign: "center",
-                      fontSize: 18,
-                      fontWeight: "bold",
-                      color: Colors.text,
-                      marginBottom: 20,
-                    }}
-                  >
-                    नवीन १०० मार्क्स टेस्ट!
-                  </Text>
-                  <TouchableOpacity
-                    style={{ ...styles.button, width: "100%" }}
-                    activeOpacity={0.6}
-                    onPress={() => {
-                      getData100();
-                    }}
-                  >
-                    <Text style={{ color: "#fff", fontSize: 16 }}>
-                      Start Now
-                    </Text>
-                  </TouchableOpacity>
-                </>
-              )}
+              <TouchableOpacity
+                onPress={() => {
+                  setViewAll(false);
+                  scrollRef.current.scrollTo({ y: 0, animated: false });
+                }}
+              >
+                <Ionicons name="arrow-back" size={25} />
+              </TouchableOpacity>
+              <Text style={[styles.title, { marginLeft: 20 }]}>
+                {title} Tests
+              </Text>
             </View>
-            <View
-              style={{ ...styles.card, width: "45%", alignItems: "center" }}
-            >
-              {isCurrAffairSubmitted ? (
-                <>
-                  <Text
+          )}
+          <ScrollView style={{ paddingTop: 8 }} ref={scrollRef}>
+            {viewAll ? (
+              <View
+                style={{
+                  flex: 1,
+                  flexDirection: "row",
+                  flexWrap: "wrap",
+                  alignItems: "flex-start",
+                }}
+              >
+                {allQuiz.map((item, index) => {
+                  return <Card item={item} key={index} />;
+                })}
+                {allQuiz.length == 0 && (
+                  <View
                     style={{
-                      textAlign: "center",
-                      fontSize: 18,
-                      fontWeight: "bold",
-                      color: Colors.text,
-                    }}
-                  >
-                    Latest चालू घडामोडी टेस्ट!
-                  </Text>
-                  <Ionicons
-                    name="checkmark-circle-outline"
-                    size={50}
-                    color={"#26b1bf"}
-                  />
-                  <Text
-                    style={{
-                      textAlign: "center",
-                      fontSize: 20,
-                      fontWeight: "bold",
-                      color: Colors.text,
-                    }}
-                  >
-                    All Submitted
-                  </Text>
-                </>
-              ) : (
-                <>
-                  <Text
-                    style={{
-                      textAlign: "center",
-                      fontSize: 18,
-                      fontWeight: "bold",
-                      color: Colors.text,
+                      flexDirection: "row",
                       marginBottom: 20,
+                      justifyContent: "center",
                     }}
                   >
-                    Latest चालू घडामोडी टेस्ट!
-                  </Text>
-                  <TouchableOpacity
-                    style={{ ...styles.button, width: "100%" }}
-                    activeOpacity={0.6}
-                    onPress={() => {
-                      getDataCurr();
-                    }}
-                  >
-                    <Text style={{ color: "#fff", fontSize: 16 }}>
-                      Start Now
-                    </Text>
-                  </TouchableOpacity>
-                </>
-              )}
-            </View>
-          </View>
-          <View style={{ ...styles.card, width: "45%", alignItems: "center" }}>
-            {is15Submitted ? (
-              <>
-                <Text
-                  style={{
-                    textAlign: "center",
-                    fontSize: 18,
-                    fontWeight: "bold",
-                    color: Colors.text,
-                  }}
-                >
-                  नवीन १५ मार्क्स टेस्ट!
-                </Text>
-                <Ionicons
-                  name="checkmark-circle-outline"
-                  size={50}
-                  color={"#26b1bf"}
-                />
-                <Text
-                  style={{
-                    textAlign: "center",
-                    fontSize: 20,
-                    fontWeight: "bold",
-                    color: Colors.text,
-                  }}
-                >
-                  All Submitted
-                </Text>
-              </>
+                    <View
+                      style={{
+                        ...styles.card,
+                        width: "90%",
+                        alignItems: "center",
+                        // marginRight: 15,
+                        marginHorizontal: 20,
+                        // marginTop: -10,
+                      }}
+                    >
+                      <Text
+                        style={{
+                          textAlign: "center",
+                          fontSize: 18,
+                          fontWeight: "bold",
+                          color: Colors.text,
+                        }}
+                      >
+                        नवीन मागील वर्षाची टेस्ट!
+                      </Text>
+
+                      <Ionicons
+                        name="checkmark-circle-outline"
+                        size={50}
+                        color={"#26b1bf"}
+                      />
+                      <Text
+                        style={{
+                          textAlign: "center",
+                          fontSize: 20,
+                          fontWeight: "bold",
+                          color: Colors.text,
+                        }}
+                      >
+                        All Submitted
+                      </Text>
+                    </View>
+                  </View>
+                )}
+              </View>
             ) : (
               <>
-                <Text
-                  style={{
-                    textAlign: "center",
-                    fontSize: 18,
-                    fontWeight: "bold",
-                    color: Colors.text,
-                    marginBottom: 20,
-                  }}
-                >
-                  नवीन १५ मार्क्स टेस्ट!
-                </Text>
-                <TouchableOpacity
-                  style={{ ...styles.button, width: "100%" }}
-                  activeOpacity={0.6}
-                  onPress={() => {
-                    getData15();
-                  }}
-                >
-                  <Text style={{ color: "#fff", fontSize: 16 }}>Start Now</Text>
-                </TouchableOpacity>
+                <TestLists data={PYQFeed} title={"नवीन मागील वर्षाची टेस्ट!"} />
+                <TestLists
+                  data={latest15Feed}
+                  title={"नवीन १५ मार्क्स टेस्ट!"}
+                />
+                <TestLists
+                  data={latest100Feed}
+                  title={"नवीन १०० मार्क्स टेस्ट!"}
+                />
+                <TestLists
+                  data={currentAffairsFeed}
+                  title={"Latest चालू घडामोडी टेस्ट!"}
+                />
               </>
             )}
-          </View>
+
+            {/* <View style={styles.cardContainer}> */}
+            {/* previous year test card  */}
+            {/* {isPyqSubmitted ? (
+                <View style={{ flexDirection: "row", marginBottom: 20 }}>
+                  <View
+                    style={{
+                      ...styles.card,
+                      width: "45%",
+                      alignItems: "center",
+                      // marginRight: 15,
+                      marginTop: -10,
+                    }}
+                  >
+                    <Text
+                      style={{
+                        textAlign: "center",
+                        fontSize: 18,
+                        fontWeight: "bold",
+                        color: Colors.text,
+                      }}
+                    >
+                      नवीन मागील वर्षाची टेस्ट!
+                    </Text>
+
+                    <Ionicons
+                      name="checkmark-circle-outline"
+                      size={50}
+                      color={"#26b1bf"}
+                    />
+                    <Text
+                      style={{
+                        textAlign: "center",
+                        fontSize: 20,
+                        fontWeight: "bold",
+                        color: Colors.text,
+                      }}
+                    >
+                      All Submitted
+                    </Text>
+                  </View>
+                </View>
+              ) : (
+                <View style={{ flexDirection: "row", marginBottom: 20 }}>
+                  <View
+                    style={{
+                      ...styles.card,
+                      width: "45%",
+                      alignItems: "center",
+                      marginRight: 15,
+                    }}
+                  >
+                    <>
+                      <TriangleCorner />
+                      <Text
+                        style={{
+                          textAlign: "left",
+                          fontSize: 18,
+                          fontWeight: "bold",
+                          color: "#990011FF",
+                          position: "absolute",
+                          width: 120,
+                          top: 6,
+                          left: 4,
+                          zIndex: 30,
+                        }}
+                      >
+                        New
+                      </Text>
+                      <Text
+                        style={{
+                          textAlign: "center",
+                          fontSize: 18,
+                          fontWeight: "bold",
+                          color: Colors.text,
+                          marginBottom: 20,
+                          marginTop: 20,
+                          // transform: [{ rotateZ: "45deg" }]
+                        }}
+                      >
+                        नवीन मागील वर्षाची टेस्ट!
+                      </Text>
+                      <TouchableOpacity
+                        style={{ ...styles.button, width: "100%" }}
+                        activeOpacity={0.6}
+                        onPress={() => {
+                          getPyq();
+                        }}
+                      >
+                        <Text style={{ color: "#fff", fontSize: 16 }}>
+                          Start Now
+                        </Text>
+                      </TouchableOpacity>
+                    </>
+                  </View>
+                </View>
+              )} */}
+            {/* ----------------------------------------- */}
+            {/* <View style={{ flexDirection: "row", marginBottom: 20 }}> */}
+            {/* <View
+                  style={{
+                    ...styles.card,
+                    width: "45%",
+                    alignItems: "center",
+                    marginRight: 15,
+                  }}
+                >
+                  {is100Submitted ? (
+                    <>
+                      <Text
+                        style={{
+                          textAlign: "center",
+                          fontSize: 18,
+                          fontWeight: "bold",
+                          color: Colors.text,
+                        }}
+                      >
+                        नवीन १०० मार्क्स टेस्ट!
+                      </Text>
+                      <Ionicons
+                        name="checkmark-circle-outline"
+                        size={50}
+                        color={"#26b1bf"}
+                      />
+                      <Text
+                        style={{
+                          textAlign: "center",
+                          fontSize: 20,
+                          fontWeight: "bold",
+                          color: Colors.text,
+                        }}
+                      >
+                        All Submitted
+                      </Text>
+                    </>
+                  ) : (
+                    <>
+                      <Text
+                        style={{
+                          textAlign: "center",
+                          fontSize: 18,
+                          fontWeight: "bold",
+                          color: Colors.text,
+                          marginBottom: 20,
+                        }}
+                      >
+                        नवीन १०० मार्क्स टेस्ट!
+                      </Text>
+                      <TouchableOpacity
+                        style={{ ...styles.button, width: "100%" }}
+                        activeOpacity={0.6}
+                        onPress={() => {
+                          getData100();
+                        }}
+                      >
+                        <Text style={{ color: "#fff", fontSize: 16 }}>
+                          Start Now
+                        </Text>
+                      </TouchableOpacity>
+                    </>
+                  )}
+                </View> */}
+            {/* <View
+                  style={{
+                    ...styles.card,
+                    width: "45%",
+                    alignItems: "center",
+                  }}
+                >
+                  {isCurrAffairSubmitted ? (
+                    <>
+                      <Text
+                        style={{
+                          textAlign: "center",
+                          fontSize: 18,
+                          fontWeight: "bold",
+                          color: Colors.text,
+                        }}
+                      >
+                        Latest चालू घडामोडी टेस्ट!
+                      </Text>
+                      <Ionicons
+                        name="checkmark-circle-outline"
+                        size={50}
+                        color={"#26b1bf"}
+                      />
+                      <Text
+                        style={{
+                          textAlign: "center",
+                          fontSize: 20,
+                          fontWeight: "bold",
+                          color: Colors.text,
+                        }}
+                      >
+                        All Submitted
+                      </Text>
+                    </>
+                  ) : (
+                    <>
+                      <Text
+                        style={{
+                          textAlign: "center",
+                          fontSize: 18,
+                          fontWeight: "bold",
+                          color: Colors.text,
+                          marginBottom: 20,
+                        }}
+                      >
+                        Latest चालू घडामोडी टेस्ट!
+                      </Text>
+                      <TouchableOpacity
+                        style={{ ...styles.button, width: "100%" }}
+                        activeOpacity={0.6}
+                        onPress={() => {
+                          getDataCurr();
+                        }}
+                      >
+                        <Text style={{ color: "#fff", fontSize: 16 }}>
+                          Start Now
+                        </Text>
+                      </TouchableOpacity>
+                    </>
+                  )}
+                </View>
+              </View> */}
+            {/* <View
+                style={{ ...styles.card, width: "45%", alignItems: "center" }}
+              >
+                {is15Submitted ? (
+                  <>
+                    <Text
+                      style={{
+                        textAlign: "center",
+                        fontSize: 18,
+                        fontWeight: "bold",
+                        color: Colors.text,
+                      }}
+                    >
+                      नवीन १५ मार्क्स टेस्ट!
+                    </Text>
+                    <Ionicons
+                      name="checkmark-circle-outline"
+                      size={50}
+                      color={"#26b1bf"}
+                    />
+                    <Text
+                      style={{
+                        textAlign: "center",
+                        fontSize: 20,
+                        fontWeight: "bold",
+                        color: Colors.text,
+                      }}
+                    >
+                      All Submitted
+                    </Text>
+                  </>
+                ) : (
+                  <>
+                    <Text
+                      style={{
+                        textAlign: "center",
+                        fontSize: 18,
+                        fontWeight: "bold",
+                        color: Colors.text,
+                        marginBottom: 20,
+                      }}
+                    >
+                      नवीन १५ मार्क्स टेस्ट!
+                    </Text>
+                    <TouchableOpacity
+                      style={{ ...styles.button, width: "100%" }}
+                      activeOpacity={0.6}
+                      onPress={() => {
+                        getData15();
+                      }}
+                    >
+                      <Text style={{ color: "#fff", fontSize: 16 }}>
+                        Start Now
+                      </Text>
+                    </TouchableOpacity>
+                  </>
+                )}
+              </View> */}
+            {/* </View> */}
+          </ScrollView>
         </View>
       )}
     </View>
@@ -753,9 +1183,11 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
   },
   cardContainer: {
-    flex: 1,
+    // flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    paddingVertical: 20,
+    marginBottom: 20,
   },
   button: {
     height: 35,
@@ -831,6 +1263,14 @@ const styles = StyleSheet.create({
     zIndex: 20,
     position: "absolute",
     left: 0,
+  },
+  title: {
+    fontSize: 18,
+    fontWeight: "500",
+    marginBottom: 4,
+  },
+  listContainer: {
+    elevation: 10,
   },
 });
 

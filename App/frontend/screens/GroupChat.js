@@ -164,6 +164,7 @@ const GroupChat = ({ navigation, route }) => {
           let formdata = {
             file: base64PDF,
             upload_preset: "lylmg545",
+            // upload_preset: "i4o0qcxt",
           };
           const response = await axios.post(CloudURL, formdata);
           console.log(response.data);
@@ -193,6 +194,7 @@ const GroupChat = ({ navigation, route }) => {
     let formdata = {
       file: base64Img,
       upload_preset: "lylmg545",
+      // upload_preset: "i4o0qcxt",
     };
     fetch(CloudURL, {
       body: JSON.stringify(formdata),
@@ -302,7 +304,47 @@ const GroupChat = ({ navigation, route }) => {
                 </Text>
               </View>
               {msg.replyOn.uri ? (
-                <FullscreenImage imageSource={msg.replyOn.uri} />
+                <>
+                  {msg.replyOn.uri.split(".").slice(-1)[0] == "pdf" ? (
+                    <TouchableOpacity
+                      onPress={() => openPdf({ pdfUri: msg.replyOn.uri })}
+                    >
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          justifyContent: "space-between",
+                          backgroundColor: "#EFF5F5",
+                          padding: 4,
+                          borderRadius: 4,
+                        }}
+                      >
+                        <View>
+                          <Ionicons
+                            name="document-outline"
+                            size={25}
+                            color={"red"}
+                          />
+                          <Text
+                            style={{
+                              fontSize: 10,
+                              textTransform: "uppercase",
+                              alignSelf: "center",
+                            }}
+                          >
+                            {msg.replyOn.uri.split(".").slice(-1)[0]}
+                          </Text>
+                        </View>
+                        <Text style={{ marginTop: 8, fontSize: 16 }}>
+                          {msg.replyOn.pdfName?.length > 0
+                            ? msg.replyOn.pdfName
+                            : msg.replyOn.uri.split("/").pop()}
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
+                  ) : (
+                    <FullscreenImage imageSource={msg.replyOn.uri} />
+                  )}
+                </>
               ) : (
                 <Text style={{ fontSize: 16 }}>{msg.replyOn.text}</Text>
               )}
@@ -422,7 +464,47 @@ const GroupChat = ({ navigation, route }) => {
                 </Text>
               </View>
               {msg.replyOn.uri ? (
-                <FullscreenImage imageSource={msg.replyOn.uri} />
+                <>
+                  {msg.replyOn.uri.split(".").slice(-1)[0] == "pdf" ? (
+                    <TouchableOpacity
+                      onPress={() => openPdf({ pdfUri: msg.replyOn.uri })}
+                    >
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          justifyContent: "space-between",
+                          backgroundColor: "#EFF5F5",
+                          padding: 4,
+                          borderRadius: 4,
+                        }}
+                      >
+                        <View>
+                          <Ionicons
+                            name="document-outline"
+                            size={25}
+                            color={"red"}
+                          />
+                          <Text
+                            style={{
+                              fontSize: 10,
+                              textTransform: "uppercase",
+                              alignSelf: "center",
+                            }}
+                          >
+                            {msg.replyOn.uri.split(".").slice(-1)[0]}
+                          </Text>
+                        </View>
+                        <Text style={{ marginTop: 8, fontSize: 16 }}>
+                          {msg.replyOn.pdfName?.length > 0
+                            ? msg.replyOn.pdfName
+                            : msg.replyOn.uri.split("/").pop()}
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
+                  ) : (
+                    <FullscreenImage imageSource={msg.replyOn.uri} />
+                  )}
+                </>
               ) : (
                 <Text style={{ fontSize: 16 }}>{msg.replyOn.text}</Text>
               )}

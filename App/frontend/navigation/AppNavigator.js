@@ -126,7 +126,6 @@ const ChatStackNavigator = createStackNavigator();
 const ChatsNavigator = () => {
   const { token } = useContext(AuthContext);
   const [groups, setGroups] = useState([]);
-  const [messages, setMessages] = useState([]);
   const [memCount, setMemCount] = useState();
   const [replyMessage, setReplyMessage] = useState({});
   const handleGroup = (group) => {
@@ -148,47 +147,6 @@ const ChatsNavigator = () => {
       }
     }
   };
-  async function fetchMessages() {
-    const data = await cache.get("messages");
-    if (data) {
-      setMessages(data);
-      const lastmessage = data[data.length - 1];
-      if (lastmessage) {
-        await axios
-          .post(
-            `${baseUrl}/message/latest`,
-            { date: lastmessage.createdAt },
-            {
-              headers: { Authorization: `Bearer ${token}` },
-            }
-          )
-          .then((messages) => {
-            setMessages([...data, ...messages.data]);
-          })
-          .catch((e) => {
-            console.log(e);
-          });
-      }
-    } else {
-      const date = new Date(Date.now() - 1.814e9);
-      await axios
-        .get(`${baseUrl}/message`, {
-          headers: { Authorization: `Bearer ${token}` },
-        })
-        .then((data) => {
-          // console.log(data.data);
-          setMessages(data.data);
-          const cacheMessage = data.data.filter(
-            (message) => new Date(message.createdAt) >= date
-          );
-          // console.log("cacheMessage ", cacheMessage);
-          cache.store("messages", cacheMessage);
-        })
-        .catch((e) => {
-          console.log(e);
-        });
-    }
-  }
 
   async function fetchCounts() {
     await axios
@@ -204,7 +162,6 @@ const ChatsNavigator = () => {
 
   useEffect(() => {
     fetchGroups();
-    fetchMessages();
     fetchCounts();
   }, []);
   return (
@@ -213,7 +170,6 @@ const ChatsNavigator = () => {
         handleGroup,
         groups,
         setGroups,
-        messages,
         memCount,
         replyMessage,
         setReplyMessage,

@@ -5,22 +5,39 @@ import {
   View,
   TouchableOpacity,
   Keyboard,
+  Image,
 } from "react-native";
 import Constants from "expo-constants";
 
 import Colors from "../constants/Colors";
 import { Ionicons } from "@expo/vector-icons";
 
-const CustomHeader = ({ title, isBack, navigation, sub, setTabBarVisible }) => {
+const CustomHeader = ({
+  title,
+  isBack,
+  navigation,
+  sub,
+  imgUri,
+  setTabBarVisible,
+}) => {
   return (
-    <View style={styles.headerContainer}>
+    <View
+      style={[
+        styles.headerContainer,
+        {
+          height: sub
+            ? 60 + Constants.statusBarHeight
+            : 45 + Constants.statusBarHeight,
+        },
+      ]}
+    >
       {isBack && (
         <TouchableOpacity
           style={{
             left: 10,
             position: "absolute",
             alignSelf: "flex-end",
-            bottom: 5,
+            bottom: sub ? 10 : 5,
           }}
           onPress={() => {
             Keyboard.dismiss();
@@ -35,8 +52,19 @@ const CustomHeader = ({ title, isBack, navigation, sub, setTabBarVisible }) => {
           />
         </TouchableOpacity>
       )}
+      {imgUri && <Image source={imgUri} style={styles.avatar} />}
       <View>
-        <Text style={styles.title}>{title}</Text>
+        <Text
+          style={[
+            styles.title,
+            {
+              fontSize: sub ? 16 : 20,
+              // marginLeft: imgUri ? 50 : 0,
+            },
+          ]}
+        >
+          {title}
+        </Text>
         {sub && <Text style={styles.sub}>{sub}</Text>}
       </View>
     </View>
@@ -66,6 +94,19 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: Colors.text,
     alignSelf: "center",
+  },
+  avatar: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: "#17cfe3",
+    justifyContent: "center",
+    alignItems: "center",
+    borderColor: "black",
+    borderWidth: 1,
+    position: "absolute",
+    left: 50,
+    bottom: 10,
   },
 });
 

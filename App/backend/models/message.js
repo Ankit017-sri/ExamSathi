@@ -8,6 +8,7 @@ const messageSchema = new mongoose.Schema(
     uri: String,
     replyOn: {},
     pdfName: String,
+    group: String,
   },
   { timestamps: true }
 );

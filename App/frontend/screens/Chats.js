@@ -38,7 +38,8 @@ import { useFocusEffect } from "@react-navigation/native";
 import ChatContext from "../chat/context";
 import SwipeableMessage from "../components/SwipeableMessage";
 
-const ChatsScreen = ({ navigation }) => {
+const ChatsScreen = ({ navigation, route }) => {
+  const { group, fetchedData, title, imgUri } = route.params;
   const {
     token,
     setTabBarVisible,
@@ -46,7 +47,7 @@ const ChatsScreen = ({ navigation }) => {
     name: fullName,
   } = useContext(AuthContext);
   const {
-    messages: fetchedData,
+    // messages: fetchedData,
     memCount: counts,
     replyMessage,
     setReplyMessage,
@@ -79,15 +80,17 @@ const ChatsScreen = ({ navigation }) => {
     })();
 
     return async () => {
-      await cache.store("messages", fetchedData);
+      await cache.store(`${group}`, fetchedData);
+      await cache.store(`${group}latest`, fetchedData.slice(-1));
       setReplyMessage({});
+      setMessages([]);
     };
   }, []);
 
   useEffect(() => {
     socket.current = io(baseUrl);
 
-    socket.current.emit("new-user-add", Id);
+    socket.current.emit("new-user-add", { Id, group });
     socket.current.on("get-active-users", (data) => {
       setLen(data);
     });
@@ -96,6 +99,9 @@ const ChatsScreen = ({ navigation }) => {
       setRecieveMessage(data);
       // console.log("recieve data", receiveMessage);
     });
+    return () => {
+      socket.current.emit("leaveGroup", group);
+    };
   }, [Id]);
   useEffect(() => {
     if (receiveMessage) {
@@ -112,7 +118,7 @@ const ChatsScreen = ({ navigation }) => {
       await axios
         .post(
           `${baseUrl}/message/latest`,
-          { date: lastmessage.createdAt },
+          { date: lastmessage.createdAt, group },
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -161,10 +167,12 @@ const ChatsScreen = ({ navigation }) => {
       quality: 1,
     });
     if (result.canceled) {
+      setVisible(false);
       // Handle cancellation...
       return;
     }
     if (!result.canceled) {
+      setVisible(false);
       setImage(result.assets[0].uri);
       UploadImage(result.assets[0]);
     }
@@ -181,9 +189,11 @@ const ChatsScreen = ({ navigation }) => {
     // console.log(result);
     if (result.canceled) {
       // Handle cancellation...
+      setVisible(false);
       return;
     }
     if (!result.canceled) {
+      setVisible(false);
       setImage(result.assets[0].uri);
       UploadImage(result.assets[0]);
     }
@@ -208,7 +218,7 @@ const ChatsScreen = ({ navigation }) => {
       let result = await DocumentPicker.getDocumentAsync({
         type: "application/pdf",
       });
-
+      setVisible(false);
       if (result.type == "success") {
         console.log(result);
         const base64 = await getBase64(result.uri);
@@ -271,7 +281,11 @@ const ChatsScreen = ({ navigation }) => {
       const res = await axios
         .post(
           `${baseUrl}/message`,
-          { text: message, replyOn: replyMessage._id ? replyMessage : {} },
+          {
+            text: message,
+            replyOn: replyMessage._id ? replyMessage : {},
+            group,
+          },
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -282,7 +296,7 @@ const ChatsScreen = ({ navigation }) => {
       } else {
         console.log(res.data);
         setReplyMessage({});
-        socket.current.emit("message", res.data);
+        socket.current.emit("message", { message: res.data, group });
         setMessage("");
       }
     }
@@ -290,19 +304,23 @@ const ChatsScreen = ({ navigation }) => {
     // socket.current.disconnect();
   };
 
-  const handleUpload = async (data) => {
-    if (data) {
+  const handleUpload = async ({ uri, pdfName }) => {
+    if (uri) {
       const res = await axios
-        .post(`${baseUrl}/message`, data, {
-          headers: { Authorization: `Bearer ${token}` },
-        })
+        .post(
+          `${baseUrl}/message`,
+          { uri, group, pdfName },
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        )
         .catch((e) => console.log(e));
       // console.log(res.data);
       if (!res.data.uri) {
         setUploading(false);
         return alert("something went wrong please try again !");
       } else {
-        socket.current.emit("message", res.data);
+        socket.current.emit("message", { message: res.data, group });
         setUploading(false);
       }
     }
@@ -337,7 +355,47 @@ const ChatsScreen = ({ navigation }) => {
                 </Text>
               </View>
               {msg.replyOn.uri ? (
-                <FullscreenImage imageSource={msg.replyOn.uri} />
+                <>
+                  {msg.replyOn.uri.split(".").slice(-1)[0] == "pdf" ? (
+                    <TouchableOpacity
+                      onPress={() => openPdf({ pdfUri: msg.replyOn.uri })}
+                    >
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          justifyContent: "space-between",
+                          backgroundColor: "#EFF5F5",
+                          padding: 4,
+                          borderRadius: 4,
+                        }}
+                      >
+                        <View>
+                          <Ionicons
+                            name="document-outline"
+                            size={25}
+                            color={"red"}
+                          />
+                          <Text
+                            style={{
+                              fontSize: 10,
+                              textTransform: "uppercase",
+                              alignSelf: "center",
+                            }}
+                          >
+                            {msg.replyOn.uri.split(".").slice(-1)[0]}
+                          </Text>
+                        </View>
+                        <Text style={{ marginTop: 8, fontSize: 16 }}>
+                          {msg.replyOn.pdfName?.length > 0
+                            ? msg.replyOn.pdfName
+                            : msg.replyOn.uri.split("/").pop()}
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
+                  ) : (
+                    <FullscreenImage imageSource={msg.replyOn.uri} />
+                  )}
+                </>
               ) : (
                 <Text style={{ fontSize: 16 }}>{msg.replyOn.text}</Text>
               )}
@@ -453,7 +511,47 @@ const ChatsScreen = ({ navigation }) => {
                 </Text>
               </View>
               {msg.replyOn.uri ? (
-                <FullscreenImage imageSource={msg.replyOn.uri} />
+                <>
+                  {msg.replyOn.uri.split(".").slice(-1)[0] == "pdf" ? (
+                    <TouchableOpacity
+                      onPress={() => openPdf({ pdfUri: msg.replyOn.uri })}
+                    >
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          justifyContent: "space-between",
+                          backgroundColor: "#EFF5F5",
+                          padding: 4,
+                          borderRadius: 4,
+                        }}
+                      >
+                        <View>
+                          <Ionicons
+                            name="document-outline"
+                            size={25}
+                            color={"red"}
+                          />
+                          <Text
+                            style={{
+                              fontSize: 10,
+                              textTransform: "uppercase",
+                              alignSelf: "center",
+                            }}
+                          >
+                            {msg.replyOn.uri.split(".").slice(-1)[0]}
+                          </Text>
+                        </View>
+                        <Text style={{ marginTop: 8, fontSize: 16 }}>
+                          {msg.replyOn.pdfName?.length > 0
+                            ? msg.replyOn.pdfName
+                            : msg.replyOn.uri.split("/").pop()}
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
+                  ) : (
+                    <FullscreenImage imageSource={msg.replyOn.uri} />
+                  )}
+                </>
               ) : (
                 <Text style={{ fontSize: 16 }}>{msg.replyOn.text}</Text>
               )}
@@ -529,9 +627,10 @@ const ChatsScreen = ({ navigation }) => {
   return (
     <View style={{ flex: 1 }}>
       <CustomHeader
-        title="ExamSathi"
+        title={title.split(":")[0]}
         sub={`${memCount} members, ${len} online`}
         isBack={true}
+        imgUri={imgUri}
         navigation={navigation}
         setTabBarVisible={setTabBarVisible}
       />
@@ -689,14 +788,14 @@ const ChatsScreen = ({ navigation }) => {
               styles.input,
               {
                 borderTopWidth: replyMessage.name ? 0 : 1,
-                borderTopLeftRadius: replyMessage.name ? 0 : 5,
-                borderTopRightRadius: replyMessage.name ? 0 : 5,
+                borderTopLeftRadius: replyMessage.name ? 0 : 16,
+                borderTopRightRadius: replyMessage.name ? 0 : 16,
               },
             ]}
             value={message}
             multiline={true}
             onChangeText={(text) => setMessage(text)}
-            placeholder="Type your message here"
+            placeholder="Message "
             ref={inputRef}
           />
           {message ? (
@@ -706,11 +805,11 @@ const ChatsScreen = ({ navigation }) => {
             </TouchableOpacity>
           ) : (
             <TouchableOpacity
-              style={styles.button}
+              // style={styles.button}
               onPress={toggleBottomNavigationView}
             >
               {/* <Text style={styles.buttonText}>Send</Text> */}
-              <Ionicons name="images-outline" color="#fff" size={20} />
+              <Ionicons name="attach" color="black" size={30} />
             </TouchableOpacity>
           )}
         </View>
@@ -789,7 +888,7 @@ const styles = StyleSheet.create({
     maxHeight: 120,
     borderWidth: 1,
     borderColor: "#ccc",
-    borderRadius: 5,
+    borderRadius: 16,
     padding: 8,
     marginRight: 8,
   },

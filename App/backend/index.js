@@ -68,15 +68,17 @@ io.on("connection", (socket) => {
   console.log("socket connected ....");
 
   // Listen for incoming messages
-  socket.on("new-user-add", (newUserId) => {
-    console.log(newUserId);
-    if (!activeUsers.some((user) => user.userId === newUserId)) {
+  socket.on("new-user-add", (data) => {
+    console.log(data);
+    const { Id, group } = data;
+    if (!activeUsers.some((user) => user.userId === Id)) {
       activeUsers.push({
-        userId: newUserId,
+        userId: Id,
         socketId: socket.id,
       });
     }
-    io.emit("get-active-users", activeUsers.length);
+    socket.join(group);
+    io.to(group).emit("get-active-users", activeUsers.length);
   });
 
   // socket.on("send-message", (data) => {
@@ -89,9 +91,9 @@ io.on("connection", (socket) => {
 
   socket.on("message", (data) => {
     console.log(`Received message: ${data}`);
-
+    const { message, group } = data;
     // Broadcast the message to all connected clients
-    io.emit("message-recieve", data);
+    io.to(group).emit("message-recieve", message);
   });
 
   // --------------------------------------Group Chats ----------------------------
