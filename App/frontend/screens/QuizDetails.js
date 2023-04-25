@@ -16,6 +16,7 @@ const QuizDetails = ({ navigation }) => {
 
   const [loading, setLoading] = useState(false);
   const [submittedQuizData, setSubmittedQuizData] = useState([]);
+  const [questions, setQuestions] = useState([]);
 
   const { token } = useContext(AuthContext);
 
@@ -25,27 +26,48 @@ const QuizDetails = ({ navigation }) => {
     const res = await axios.get(`${baseUrl}/submitQuiz/get/${data._id}`, {
       headers: { Authorization: `Bearer ${token}` },
     });
+    console.log("res..", res.data);
 
     if (res.data.length === 0) setSubmittedQuizData([]);
     else setSubmittedQuizData(res.data[0].submittedQuizDetails);
 
     setLoading(false);
   };
-
+  const getQuiz = async () => {
+    try {
+      const res = await axios.get(`${baseUrl}/quizData/${data._id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      console.log(res.data);
+      setQuestions(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   useEffect(() => {
     getData();
+    getQuiz();
   }, []);
 
   const getScore = () => {
     let score = 0;
+    if (data.quizDetails) {
+      data.quizDetails.map((data) => {
+        const foundObject = submittedQuizData.find(
+          (e) => e.quesIndex == data.qNo - 1
+        );
 
-    data.quizDetails.map((data) => {
-      const foundObject = submittedQuizData.find(
-        (e) => e.quesIndex == data.qNo - 1
-      );
+        if (foundObject?.value == data.correctOp) score++;
+      });
+    } else {
+      questions.quizDetails?.map((data) => {
+        const foundObject = submittedQuizData.find(
+          (e) => e.quesIndex == data.qNo - 1
+        );
 
-      if (foundObject?.value == data.correctOp) score++;
-    });
+        if (foundObject?.value == data.correctOp) score++;
+      });
+    }
 
     return score;
   };
@@ -53,7 +75,7 @@ const QuizDetails = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <CustomHeader title="Details" isBack navigation={navigation} />
-      {loading ? (
+      {loading || (!data.quizDetails && !questions.quizDetails) ? (
         <Loader />
       ) : (
         <ScrollView style={{ marginBottom: 35 }}>
@@ -65,19 +87,33 @@ const QuizDetails = ({ navigation }) => {
                 color: "#26b1bf",
               }}
             >
-              Score: {getScore()} / {data.quizDetails.length}
+              Score: {getScore()} /{" "}
+              {data.quizDetails
+                ? data.quizDetails.length
+                : questions.quizDetails?.length}
             </Text>
           </View>
-          {data.quizDetails.map((data, index) => {
-            return (
-              <CompletedQuesCard
-                quesData={data}
-                submittedQuizData={submittedQuizData}
-                navigation={navigation}
-                key={index}
-              />
-            );
-          })}
+          {data.quizDetails
+            ? data.quizDetails.map((data, index) => {
+                return (
+                  <CompletedQuesCard
+                    quesData={data}
+                    submittedQuizData={submittedQuizData}
+                    navigation={navigation}
+                    key={index}
+                  />
+                );
+              })
+            : questions?.quizDetails?.map((data, index) => {
+                return (
+                  <CompletedQuesCard
+                    quesData={data}
+                    submittedQuizData={submittedQuizData}
+                    navigation={navigation}
+                    key={index}
+                  />
+                );
+              })}
         </ScrollView>
       )}
     </View>

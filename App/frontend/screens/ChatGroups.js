@@ -22,10 +22,12 @@ import AuthContext from "../auth/context";
 // import { useFocusEffect } from "@react-navigation/native";
 import cache from "../utilities/cache";
 import { useFocusEffect } from "@react-navigation/native";
+import Loader from "../components/Loader";
 
 const ChatGroups = ({ navigation }) => {
   // const { groups, setGroups } = useContext(ChatContext);
   const { token, setTabBarVisible, Id } = useContext(AuthContext);
+  const [loading, setLoading] = useState(true);
 
   const [newMessages1, setNewMessages1] = useState([]);
   const [newMessages2, setNewMessages2] = useState([]);
@@ -61,6 +63,7 @@ const ChatGroups = ({ navigation }) => {
         setLastMessage3(lastest3);
         setLastMessage4(lastest4);
         setLastMessage5(lastest5);
+        setLoading(false);
       }, 2000);
 
       const group1NewMessages = await fetchLatestMessage({ group: "group1" });
@@ -73,8 +76,10 @@ const ChatGroups = ({ navigation }) => {
       setNewMessages3(group3NewMessages);
       setNewMessages4(group4NewMessages);
       setNewMessages5(group5NewMessages);
+      setLoading(false);
     } catch (error) {
       console.log(error);
+      setLoading(false);
     }
   };
   const fetchLatestMessage = async ({ group }) => {
@@ -387,46 +392,49 @@ const ChatGroups = ({ navigation }) => {
   return (
     <View style={{ position: "relative", flex: 0.9 }}>
       <CustomHeader title={"Study Groups"} />
-      <View style={styles.container}>
-        <View>
-          <ScrollView>
-            {/* <Group name="ExamSathi" group={"group0"} /> */}
-            <Group
-              name="महाराष्ट्र पोलीस भरती : Discussion group"
-              imgUri={require("../assets/Maharashtra-Police-bharti-2022.jpg")}
-              group={"group1"}
-              newMessages={newMessages1}
-              lastmessage={lastmessage1}
-            />
-            <Group
-              name="महाराष्ट्र तलाठी भरती : Discussion Group"
-              imgUri={require("../assets/maha-govt.png")}
-              group={"group2"}
-              newMessages={newMessages2}
-              lastmessage={lastmessage2}
-            />
-            <Group
-              name="महाराष्ट्र वनरक्षक भरती : Discussion Group"
-              imgUri={require("../assets/Maharashtra-Forest-Department-Logo.jpg")}
-              group={"group3"}
-              newMessages={newMessages3}
-              lastmessage={lastmessage3}
-            />
-            <Group
-              name="बुद्धिमत्ता आणि गणित Doubts"
-              imgUri={require("../assets/बुद्धिमत्ता.png")}
-              group={"group4"}
-              newMessages={newMessages4}
-              lastmessage={lastmessage4}
-            />
-            <Group
-              name="Daily Motivation"
-              imgUri={require("../assets/motivation.jpg")}
-              group={"group5"}
-              newMessages={newMessages5}
-              lastmessage={lastmessage5}
-            />
-            {/* {groups
+      {loading ? (
+        <Loader />
+      ) : (
+        <View style={styles.container}>
+          <View>
+            <ScrollView>
+              {/* <Group name="ExamSathi" group={"group0"} /> */}
+              <Group
+                name="महाराष्ट्र पोलीस भरती : Discussion group"
+                imgUri={require("../assets/Maharashtra-Police-bharti-2022.jpg")}
+                group={"group1"}
+                newMessages={newMessages1}
+                lastmessage={lastmessage1}
+              />
+              <Group
+                name="महाराष्ट्र तलाठी भरती : Discussion Group"
+                imgUri={require("../assets/maha-govt.png")}
+                group={"group2"}
+                newMessages={newMessages2}
+                lastmessage={lastmessage2}
+              />
+              <Group
+                name="महाराष्ट्र वनरक्षक भरती : Discussion Group"
+                imgUri={require("../assets/Maharashtra-Forest-Department-Logo.jpg")}
+                group={"group3"}
+                newMessages={newMessages3}
+                lastmessage={lastmessage3}
+              />
+              <Group
+                name="बुद्धिमत्ता आणि गणित Doubts"
+                imgUri={require("../assets/बुद्धिमत्ता.png")}
+                group={"group4"}
+                newMessages={newMessages4}
+                lastmessage={lastmessage4}
+              />
+              <Group
+                name="Daily Motivation"
+                imgUri={require("../assets/motivation.jpg")}
+                group={"group5"}
+                newMessages={newMessages5}
+                lastmessage={lastmessage5}
+              />
+              {/* {groups
               .slice(0)
               .reverse()
               .map((item, index) => {
@@ -444,9 +452,10 @@ const ChatGroups = ({ navigation }) => {
                   </TouchableOpacity>
                 );
               })} */}
-          </ScrollView>
+            </ScrollView>
+          </View>
         </View>
-      </View>
+      )}
       {/* <TouchableOpacity
         onPress={newGroup}
         style={{
@@ -488,6 +497,7 @@ const styles = StyleSheet.create({
   container: {
     // margin: 8,
     marginVertical: 16,
+    justifyContent: "center",
   },
   group: {
     // marginBottom: 10,

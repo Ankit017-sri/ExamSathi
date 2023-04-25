@@ -4,6 +4,7 @@ const auth = require("../middleware/auth");
 const { QuizData } = require("../models/quizData");
 const { SubmittedQuiz } = require("../models/submittedQuiz");
 const { webAppQuizData } = require("../models/webAppQuizData");
+const { Quiz } = require("../models/Quiz");
 
 const router = express.Router();
 
@@ -15,7 +16,6 @@ router.get("/", auth, async (req, res) => {
   const submittedQuizzes = await QuizData.find({
     _id: { $in: submittedQuizIds },
   });
-
   return res.send(submittedQuizzes);
 });
 
@@ -209,6 +209,101 @@ router.get("/pyq/all", auth, async (req, res) => {
   return res.send(data);
 });
 
+// ----------------------------- new routes for new updates ----------------------------------
+router.get("/all", auth, async (req, res) => {
+  try {
+    const submittedQuizIds = await SubmittedQuiz.find({
+      userId: req.user._id,
+    }).distinct("quizId");
+
+    const tags = await Quiz.find({
+      _id: { $nin: submittedQuizIds },
+    }).distinct("tag");
+    const result = [];
+    for (const tag of tags) {
+      const categories = await Quiz.find({
+        _id: { $nin: submittedQuizIds },
+      }).distinct("category", { tag });
+      const categoriesData = [];
+      for (const category of categories) {
+        const quizzes = await Quiz.find(
+          { _id: { $nin: submittedQuizIds }, tag, category },
+          { quizTitle: 1, maxMarks: 1, _id: 1 }
+        );
+        categoriesData.push({ category, quizzes });
+      }
+      result.push({ tag, categories: categoriesData });
+    }
+    res.status(200).send(result);
+  } catch (error) {
+    console.log(error);
+    res.status(500).send("something went wrong!");
+  }
+});
+
+router.get("/submitted", auth, async (req, res) => {
+  try {
+    const submittedQuizIds = await SubmittedQuiz.find({
+      userId: req.user._id,
+    }).distinct("quizId");
+
+    const tags = await Quiz.find({
+      _id: { $in: submittedQuizIds },
+    }).distinct("tag");
+    const result = [];
+    for (const tag of tags) {
+      const categories = await Quiz.find({
+        _id: { $in: submittedQuizIds },
+      }).distinct("category", { tag });
+      const categoriesData = [];
+      for (const category of categories) {
+        const quizzes = await Quiz.find(
+          { _id: { $in: submittedQuizIds }, tag, category },
+          { quizTitle: 1, maxMarks: 1, _id: 1 }
+        );
+        categoriesData.push({ category, quizzes });
+      }
+      result.push({ tag, categories: categoriesData });
+    }
+    res.status(200).send(result);
+  } catch (error) {
+    console.log(error);
+    res.status(400).send("something went wrong !");
+  }
+});
+// -----------------------------------------------------------end of new routes ---------------------------
+router.post("/add", async (req, res) => {
+  const quiz = new QuizData(req.body);
+
+  await quiz.save();
+
+  return res.send(quiz);
+});
+
+router.post("/addMany", auth, async (req, res) => {
+  try {
+    const data = req.body;
+    const result = await Quiz.insertMany(data);
+    res.send(result);
+  } catch (error) {
+    console.log(error);
+    res.status(500).send("something went wrong on our side !");
+  }
+});
+
+router.get("/newall", auth, async (req, res) => {
+  try {
+    const data = await Quiz.find(
+      {},
+      { tag: 1, quizTitle: 1, maxMarks: 1, category: 1, _id: 1 }
+    );
+    res.send(data);
+  } catch (error) {
+    console.log(error);
+    res.status(500).send("something went wrong !");
+  }
+});
+
 router.get("/:quizId", auth, async (req, res) => {
   if (req.query?.platform === "web") {
     const quiz = await webAppQuizData.findOne({ _id: req.params.quizId });
@@ -216,17 +311,9 @@ router.get("/:quizId", auth, async (req, res) => {
     return res.send(quiz);
   }
 
-  const quiz = await QuizData.findOne({ _id: req.params.quizId });
+  const quiz = await Quiz.findOne({ _id: req.params.quizId });
 
   // console.log(quiz);
-
-  return res.send(quiz);
-});
-
-router.post("/add", async (req, res) => {
-  const quiz = new QuizData(req.body);
-
-  await quiz.save();
 
   return res.send(quiz);
 });

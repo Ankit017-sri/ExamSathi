@@ -1,6 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useFocusEffect } from "@react-navigation/native";
-import { FlashList } from "@shopify/flash-list";
+// import { FlashList } from "@shopify/flash-list";
 import axios from "axios";
 import React, {
   useCallback,
@@ -26,7 +26,7 @@ import baseUrl from "../baseUrl";
 import CustomHeader from "../components/CustomHeader";
 import Loader from "../components/Loader";
 import Pagination from "../components/Pagination";
-import QuesCard from "../components/QuesCard";
+// import QuesCard from "../components/QuesCard";
 import Colors from "../constants/Colors";
 
 const RecentQuiz = ({ navigation }) => {
@@ -37,33 +37,39 @@ const RecentQuiz = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [quizData, setQuizData] = useState([]);
-  const [data15, setData15] = useState([]);
-  const [data100, setData100] = useState([]);
-  const [dataCurrAffair, setDataCurrAffair] = useState([]);
+  // const [data15, setData15] = useState([]);
+  // const [data100, setData100] = useState([]);
+  // const [dataCurrAffair, setDataCurrAffair] = useState([]);
   const [quizStarted, setQuizStarted] = useState(false);
-  const [is15Submitted, setIs15Submitted] = useState(false);
-  const [is100Submitted, setIs100Submitted] = useState(false);
-  const [isCurrAffairSubmitted, setIsCurrAffairSubmitted] = useState(false);
+  // const [is15Submitted, setIs15Submitted] = useState(false);
+  // const [is100Submitted, setIs100Submitted] = useState(false);
+  // const [isCurrAffairSubmitted, setIsCurrAffairSubmitted] = useState(false);
   const [quizType, setQuizType] = useState(0);
   const [page, setPage] = useState(0);
   const [lastPage, setLastPage] = useState(0);
   const [selected, setSelected] = useState([]);
-  const [dataPyq, setDataPyq] = useState([]);
-  const [isPyqSubmitted, setIsPyqSubmitted] = useState(false);
-  const [lastAttempted, setLastAttempted] = useState(-1);
+  // const [dataPyq, setDataPyq] = useState([]);
+  // const [isPyqSubmitted, setIsPyqSubmitted] = useState(false);
+  // const [lastAttempted, setLastAttempted] = useState(-1);
   const [viewAll, setViewAll] = useState(false);
   const [title, setTitle] = useState("");
   const SampleArr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
   const [allQuiz, setAllQuiz] = useState([]);
+  const [isloading, setIsLoading] = useState(true);
 
-  const [latest15All, setLatest15All] = useState([]);
-  const [latest15Feed, setLatest15Feed] = useState([]);
-  const [currentAffairsAll, setCurrentAffairsAll] = useState([]);
-  const [currentAffairsFeed, setCurrentAffairsFeed] = useState([]);
-  const [PYQAll, setPYQAll] = useState([]);
-  const [PYQFeed, setPYQFeed] = useState([]);
-  const [latest100All, setLatest100All] = useState([]);
-  const [latest100Feed, setLatest100Feed] = useState([]);
+  // const [latest15All, setLatest15All] = useState([]);
+  // const [latest15Feed, setLatest15Feed] = useState([]);
+  // const [currentAffairsAll, setCurrentAffairsAll] = useState([]);
+  // const [currentAffairsFeed, setCurrentAffairsFeed] = useState([]);
+  // const [PYQAll, setPYQAll] = useState([]);
+  // const [PYQFeed, setPYQFeed] = useState([]);
+  // const [latest100All, setLatest100All] = useState([]);
+  // const [latest100Feed, setLatest100Feed] = useState([]);
+
+  const [allQuizData, setAllQuizdata] = useState([]);
+  const [activeTag, setActiveTag] = useState("");
+  const [tagDetails, setTagDetails] = useState([]);
+  const [allCategoryData, setAllCategoryData] = useState([]);
 
   const handleNext = () => {
     setPage(page + 1);
@@ -130,79 +136,79 @@ const RecentQuiz = ({ navigation }) => {
   //   setLoading(false);
   // };
 
-  const getData15All = async () => {
-    setLoading(true);
-    const result15All = await axios.get(
-      `${baseUrl}/quizData/latest/all`,
+  // const getData15All = async () => {
+  //   setLoading(true);
+  //   const result15All = await axios.get(
+  //     `${baseUrl}/quizData/latest/all`,
 
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      }
-    );
-    if (result15All.data) {
-      console.log(result15All.data.length);
-      setLatest15All(result15All.data);
-      setLatest15Feed(result15All.data.slice(0, 10));
-      setLoading(false);
-    } else {
-      setLoading(false);
-    }
-  };
+  //     {
+  //       headers: { Authorization: `Bearer ${token}` },
+  //     }
+  //   );
+  //   if (result15All.data) {
+  //     console.log(result15All.data.length);
+  //     setLatest15All(result15All.data);
+  //     setLatest15Feed(result15All.data.slice(0, 10));
+  //     setLoading(false);
+  //   } else {
+  //     setLoading(false);
+  //   }
+  // };
 
-  const getData100All = async () => {
-    setLoading(true);
-    const result100All = await axios.get(
-      `${baseUrl}/quizData/latest/long/all`,
+  // const getData100All = async () => {
+  //   setLoading(true);
+  //   const result100All = await axios.get(
+  //     `${baseUrl}/quizData/latest/long/all`,
 
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      }
-    );
-    if (result100All.data) {
-      console.log(result100All.data.length);
-      setLatest100All(result100All.data);
-      setLatest100Feed(result100All.data.slice(0, 10));
-      setLoading(false);
-    } else {
-      setLoading(false);
-    }
-  };
-  const getDataCurrAfAll = async () => {
-    setLoading(true);
-    const resultCurrAfAll = await axios.get(
-      `${baseUrl}/quizData/latest/current-affairs/all`,
+  //     {
+  //       headers: { Authorization: `Bearer ${token}` },
+  //     }
+  //   );
+  //   if (result100All.data) {
+  //     console.log(result100All.data.length);
+  //     setLatest100All(result100All.data);
+  //     setLatest100Feed(result100All.data.slice(0, 10));
+  //     setLoading(false);
+  //   } else {
+  //     setLoading(false);
+  //   }
+  // };
+  // const getDataCurrAfAll = async () => {
+  //   setLoading(true);
+  //   const resultCurrAfAll = await axios.get(
+  //     `${baseUrl}/quizData/latest/current-affairs/all`,
 
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      }
-    );
-    if (resultCurrAfAll.data) {
-      console.log(resultCurrAfAll.data.length);
-      setCurrentAffairsAll(resultCurrAfAll.data);
-      setCurrentAffairsFeed(resultCurrAfAll.data.slice(0, 10));
-      setLoading(false);
-    } else {
-      setLoading(false);
-    }
-  };
-  const getDataPyqAll = async () => {
-    setLoading(true);
-    const resultPyqAll = await axios.get(
-      `${baseUrl}/quizData//pyq/all`,
+  //     {
+  //       headers: { Authorization: `Bearer ${token}` },
+  //     }
+  //   );
+  //   if (resultCurrAfAll.data) {
+  //     console.log(resultCurrAfAll.data.length);
+  //     setCurrentAffairsAll(resultCurrAfAll.data);
+  //     setCurrentAffairsFeed(resultCurrAfAll.data.slice(0, 10));
+  //     setLoading(false);
+  //   } else {
+  //     setLoading(false);
+  //   }
+  // };
+  // const getDataPyqAll = async () => {
+  //   setLoading(true);
+  //   const resultPyqAll = await axios.get(
+  //     `${baseUrl}/quizData//pyq/all`,
 
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      }
-    );
-    if (resultPyqAll.data) {
-      console.log(resultPyqAll.data.length);
-      setPYQAll(resultPyqAll.data);
-      setPYQFeed(resultPyqAll.data.slice(0, 10));
-      setLoading(false);
-    } else {
-      setLoading(false);
-    }
-  };
+  //     {
+  //       headers: { Authorization: `Bearer ${token}` },
+  //     }
+  //   );
+  //   if (resultPyqAll.data) {
+  //     console.log(resultPyqAll.data.length);
+  //     setPYQAll(resultPyqAll.data);
+  //     setPYQFeed(resultPyqAll.data.slice(0, 10));
+  //     setLoading(false);
+  //   } else {
+  //     setLoading(false);
+  //   }
+  // };
 
   const startQuiz = async (quizId) => {
     setLoading(true);
@@ -316,34 +322,34 @@ const RecentQuiz = ({ navigation }) => {
         // setIs15Submitted(true);
         setResponse([]);
         setPage(0);
-        let newAll;
-        switch (title) {
-          case "नवीन मागील वर्षाची टेस्ट!":
-            newAll = PYQAll.filter((data) => data._id !== quizData._id);
-            setPYQAll(newAll);
-            setPYQFeed(newAll.slice(0, 10));
-            break;
-          case "नवीन १५ मार्क्स टेस्ट!":
-            newAll = latest15All.filter((data) => data._id !== quizData._id);
-            setLatest15All(newAll);
-            setLatest15Feed(newAll.slice(0, 10));
-            break;
-          case "नवीन १०० मार्क्स टेस्ट!":
-            newAll = latest100All.filter((data) => data._id !== quizData._id);
-            setLatest100All(newAll);
-            setLatest100Feed(newAll.slice(0, 10));
+        // let newAll;
+        // switch (title) {
+        //   case "नवीन मागील वर्षाची टेस्ट!":
+        //     newAll = PYQAll.filter((data) => data._id !== quizData._id);
+        //     setPYQAll(newAll);
+        //     setPYQFeed(newAll.slice(0, 10));
+        //     break;
+        //   case "नवीन १५ मार्क्स टेस्ट!":
+        //     newAll = latest15All.filter((data) => data._id !== quizData._id);
+        //     setLatest15All(newAll);
+        //     setLatest15Feed(newAll.slice(0, 10));
+        //     break;
+        //   case "नवीन १०० मार्क्स टेस्ट!":
+        //     newAll = latest100All.filter((data) => data._id !== quizData._id);
+        //     setLatest100All(newAll);
+        //     setLatest100Feed(newAll.slice(0, 10));
 
-            break;
-          case "Latest चालू घडामोडी टेस्ट!":
-            newAll = currentAffairsAll.filter(
-              (data) => data._id !== quizData._id
-            );
-            setCurrentAffairsAll(newAll);
-            setCurrentAffairsFeed(newAll.slice(0, 10));
-            break;
-          default:
-            break;
-        }
+        //     break;
+        //   case "Latest चालू घडामोडी टेस्ट!":
+        //     newAll = currentAffairsAll.filter(
+        //       (data) => data._id !== quizData._id
+        //     );
+        //     setCurrentAffairsAll(newAll);
+        //     setCurrentAffairsFeed(newAll.slice(0, 10));
+        //     break;
+        // default:
+        //   break;
+        // }
 
         navigation.navigate("QuizDetailScreen", { quiz: quizData });
       })
@@ -383,12 +389,43 @@ const RecentQuiz = ({ navigation }) => {
       }
     }, 1000);
   };
-  useEffect(() => {
-    getDataPyqAll();
-    getData15All();
-    getData100All();
-    getDataCurrAfAll();
-  }, []);
+  // useEffect(() => {
+  //   getDataPyqAll();
+  //   getData15All();
+  //   getData100All();
+  //   getDataCurrAfAll();
+  // }, []);
+
+  const getAllQuiz = async () => {
+    try {
+      const data = await axios.get(
+        `${baseUrl}/quizData/all`,
+
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      console.log("data ......", data.data);
+      setAllQuizdata(data.data);
+      const all = [];
+      data.data.forEach((element) => {
+        all.push(...element.categories);
+      });
+      setAllCategoryData(all);
+      setActiveTag("all");
+      setTagDetails(all);
+      setIsLoading(false);
+    } catch (error) {
+      console.log(error);
+      setIsLoading(false);
+    }
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      getAllQuiz();
+    }, [])
+  );
 
   useEffect(() => {
     if (quizStarted) startTimer();
@@ -518,39 +555,30 @@ const RecentQuiz = ({ navigation }) => {
           <Text style={styles.title}>{title}</Text>
           <TouchableOpacity
             onPress={() => {
-              switch (title) {
-                case "नवीन मागील वर्षाची टेस्ट!":
-                  setAllQuiz(PYQAll);
-                  break;
-                case "नवीन १५ मार्क्स टेस्ट!":
-                  setAllQuiz(latest15All);
-                  break;
-                case "नवीन १०० मार्क्स टेस्ट!":
-                  setAllQuiz(latest100All);
-                  break;
-                case "Latest चालू घडामोडी टेस्ट!":
-                  setAllQuiz(currentAffairsAll);
-                  break;
-                default:
-                  break;
-              }
+              setAllQuiz(data);
               setTitle(title);
               scrollRef.current.scrollTo({ y: 0, animated: false });
               setViewAll(true);
             }}
+            style={{ flexDirection: "row" }}
           >
-            <Text>View All</Text>
+            <Text style={{ marginRight: 4 }}>View All</Text>
+            <Ionicons
+              name="chevron-forward-circle-outline"
+              size={20}
+              color="blue"
+            />
           </TouchableOpacity>
         </View>
         {data && (
           <FlatList
             renderItem={({ item }) => <Card item={item} title={title} />}
-            data={data}
+            data={data.slice(0, 10)}
             keyExtractor={(item) => item._id}
             horizontal
           />
         )}
-        {data.length == 0 && (
+        {data?.length == 0 && (
           <View
             style={{
               flexDirection: "row",
@@ -602,7 +630,7 @@ const RecentQuiz = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <CustomHeader title="New Quiz" />
-      {loading ? (
+      {loading || isloading ? (
         <Loader />
       ) : quizStarted ? (
         <View style={{ marginBottom: 160 }}>
@@ -786,7 +814,7 @@ const RecentQuiz = ({ navigation }) => {
         </View>
       ) : (
         <View style={{ flex: 0.9 }}>
-          {viewAll && (
+          {viewAll ? (
             <View
               style={{
                 flexDirection: "row",
@@ -807,6 +835,61 @@ const RecentQuiz = ({ navigation }) => {
                 {title} Tests
               </Text>
             </View>
+          ) : (
+            <ScrollView
+              horizontal
+              style={{ maxHeight: 60, minHeight: 60, paddingHorizontal: 12 }}
+              contentContainerStyle={{ alignItems: "center" }}
+            >
+              <TouchableOpacity
+                onPress={() => {
+                  setActiveTag("all");
+                  setTagDetails(allCategoryData);
+                }}
+                style={[
+                  styles.tag,
+                  { backgroundColor: activeTag == "all" ? "#86E5FF" : "white" },
+                ]}
+              >
+                <Text
+                  style={{
+                    fontSize: 16,
+                    alignSelf: "center",
+                    verticalAlign: "middle",
+                  }}
+                >
+                  All
+                </Text>
+              </TouchableOpacity>
+              {allQuizData.map((item, index) => {
+                return (
+                  <TouchableOpacity
+                    style={[
+                      styles.tag,
+                      {
+                        backgroundColor:
+                          activeTag == item.tag ? "#86E5FF" : "white",
+                      },
+                    ]}
+                    onPress={() => {
+                      setActiveTag(item.tag);
+                      setTagDetails(item.categories);
+                    }}
+                    key={item.tag}
+                  >
+                    <Text
+                      style={{
+                        fontSize: 16,
+                        alignSelf: "center",
+                        verticalAlign: "middle",
+                      }}
+                    >
+                      {item.tag}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </ScrollView>
           )}
           <ScrollView style={{ paddingTop: 8 }} ref={scrollRef}>
             {viewAll ? (
@@ -847,7 +930,7 @@ const RecentQuiz = ({ navigation }) => {
                           color: Colors.text,
                         }}
                       >
-                        नवीन मागील वर्षाची टेस्ट!
+                        {title}
                       </Text>
 
                       <Ionicons
@@ -871,7 +954,7 @@ const RecentQuiz = ({ navigation }) => {
               </View>
             ) : (
               <>
-                <TestLists data={PYQFeed} title={"नवीन मागील वर्षाची टेस्ट!"} />
+                {/* <TestLists data={PYQFeed} title={"नवीन मागील वर्षाची टेस्ट!"} />
                 <TestLists
                   data={latest15Feed}
                   title={"नवीन १५ मार्क्स टेस्ट!"}
@@ -883,7 +966,63 @@ const RecentQuiz = ({ navigation }) => {
                 <TestLists
                   data={currentAffairsFeed}
                   title={"Latest चालू घडामोडी टेस्ट!"}
-                />
+                /> */}
+
+                {tagDetails.map((quiz, index) => {
+                  return (
+                    <TestLists
+                      data={quiz.quizzes}
+                      title={quiz.category}
+                      key={quiz.category}
+                    />
+                  );
+                })}
+                {tagDetails?.length == 0 && (
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      marginBottom: 20,
+                      justifyContent: "center",
+                    }}
+                  >
+                    <View
+                      style={{
+                        ...styles.card,
+                        width: "80%",
+                        alignItems: "center",
+                        // marginRight: 15,
+                        // marginTop: -10,
+                      }}
+                    >
+                      <Text
+                        style={{
+                          textAlign: "center",
+                          fontSize: 18,
+                          fontWeight: "bold",
+                          color: Colors.text,
+                        }}
+                      >
+                        {title}
+                      </Text>
+
+                      <Ionicons
+                        name="checkmark-circle-outline"
+                        size={50}
+                        color={"#26b1bf"}
+                      />
+                      <Text
+                        style={{
+                          textAlign: "center",
+                          fontSize: 20,
+                          fontWeight: "bold",
+                          color: Colors.text,
+                        }}
+                      >
+                        Submitted All Quizzes
+                      </Text>
+                    </View>
+                  </View>
+                )}
               </>
             )}
 
@@ -1271,6 +1410,15 @@ const styles = StyleSheet.create({
   },
   listContainer: {
     elevation: 10,
+  },
+  tag: {
+    marginHorizontal: 4,
+    elevation: 5,
+    borderRadius: 12,
+    paddingTop: 4,
+    height: 30,
+    minWidth: 80,
+    maxWidth: 120,
   },
 });
 
