@@ -266,6 +266,7 @@ const PastQuiz = ({ navigation }) => {
                         setActiveTag(item.tag);
                         setTagDetails(item.categories);
                       }}
+                      key={index}
                     >
                       <Text
                         style={{
@@ -346,7 +347,11 @@ const PastQuiz = ({ navigation }) => {
                 <>
                   {tagDetails.map((quiz, index) => {
                     return (
-                      <TestLists data={quiz.quizzes} title={quiz.category} />
+                      <TestLists
+                        data={quiz.quizzes}
+                        title={quiz.category}
+                        key={index}
+                      />
                     );
                   })}
                   {tagDetails?.length == 0 && (

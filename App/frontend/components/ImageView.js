@@ -17,8 +17,8 @@ const FullscreenImage = ({ imageSource }) => {
       <TouchableOpacity onPress={() => setModalVisible(true)}>
         <Image
           source={{ uri: imageSource }}
-          style={{ width: 250, minHeight: 150 }}
-          resizeMode="cover"
+          style={{ maxwidth: 300, minHeight: 250 }}
+          resizeMode="contain"
         />
       </TouchableOpacity>
       <Modal

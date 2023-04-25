@@ -875,7 +875,7 @@ const RecentQuiz = ({ navigation }) => {
                       setActiveTag(item.tag);
                       setTagDetails(item.categories);
                     }}
-                    key={item.tag}
+                    key={index}
                   >
                     <Text
                       style={{
@@ -973,7 +973,7 @@ const RecentQuiz = ({ navigation }) => {
                     <TestLists
                       data={quiz.quizzes}
                       title={quiz.category}
-                      key={quiz.category}
+                      key={index}
                     />
                   );
                 })}
