@@ -855,7 +855,7 @@ const RecentQuiz = ({ navigation }) => {
                 }}
                 style={[
                   styles.tag,
-                  { backgroundColor: activeTag == "all" ? "#86E5FF" : "white" },
+                  { backgroundColor: activeTag == "all" ? "#90AAD5" : "white" },
                 ]}
               >
                 <Text
@@ -875,7 +875,7 @@ const RecentQuiz = ({ navigation }) => {
                       styles.tag,
                       {
                         backgroundColor:
-                          activeTag == item.tag ? "#86E5FF" : "white",
+                          activeTag == item.tag ? "#90AAD5" : "white",
                       },
                     ]}
                     onPress={() => {

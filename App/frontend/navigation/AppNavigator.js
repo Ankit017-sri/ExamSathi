@@ -142,8 +142,8 @@ const ChatsNavigator = () => {
         })
         .catch((e) => console.log(e));
       // console.log(res.data);
-      if (res.data) {
-        setGroups(res.data);
+      if (res?.data) {
+        setGroups(res?.data);
       }
     }
   };
@@ -231,7 +231,7 @@ export const AppNavigator = ({ onLayout }) => {
     <>
       {<Animated.View style={animStyles} onLayout={onLayout} />}
       <Tab.Navigator
-        initialRouteName="New Quiz"
+        initialRouteName="Chats"
         screenOptions={({ route }) => ({
           tabBarIcon: ({ focused, color, size }) => {
             let iconName;
@@ -239,7 +239,8 @@ export const AppNavigator = ({ onLayout }) => {
             size = focused ? 26 : 24;
 
             if (route.name === "Past Quiz")
-              iconName = focused ? "home" : "home-outline";
+              // iconName = focused ? "home" : "home-outline";
+              iconName = focused ? "newspaper" : "newspaper-outline";
             else if (route.name === "New Quiz")
               return (
                 <Image
@@ -274,17 +275,17 @@ export const AppNavigator = ({ onLayout }) => {
         })}
       >
         {/* <Animated.View style={animStyles} /> */}
-
         <Tab.Screen
-          name="Past Quiz"
-          component={QuizNavigator}
+          name="Chats"
+          component={ChatsNavigator}
           listeners={{
             tabPress: (e) => {
               // e.preventDefault();
-              animate(0);
+              animate(width / 2);
             },
           }}
         />
+
         <Tab.Screen
           name="New Quiz"
           component={RecentQuizScreen}
@@ -306,15 +307,16 @@ export const AppNavigator = ({ onLayout }) => {
           }}
         />
         <Tab.Screen
-          name="Chats"
-          component={ChatsNavigator}
+          name="Past Quiz"
+          component={QuizNavigator}
           listeners={{
             tabPress: (e) => {
               // e.preventDefault();
-              animate(width / 2);
+              animate(0);
             },
           }}
         />
+
         <Tab.Screen
           name="Account"
           component={AccountScreen}

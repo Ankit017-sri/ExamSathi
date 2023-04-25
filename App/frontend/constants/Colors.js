@@ -1,5 +1,6 @@
 export default {
-  primary: "#17cfe3",
+  // primary: "#17cfe3",
+  primary: "#23395d",
   text: "#454545",
   buttonColor: "#454545",
   accent: "#ccc",

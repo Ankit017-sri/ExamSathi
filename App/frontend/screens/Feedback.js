@@ -80,11 +80,7 @@ const Feedback = ({ setIsFeedBack }) => {
           }}
           onPress={() => setIsFeedBack(false)}
         >
-          <Ionicons
-            name="arrow-back-circle-outline"
-            size={32}
-            color={Colors.text}
-          />
+          <Ionicons name="arrow-back-circle-outline" size={32} color="#fff" />
         </TouchableOpacity>
         <View>
           <Text style={styles.title}>{title}</Text>
@@ -95,9 +91,6 @@ const Feedback = ({ setIsFeedBack }) => {
   return (
     <View style={styles.container}>
       <Header title="Feedback" />
-      {feedbacks.length !== 0 && (
-        <Text style={{ textAlign: "center" }}>Your Feedback</Text>
-      )}
       <FlatList
         style={{
           marginBottom: 20,
@@ -113,7 +106,6 @@ const Feedback = ({ setIsFeedBack }) => {
             style={{
               ...styles.card,
               marginBottom: 10,
-              backgroundColor: "#fff",
               paddingHorizontal: 6,
             }}
           >
@@ -160,7 +152,7 @@ const Feedback = ({ setIsFeedBack }) => {
                     borderRadius: 5,
                     height: 40,
                     width: "100%",
-                    backgroundColor: "rgba(23, 207, 227, 0.1)",
+                    backgroundColor: "#90AAD5",
                     marginTop: 10,
                     marginBottom: 20,
                     // marginRight: 40,
@@ -171,7 +163,7 @@ const Feedback = ({ setIsFeedBack }) => {
                   <Text
                     style={{
                       fontSize: 17,
-                      color: "#26b1bf",
+                      color: Colors.primary,
                     }}
                   >
                     Send feedback
@@ -206,7 +198,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: "bold",
-    color: Colors.text,
+    color: "#fff",
     alignSelf: "center",
   },
   inputContainer: {
@@ -232,7 +224,7 @@ const styles = StyleSheet.create({
     padding: 15,
     paddingVertical: 25,
     elevation: 5,
-    backgroundColor: "#fff",
+    backgroundColor: "#BCCCE5",
     justifyContent: "space-evenly",
   },
 });

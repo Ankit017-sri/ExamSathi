@@ -51,6 +51,32 @@ const AccountScreen = () => {
     ]);
   };
 
+  const DeleteAccount = () => {
+    return (
+      <TouchableOpacity
+        style={{
+          flexDirection: "row",
+          justifyContent: "center",
+          alignItems: "center",
+          height: 40,
+        }}
+        activeOpacity={0.6}
+        onPress={deleteHandler}
+      >
+        <Text
+          style={{
+            fontSize: 14,
+            color: Colors.danger,
+            marginRight: 10,
+          }}
+        >
+          Delete Account
+        </Text>
+        <Ionicons name={"trash-outline"} size={18} color={Colors.danger} />
+      </TouchableOpacity>
+    );
+  };
+
   return (
     <>
       {isFeedback ? (
@@ -74,6 +100,7 @@ const AccountScreen = () => {
                 <View>
                   <Text style={styles.name}>{name}</Text>
                   <Text style={styles.phone}>{phone}</Text>
+                  <DeleteAccount />
                 </View>
               </View>
               <TouchableOpacity
@@ -86,7 +113,7 @@ const AccountScreen = () => {
                   borderRadius: 5,
                   height: 40,
                   width: "100%",
-                  backgroundColor: "rgba(23, 207, 227, 0.1)",
+                  backgroundColor: "#90AAD5",
                 }}
                 activeOpacity={0.6}
                 onPress={async () => {
@@ -99,7 +126,7 @@ const AccountScreen = () => {
                 <Text
                   style={{
                     fontSize: 17,
-                    color: "#26b1bf",
+                    color: Colors.primary,
                     marginRight: 10,
                   }}
                 >
@@ -108,11 +135,11 @@ const AccountScreen = () => {
                 <Ionicons
                   name={"log-out-outline"}
                   size={27}
-                  color={"#26b1bf"}
+                  color={Colors.primary}
                 />
               </TouchableOpacity>
             </View>
-            <View
+            {/* <View
               style={[
                 styles.cardContainer,
                 {
@@ -133,7 +160,7 @@ const AccountScreen = () => {
                   borderRadius: 5,
                   height: 40,
                   width: "48%",
-                  backgroundColor: "rgba(23, 207, 227, 0.1)",
+                  backgroundColor: "#90AAD5",
                 }}
                 activeOpacity={0.6}
                 onPress={async () => {
@@ -143,13 +170,17 @@ const AccountScreen = () => {
                 <Text
                   style={{
                     fontSize: 17,
-                    color: "#26b1bf",
+                    color: Colors.primary,
                     marginRight: 10,
                   }}
                 >
                   Join
                 </Text>
-                <FontAwesome name={"telegram"} size={25} color={"#26b1bf"} />
+                <FontAwesome
+                  name={"telegram"}
+                  size={25}
+                  color={Colors.primary}
+                />
               </TouchableOpacity>
               <TouchableOpacity
                 style={{
@@ -161,7 +192,7 @@ const AccountScreen = () => {
                   borderRadius: 5,
                   height: 40,
                   width: "48%",
-                  backgroundColor: "rgba(23, 207, 227, 0.1)",
+                  backgroundColor: "#90AAD5",
                 }}
                 activeOpacity={0.6}
                 onPress={async () => {
@@ -173,15 +204,19 @@ const AccountScreen = () => {
                 <Text
                   style={{
                     fontSize: 17,
-                    color: "#26b1bf",
+                    color: Colors.primary,
                     marginRight: 10,
                   }}
                 >
                   Join
                 </Text>
-                <Ionicons name={"logo-whatsapp"} size={23} color={"#26b1bf"} />
+                <Ionicons
+                  name={"logo-whatsapp"}
+                  size={23}
+                  color={Colors.primary}
+                />
               </TouchableOpacity>
-            </View>
+            </View> */}
             <TouchableOpacity
               style={{
                 flexDirection: "row",
@@ -192,7 +227,7 @@ const AccountScreen = () => {
                 borderRadius: 5,
                 height: 40,
                 width: "85%",
-                backgroundColor: "rgba(23, 207, 227, 0.1)",
+                backgroundColor: "#90AAD5",
                 marginTop: 30,
                 // marginRight: 40,
               }}
@@ -207,7 +242,7 @@ const AccountScreen = () => {
               <Text
                 style={{
                   fontSize: 17,
-                  color: "#26b1bf",
+                  color: Colors.primary,
                   marginRight: 10,
                 }}
               >
@@ -216,7 +251,7 @@ const AccountScreen = () => {
               <Ionicons
                 name="share-social-outline"
                 size={20}
-                color={"#26b1bf"}
+                color={Colors.primary}
               />
             </TouchableOpacity>
             <TouchableOpacity
@@ -229,7 +264,7 @@ const AccountScreen = () => {
                 borderRadius: 5,
                 height: 40,
                 width: "85%",
-                backgroundColor: "rgba(23, 207, 227, 0.1)",
+                backgroundColor: "#90AAD5",
                 marginTop: 30,
                 // marginRight: 40,
               }}
@@ -239,45 +274,13 @@ const AccountScreen = () => {
               <Text
                 style={{
                   fontSize: 17,
-                  color: "#26b1bf",
+                  color: Colors.primary,
                   marginRight: 10,
                 }}
               >
                 Feedback
               </Text>
-              {/* <Ionicons name="share-social-outline" size={20} color={"#26b1bf"} /> */}
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{
-                flexDirection: "row",
-                justifyContent: "center",
-                alignItems: "center",
-                borderWidth: 1,
-                borderColor: Colors.danger,
-                borderRadius: 5,
-                height: 40,
-                width: "85%",
-                backgroundColor: "rgba(173, 2, 2, 0.1)",
-                marginTop: 30,
-                // marginRight: 40,
-              }}
-              activeOpacity={0.6}
-              onPress={deleteHandler}
-            >
-              <Text
-                style={{
-                  fontSize: 17,
-                  color: Colors.danger,
-                  marginRight: 10,
-                }}
-              >
-                Delete Account
-              </Text>
-              <Ionicons
-                name={"trash-outline"}
-                size={22}
-                color={Colors.danger}
-              />
+              {/* <Ionicons name="share-social-outline" size={20} color={Colors.primary} /> */}
             </TouchableOpacity>
           </View>
         </View>

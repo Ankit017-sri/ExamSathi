@@ -240,7 +240,7 @@ const PastQuiz = ({ navigation }) => {
                   style={[
                     styles.tag,
                     {
-                      backgroundColor: activeTag == "all" ? "#86E5FF" : "white",
+                      backgroundColor: activeTag == "all" ? "#90AAD5" : "white",
                     },
                   ]}
                 >
@@ -261,7 +261,7 @@ const PastQuiz = ({ navigation }) => {
                         styles.tag,
                         {
                           backgroundColor:
-                            activeTag == item.tag ? "#86E5FF" : "white",
+                            activeTag == item.tag ? "#90AAD5" : "white",
                         },
                       ]}
                       onPress={() => {
