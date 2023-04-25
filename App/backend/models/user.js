@@ -25,6 +25,18 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: "App",
     },
+    appShareCount1: {
+      type: Number,
+      default: 0,
+    },
+    appShareCount2: {
+      type: Number,
+      default: 0,
+    },
+    appOpenCount: {
+      type: Number,
+      default: 0,
+    },
   },
   { timestamps: true }
 );

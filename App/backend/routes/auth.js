@@ -87,4 +87,44 @@ router.delete("/delete", auth, async (req, res) => {
   return res.send({ message: "USER_DELETED" });
 });
 
+router.put("/app/share", auth, async (req, res) => {
+  try {
+    const user = await User.findOne({ _id: req.user._id });
+    const { screen } = req.body;
+    // const analytic = await Analytic.find();
+    let data;
+    if (screen == 1) {
+      data = await User.updateOne(
+        { _id: req.user._id },
+        { appShareCount1: user.appShareCount1 + 1 },
+        { upsert: true }
+      );
+    } else if (screen == 2) {
+      data = await User.updateOne(
+        { _id: req.user._id },
+        { appShareCount2: user.appShareCount2 + 1 },
+        { upsert: true }
+      );
+    }
+    return res.send(data);
+  } catch (error) {
+    console.log(error);
+    res.send("somthing went wrong !");
+  }
+});
+
+router.put("/app/openCount", auth, async (req, res) => {
+  try {
+    const user = await User.findById({ _id: req.user._id });
+    await User.updateOne(
+      { _id: req.user._id },
+      { appOpenCount: user.appOpenCount + 1 },
+      { upsert: true }
+    );
+    return res.send("updated");
+  } catch (error) {
+    console.log(error);
+    res.send("somthing went wrong !");
+  }
+});
 module.exports = router;
