@@ -6,6 +6,8 @@ import {
   TouchableOpacity,
   Keyboard,
   Image,
+  Button,
+  Linking,
 } from "react-native";
 import Constants from "expo-constants";
 
@@ -19,7 +21,24 @@ const CustomHeader = ({
   sub,
   imgUri,
   setTabBarVisible,
+  share,
 }) => {
+  const storeUrl = `https://play.google.com/store/apps/details?id=com.examSathi.examSathi`;
+  const whatsappUrl = `whatsapp://send?text=${storeUrl}`;
+
+  const Share = async () => {
+    try {
+      const supported = await Linking.canOpenURL(whatsappUrl);
+      if (supported) {
+        await Linking.openURL(whatsappUrl);
+      } else {
+        console.log(`Unable to open WhatsApp URL: ${whatsappUrl}`);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <View
       style={[
@@ -53,7 +72,15 @@ const CustomHeader = ({
         </TouchableOpacity>
       )}
       {imgUri && <Image source={imgUri} style={styles.avatar} />}
-      <View>
+      <View
+        style={
+          share && {
+            flexDirection: "row",
+            justifyContent: "space-between",
+            width: "90%",
+          }
+        }
+      >
         <Text
           style={[
             styles.title,
@@ -66,6 +93,36 @@ const CustomHeader = ({
           {title}
         </Text>
         {sub && <Text style={styles.sub}>{sub}</Text>}
+        {share && (
+          <TouchableOpacity
+            style={{
+              flexDirection: "row",
+              borderRadius: 12,
+              borderColor: "#25D366",
+              borderWidth: 1,
+              paddingHorizontal: 8,
+              paddingVertical: 2,
+              backgroundColor: "#fff",
+            }}
+            onPress={Share}
+          >
+            {/* <Ionicons name="logo-whatsapp" color="#25D366" size={25} /> */}
+            <Image
+              source={require("../assets/WhatsApp.svg.png")}
+              style={{ width: 30, height: 30 }}
+            />
+            <Text
+              style={{
+                marginLeft: 4,
+                textAlignVertical: "center",
+                color: "#25D366",
+                fontWeight: "600",
+              }}
+            >
+              Share App
+            </Text>
+          </TouchableOpacity>
+        )}
       </View>
     </View>
   );
@@ -75,7 +132,8 @@ const styles = StyleSheet.create({
   headerContainer: {
     width: "100%",
     height: 45 + Constants.statusBarHeight,
-    backgroundColor: Colors.primary,
+    // backgroundColor: Colors.primary,
+    backgroundColor: "#23395d",
     justifyContent: "center",
     alignItems: "flex-end",
     elevation: 5,
@@ -86,7 +144,8 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: "bold",
-    color: Colors.text,
+    // color: Colors.text,
+    color: "#fff",
     alignSelf: "center",
   },
   sub: {

@@ -139,7 +139,7 @@ export default function App() {
       <NavigationContainer>
         {token ? <AppNavigator onLayout={onLayoutRootView} /> : <Login />}
       </NavigationContainer>
-      <StatusBar animated style="dark" />
+      <StatusBar animated style="light" />
     </AuthContext.Provider>
   );
 }

@@ -334,7 +334,7 @@ const ChatsScreen = ({ navigation, route }) => {
             style={{
               minWidth: "55%",
               maxWidth: "95%",
-              backgroundColor: "#00ABB3",
+              backgroundColor: "#DEF6D4",
               borderRadius: 12,
               borderBottomRightRadius: 0,
               borderBottomLeftRadius: 0,
@@ -406,7 +406,7 @@ const ChatsScreen = ({ navigation, route }) => {
           style={{
             minWidth: "55%",
             maxWidth: "95%",
-            backgroundColor: "#00ABB3",
+            backgroundColor: "#E7FFDD",
             borderRadius: 12,
             paddingHorizontal: 10,
             paddingVertical: 4,
@@ -457,7 +457,7 @@ const ChatsScreen = ({ navigation, route }) => {
           ) : (
             <Text
               style={{
-                color: "#fff",
+                color: "#000",
                 fontSize: 16,
                 marginHorizontal: 6,
                 marginVertical: 4,
@@ -478,7 +478,7 @@ const ChatsScreen = ({ navigation, route }) => {
     return (
       <View
         style={{
-          backgroundColor: "#EAEAEA",
+          backgroundColor: "#F5F7F6",
           marginBottom: 8,
           borderRadius: 10,
         }}
@@ -562,7 +562,7 @@ const ChatsScreen = ({ navigation, route }) => {
           style={{
             minWidth: "60%",
             maxWidth: "85%",
-            backgroundColor: "#EAEAEA",
+
             borderRadius: 12,
             paddingHorizontal: 10,
           }}
@@ -625,7 +625,7 @@ const ChatsScreen = ({ navigation, route }) => {
     setVisible(!visible);
   };
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1, backgroundColor: "#E5DDD5" }}>
       <CustomHeader
         title={title.split(":")[0]}
         sub={`${memCount} members, ${len} online`}
@@ -861,7 +861,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     // height: "80%",
     // backgroundColor: "#fff",
-    marginTop: 10,
+    // marginTop: 10,
+    paddingTop: 10,
   },
   message: {
     backgroundColor: "#f1f1f1",
@@ -891,6 +892,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     padding: 8,
     marginRight: 8,
+    backgroundColor: "#fff",
   },
   button: {
     backgroundColor: "black",
@@ -901,16 +903,17 @@ const styles = StyleSheet.create({
   messageSent: {
     flexDirection: "column",
     alignItems: "flex-end",
-    marginBottom: 2,
+    marginBottom: 4,
   },
   messageRecieved: {
     flexDirection: "column",
     alignItems: "flex-start",
-    marginBottom: 2,
+    marginBottom: 4,
   },
   name: {
     color: "#00ABB3",
     borderRadius: 10,
+    marginHorizontal: 10,
   },
   modalContent: {
     flex: 1,

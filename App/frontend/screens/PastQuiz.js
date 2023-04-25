@@ -143,22 +143,24 @@ const PastQuiz = ({ navigation }) => {
           }}
         >
           <Text style={styles.title}>{title}</Text>
-          <TouchableOpacity
-            onPress={() => {
-              setAllQuiz(data);
-              setTitle(title);
-              scrollRef.current.scrollTo({ y: 0, animated: false });
-              setViewAll(true);
-            }}
-            style={{ flexDirection: "row" }}
-          >
-            <Text style={{ marginRight: 4 }}>View All</Text>
-            <Ionicons
-              name="chevron-forward-circle-outline"
-              size={20}
-              color="blue"
-            />
-          </TouchableOpacity>
+          {data?.length > 1 && (
+            <TouchableOpacity
+              onPress={() => {
+                setAllQuiz(data);
+                setTitle(title);
+                scrollRef.current.scrollTo({ y: 0, animated: false });
+                setViewAll(true);
+              }}
+              style={{ flexDirection: "row" }}
+            >
+              <Text style={{ marginRight: 4 }}>View All</Text>
+              <Ionicons
+                name="chevron-forward-circle-outline"
+                size={20}
+                color={Colors.primary}
+              />
+            </TouchableOpacity>
+          )}
         </View>
         {data && (
           <FlatList
@@ -174,7 +176,7 @@ const PastQuiz = ({ navigation }) => {
   return (
     <>
       <View style={styles.container}>
-        <CustomHeader title="Past Quiz" />
+        <CustomHeader title="Past Quiz" share={true} />
         {isLoading ? (
           <Loader />
         ) : (
@@ -480,7 +482,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 5,
-    backgroundColor: Colors.primary,
+    backgroundColor: "#777777",
     elevation: 5,
   },
   card: {

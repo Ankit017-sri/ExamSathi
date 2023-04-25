@@ -71,10 +71,14 @@ const RecentQuiz = ({ navigation }) => {
   const [tagDetails, setTagDetails] = useState([]);
   const [allCategoryData, setAllCategoryData] = useState([]);
 
+  const scrollList = useRef();
+
   const handleNext = () => {
+    scrollList.current.scrollToOffset({ animated: false, offset: 0 });
     setPage(page + 1);
   };
   const handlePrev = () => {
+    scrollList.current.scrollToOffset({ animated: false, offset: 0 });
     setPage(page - 1);
   };
 
@@ -463,9 +467,9 @@ const RecentQuiz = ({ navigation }) => {
     return () => backHandler.remove();
   }, [quizStarted]);
 
-  const TriangleCorner = () => {
-    return <View style={[styles.triangleCorner]} />;
-  };
+  // const TriangleCorner = () => {
+  //   return <View style={[styles.triangleCorner]} />;
+  // };
   const Card = ({ item, title }) => {
     return (
       <View style={{ flexDirection: "row", marginLeft: 10, marginVertical: 4 }}>
@@ -553,22 +557,24 @@ const RecentQuiz = ({ navigation }) => {
           }}
         >
           <Text style={styles.title}>{title}</Text>
-          <TouchableOpacity
-            onPress={() => {
-              setAllQuiz(data);
-              setTitle(title);
-              scrollRef.current.scrollTo({ y: 0, animated: false });
-              setViewAll(true);
-            }}
-            style={{ flexDirection: "row" }}
-          >
-            <Text style={{ marginRight: 4 }}>View All</Text>
-            <Ionicons
-              name="chevron-forward-circle-outline"
-              size={20}
-              color="blue"
-            />
-          </TouchableOpacity>
+          {data?.length > 1 && (
+            <TouchableOpacity
+              onPress={() => {
+                setAllQuiz(data);
+                setTitle(title);
+                scrollRef.current.scrollTo({ y: 0, animated: false });
+                setViewAll(true);
+              }}
+              style={{ flexDirection: "row" }}
+            >
+              <Text style={{ marginRight: 4 }}>View All</Text>
+              <Ionicons
+                name="chevron-forward-circle-outline"
+                size={20}
+                color={Colors.primary}
+              />
+            </TouchableOpacity>
+          )}
         </View>
         {data && (
           <FlatList
@@ -629,7 +635,7 @@ const RecentQuiz = ({ navigation }) => {
   };
   return (
     <View style={styles.container}>
-      <CustomHeader title="New Quiz" />
+      <CustomHeader title="New Quiz" share={true} />
       {loading || isloading ? (
         <Loader />
       ) : quizStarted ? (
@@ -691,6 +697,7 @@ const RecentQuiz = ({ navigation }) => {
               page={page}
               selected={selected}
               setSelected={setSelected}
+              scrollList={scrollList}
             />
           </View>
           <View

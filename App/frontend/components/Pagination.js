@@ -4,7 +4,14 @@ import QuesCard from "./QuesCard";
 
 const PAGE_SIZE = 2;
 
-const Pagination = ({ data, onSelect, page, selected, setSelected }) => {
+const Pagination = ({
+  data,
+  onSelect,
+  page,
+  selected,
+  setSelected,
+  scrollList,
+}) => {
   const [items, setItems] = useState([]);
 
   const fetchData = () => {
@@ -36,6 +43,7 @@ const Pagination = ({ data, onSelect, page, selected, setSelected }) => {
       keyExtractor={(item) => item.qNo.toString()}
       // onEndReached={handleEndReached}
       // onEndReachedThreshold={0.5}
+      ref={scrollList}
       style={styles.list}
     />
   );

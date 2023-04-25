@@ -288,7 +288,7 @@ const ChatGroups = ({ navigation }) => {
       minutes = minutes < 10 ? "0" + minutes : minutes;
       formatTime = hours + ":" + minutes + " " + ampm;
     } else if (lastmessage?.length > 0) {
-      const createdAt = lastmessage[0].createdAt;
+      const createdAt = lastmessage[0]?.createdAt;
       const date = new Date(createdAt);
       hours = date.getHours();
       minutes = date.getMinutes();
@@ -335,19 +335,20 @@ const ChatGroups = ({ navigation }) => {
                 }}
                 numberOfLines={1}
               >
-                {unreads == 0 &&
-                  lastmessage !== null &&
-                  `${
-                    lastmessage[0]?.senderId !== Id
-                      ? lastmessage[0]?.name
-                      : "you"
-                  } : ${
-                    lastmessage[0]?.uri
-                      ? lastmessage[0].uri.split(".").slice(-1) == "pdf"
-                        ? lastmessage[0].pdfName + " PDF"
-                        : "Image"
-                      : lastmessage[0]?.text
-                  }`}
+                {(unreads == 0 && lastmessage !== null) ||
+                  lastmessage !== undefined ||
+                  (lastmessage !== null &&
+                    `${
+                      lastmessage[0]?.senderId !== Id
+                        ? lastmessage[0]?.name
+                        : "you"
+                    } : ${
+                      lastmessage[0]?.uri
+                        ? lastmessage[0].uri.split(".").slice(-1) == "pdf"
+                          ? lastmessage[0].pdfName + " PDF"
+                          : "Image"
+                        : lastmessage[0]?.text
+                    }`)}
                 {newMessages[unreads - 1]?.senderId !== Id
                   ? newMessages[unreads - 1]?.name
                   : "you"}{" "}
@@ -391,7 +392,7 @@ const ChatGroups = ({ navigation }) => {
 
   return (
     <View style={{ position: "relative", flex: 0.9 }}>
-      <CustomHeader title={"Study Groups"} />
+      <CustomHeader title={"Study Groups"} share={true} />
       {loading ? (
         <Loader />
       ) : (
