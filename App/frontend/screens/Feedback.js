@@ -20,6 +20,7 @@ import AuthContext from "../auth/context";
 
 const Feedback = ({ setIsFeedBack }) => {
   const authContext = useContext(AuthContext);
+  const { setTabBarVisible } = useContext(AuthContext);
 
   const [feedback, setFeedback] = useState("");
   const [feedbacks, setFeedbacks] = useState([]);
@@ -78,7 +79,10 @@ const Feedback = ({ setIsFeedBack }) => {
             alignSelf: "flex-end",
             bottom: 5,
           }}
-          onPress={() => setIsFeedBack(false)}
+          onPress={() => {
+            setIsFeedBack(false);
+            setTabBarVisible(true);
+          }}
         >
           <Ionicons name="arrow-back-circle-outline" size={32} color="#fff" />
         </TouchableOpacity>
@@ -182,7 +186,7 @@ export default Feedback;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 0.93,
+    flex: 1,
   },
   headerContainer: {
     width: "100%",

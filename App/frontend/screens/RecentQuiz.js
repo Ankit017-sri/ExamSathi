@@ -213,6 +213,20 @@ const RecentQuiz = ({ navigation }) => {
   //     setLoading(false);
   //   }
   // };
+  const appShareCount = async () => {
+    try {
+      const res = await axios.put(
+        `${baseUrl}/auth/app/share`,
+        { screen: 2 },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      console.log(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const startQuiz = async (quizId) => {
     setLoading(true);
@@ -635,7 +649,11 @@ const RecentQuiz = ({ navigation }) => {
   };
   return (
     <View style={styles.container}>
-      <CustomHeader title="New Quiz" share={true} />
+      <CustomHeader
+        title="New Quiz"
+        share={true}
+        appShareCount={appShareCount}
+      />
       {loading || isloading ? (
         <Loader />
       ) : quizStarted ? (
@@ -747,7 +765,7 @@ const RecentQuiz = ({ navigation }) => {
                       <Ionicons
                         name="chevron-back-outline"
                         size={25}
-                        color="cyan"
+                        color={Colors.primary}
                       />{" "}
                       Prev
                     </Text>
@@ -766,7 +784,7 @@ const RecentQuiz = ({ navigation }) => {
                     <Ionicons
                       name="chevron-forward-outline"
                       size={25}
-                      color="cyan"
+                      color={Colors.primary}
                     />
                   </Text>
                 </TouchableOpacity>
@@ -794,7 +812,7 @@ const RecentQuiz = ({ navigation }) => {
                     <Ionicons
                       name="chevron-back-outline"
                       size={25}
-                      color="cyan"
+                      color={Colors.primary}
                     />{" "}
                     Prev
                   </Text>

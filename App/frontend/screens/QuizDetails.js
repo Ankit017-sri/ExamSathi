@@ -26,7 +26,7 @@ const QuizDetails = ({ navigation }) => {
     const res = await axios.get(`${baseUrl}/submitQuiz/get/${data._id}`, {
       headers: { Authorization: `Bearer ${token}` },
     });
-    console.log("res..", res.data);
+    // console.log("res..", res.data);
 
     if (res.data.length === 0) setSubmittedQuizData([]);
     else setSubmittedQuizData(res.data[0].submittedQuizDetails);
@@ -41,7 +41,7 @@ const QuizDetails = ({ navigation }) => {
       console.log(res.data);
       setQuestions(res.data);
     } catch (error) {
-      console.log(error);
+      console.log("error 1", error);
     }
   };
   useEffect(() => {

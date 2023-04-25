@@ -44,7 +44,6 @@ const PastQuiz = ({ navigation }) => {
       fetchAllData();
     }, [])
   );
-
   // const fetchData = async () => {
   //   try {
   //     const response = await axios.get(`${baseUrl}/quizData`, {
@@ -176,7 +175,7 @@ const PastQuiz = ({ navigation }) => {
   return (
     <>
       <View style={styles.container}>
-        <CustomHeader title="Past Quiz" share={true} />
+        <CustomHeader title="Past Quiz" />
         {isLoading ? (
           <Loader />
         ) : (

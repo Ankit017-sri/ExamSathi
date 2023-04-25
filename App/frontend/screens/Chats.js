@@ -37,6 +37,7 @@ import cache from "../utilities/cache";
 import { useFocusEffect } from "@react-navigation/native";
 import ChatContext from "../chat/context";
 import SwipeableMessage from "../components/SwipeableMessage";
+import Colors from "../constants/Colors";
 
 const ChatsScreen = ({ navigation, route }) => {
   const { group, fetchedData, title, imgUri } = route.params;
@@ -328,7 +329,7 @@ const ChatsScreen = ({ navigation, route }) => {
 
   const MessageSent = ({ msg }) => {
     return (
-      <View>
+      <View style={{ marginBottom: 6, borderRadius: 10 }}>
         {msg.replyOn?.name && (
           <View
             style={{
@@ -479,7 +480,7 @@ const ChatsScreen = ({ navigation, route }) => {
       <View
         style={{
           backgroundColor: "#F5F7F6",
-          marginBottom: 8,
+          marginBottom: 6,
           borderRadius: 10,
         }}
       >
@@ -830,7 +831,7 @@ const ChatsScreen = ({ navigation, route }) => {
             <View style={styles.button}>
               <Ionicons name="camera-outline" color="#fff" size={20} />
             </View>
-            <Text style={{ color: "black" }}>Camera</Text>
+            <Text style={{ color: "#fff" }}>Camera</Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={openGallery}
@@ -839,7 +840,7 @@ const ChatsScreen = ({ navigation, route }) => {
             <View style={styles.button}>
               <Ionicons name="images-outline" color="#fff" size={20} />
             </View>
-            <Text style={{ color: "black" }}>Gallery</Text>
+            <Text style={{ color: "#fff" }}>Gallery</Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={pickDocument}
@@ -848,7 +849,7 @@ const ChatsScreen = ({ navigation, route }) => {
             <View style={styles.button}>
               <Ionicons name="document-attach-outline" color="#fff" size={20} />
             </View>
-            <Text style={{ color: "black" }}>Document</Text>
+            <Text style={{ color: "#fff" }}>Document</Text>
           </TouchableOpacity>
         </View>
       </BottomSheet>
@@ -862,12 +863,12 @@ const styles = StyleSheet.create({
     // height: "80%",
     // backgroundColor: "#fff",
     // marginTop: 10,
-    paddingTop: 10,
+    paddingVertical: 10,
   },
   message: {
     backgroundColor: "#f1f1f1",
     borderRadius: 5,
-    marginBottom: 3,
+    marginBottom: 4,
     paddingHorizontal: 6,
   },
   messageText: {
@@ -935,7 +936,8 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
   bottomNavigationView: {
-    backgroundColor: "#17cfe3",
+    // backgroundColor: "#17cfe3",
+    backgroundColor: Colors.primary,
     width: "100%",
     height: 200,
     justifyContent: "space-around",

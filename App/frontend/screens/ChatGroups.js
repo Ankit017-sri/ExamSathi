@@ -44,6 +44,38 @@ const ChatGroups = ({ navigation }) => {
   // const newGroup = () => {
   //   navigation.navigate("New Group");
   // };
+  const appOpenCount = async () => {
+    try {
+      const res = await axios.put(
+        `${baseUrl}/auth/app/openCount`,
+        { data: "count" },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      console.log(res.data);
+    } catch (error) {
+      console.log("error 0 ", error);
+    }
+  };
+  const appShareCount = async () => {
+    try {
+      const res = await axios.put(
+        `${baseUrl}/auth/app/share`,
+        { screen: 1 },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      console.log(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    appOpenCount();
+  }, []);
+
   useFocusEffect(
     useCallback(() => {
       fetchLatestMessageAll();
@@ -51,20 +83,28 @@ const ChatGroups = ({ navigation }) => {
   );
   const fetchLatestMessageAll = async () => {
     try {
-      setTimeout(async () => {
-        const lastest1 = await cache.get("group1latest");
-        const lastest2 = await cache.get("group2latest");
-        const lastest3 = await cache.get("group3latest");
-        const lastest4 = await cache.get("group4latest");
-        const lastest5 = await cache.get("group5latest");
-
+      const lastest1 = await cache.get("group1latest");
+      const lastest2 = await cache.get("group2latest");
+      const lastest3 = await cache.get("group3latest");
+      const lastest4 = await cache.get("group4latest");
+      const lastest5 = await cache.get("group5latest");
+      if (lastest1) {
         setLastMessage1(lastest1);
+        console.log(lastmessage1);
+      }
+      if (lastest2) {
         setLastMessage2(lastest2);
+      }
+      if (lastest3) {
         setLastMessage3(lastest3);
+      }
+      if (lastest4) {
         setLastMessage4(lastest4);
+      }
+      if (lastest5) {
         setLastMessage5(lastest5);
-        setLoading(false);
-      }, 2000);
+      }
+      setLoading(false);
 
       const group1NewMessages = await fetchLatestMessage({ group: "group1" });
       const group2NewMessages = await fetchLatestMessage({ group: "group2" });
@@ -168,7 +208,7 @@ const ChatGroups = ({ navigation }) => {
             headers: { Authorization: `Bearer ${token}` },
           })
           .catch((e) => {
-            console.log(e);
+            console.log("error 1 ", e);
           });
 
         // setMessages(data.data);
@@ -193,7 +233,7 @@ const ChatGroups = ({ navigation }) => {
           headers: { Authorization: `Bearer ${token}` },
         })
         .catch((e) => {
-          console.log(e);
+          console.log("error", e);
         });
 
       // setMessages(data.data);
@@ -335,20 +375,19 @@ const ChatGroups = ({ navigation }) => {
                 }}
                 numberOfLines={1}
               >
-                {(unreads == 0 && lastmessage !== null) ||
-                  lastmessage !== undefined ||
-                  (lastmessage !== null &&
-                    `${
-                      lastmessage[0]?.senderId !== Id
-                        ? lastmessage[0]?.name
-                        : "you"
-                    } : ${
-                      lastmessage[0]?.uri
-                        ? lastmessage[0].uri.split(".").slice(-1) == "pdf"
-                          ? lastmessage[0].pdfName + " PDF"
-                          : "Image"
-                        : lastmessage[0]?.text
-                    }`)}
+                {unreads == 0 &&
+                  lastmessage?.length > 0 &&
+                  `${
+                    lastmessage[0]?.senderId !== Id
+                      ? lastmessage[0]?.name
+                      : "you"
+                  } : ${
+                    lastmessage[0]?.uri
+                      ? lastmessage[0].uri.split(".").slice(-1) == "pdf"
+                        ? lastmessage[0].pdfName + " PDF"
+                        : "Image"
+                      : lastmessage[0]?.text
+                  }`}
                 {newMessages[unreads - 1]?.senderId !== Id
                   ? newMessages[unreads - 1]?.name
                   : "you"}{" "}
@@ -392,7 +431,11 @@ const ChatGroups = ({ navigation }) => {
 
   return (
     <View style={{ position: "relative", flex: 0.9 }}>
-      <CustomHeader title={"Study Groups"} share={true} />
+      <CustomHeader
+        title={"Study Groups"}
+        share={true}
+        appShareCount={appShareCount}
+      />
       {loading ? (
         <Loader />
       ) : (

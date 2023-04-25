@@ -238,9 +238,8 @@ export const AppNavigator = ({ onLayout }) => {
             color = focused ? Colors.text : "black";
             size = focused ? 26 : 24;
 
-            if (route.name === "Past Quiz")
-              // iconName = focused ? "home" : "home-outline";
-              iconName = focused ? "newspaper" : "newspaper-outline";
+            if (route.name === "Chats")
+              iconName = focused ? "home" : "home-outline";
             else if (route.name === "New Quiz")
               return (
                 <Image
@@ -251,8 +250,8 @@ export const AppNavigator = ({ onLayout }) => {
             else if (route.name === "Account") {
               iconName = focused ? "person" : "person-outline";
               size = focused ? 23 : 21;
-            } else if (route.name === "Chats") {
-              iconName = focused ? "chatbubbles" : "chatbubbles-outline";
+            } else if (route.name === "Past Quiz") {
+              iconName = focused ? "newspaper" : "newspaper-outline";
               size = focused ? 23 : 21;
             }
 
@@ -281,8 +280,9 @@ export const AppNavigator = ({ onLayout }) => {
           listeners={{
             tabPress: (e) => {
               // e.preventDefault();
-              animate(width / 2);
+              animate(0);
             },
+            focus: () => animate(0),
           }}
         />
 
@@ -312,8 +312,9 @@ export const AppNavigator = ({ onLayout }) => {
           listeners={{
             tabPress: (e) => {
               // e.preventDefault();
-              animate(0);
+              animate(width / 2);
             },
+            focus: () => animate(width / 2),
           }}
         />
 
@@ -325,6 +326,7 @@ export const AppNavigator = ({ onLayout }) => {
               // e.preventDefault();
               animate(width / 2 + width / 4);
             },
+            focus: () => animate(width / 2 + width / 4),
           }}
         />
       </Tab.Navigator>

@@ -22,6 +22,7 @@ const CustomHeader = ({
   imgUri,
   setTabBarVisible,
   share,
+  appShareCount,
 }) => {
   const storeUrl = `https://play.google.com/store/apps/details?id=com.examSathi.examSathi`;
   const whatsappUrl = `whatsapp://send?text=${storeUrl}`;
@@ -29,6 +30,7 @@ const CustomHeader = ({
   const Share = async () => {
     try {
       const supported = await Linking.canOpenURL(whatsappUrl);
+      appShareCount();
       if (supported) {
         await Linking.openURL(whatsappUrl);
       } else {
@@ -64,11 +66,7 @@ const CustomHeader = ({
             setTabBarVisible && setTabBarVisible(true);
           }}
         >
-          <Ionicons
-            name="arrow-back-circle-outline"
-            size={32}
-            color={Colors.text}
-          />
+          <Ionicons name="arrow-back-circle-outline" size={32} color="#fff" />
         </TouchableOpacity>
       )}
       {imgUri && <Image source={imgUri} style={styles.avatar} />}
@@ -151,7 +149,7 @@ const styles = StyleSheet.create({
   sub: {
     fontSize: 12,
     fontWeight: "bold",
-    color: Colors.text,
+    color: "#fff",
     alignSelf: "center",
   },
   avatar: {

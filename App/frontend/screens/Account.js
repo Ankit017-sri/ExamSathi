@@ -22,6 +22,7 @@ import Feedback from "./Feedback";
 
 const AccountScreen = () => {
   const authContext = useContext(AuthContext);
+  const { setTabBarVisible } = useContext(AuthContext);
 
   const { name, phone } = useContext(AuthContext);
   const [isFeedback, setIsFeedback] = useState(false);
@@ -269,7 +270,10 @@ const AccountScreen = () => {
                 // marginRight: 40,
               }}
               activeOpacity={0.6}
-              onPress={() => setIsFeedback(true)}
+              onPress={() => {
+                setTabBarVisible(false);
+                setIsFeedback(true);
+              }}
             >
               <Text
                 style={{
