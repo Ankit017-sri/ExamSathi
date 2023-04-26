@@ -81,11 +81,18 @@ const PastQuiz = ({ navigation }) => {
 
   const Card = ({ item, title }) => {
     return (
-      <View style={{ flexDirection: "row", marginLeft: 10, marginVertical: 4 }}>
+      <View
+        style={{
+          flexDirection: "row",
+          marginLeft: 10,
+          marginVertical: 4,
+          width: viewAll ? "45%" : 210,
+        }}
+      >
         <View
           style={{
             ...styles.card,
-            width: viewAll ? 180 : 210,
+            width: "100%",
             alignItems: "center",
           }}
         >
@@ -93,7 +100,7 @@ const PastQuiz = ({ navigation }) => {
             <Text
               style={{
                 textAlign: "center",
-                fontSize: 18,
+                fontSize: 16,
                 fontWeight: "bold",
                 color: Colors.text,
                 marginBottom: 20,
@@ -109,8 +116,12 @@ const PastQuiz = ({ navigation }) => {
                 marginBottom: 10,
               }}
             >
-              <Text>Time: {item.maxMarks == 100 ? 90 : item.maxMarks} min</Text>
-              <Text style={{ marginLeft: 16 }}>Marks: {item.maxMarks}</Text>
+              <Text style={{ fontSize: 12 }}>
+                Time: {item.maxMarks == 100 ? 90 : item.maxMarks} min
+              </Text>
+              <Text style={{ marginLeft: 16, fontSize: 12 }}>
+                Marks: {item.maxMarks}
+              </Text>
             </View>
             <TouchableOpacity
               style={{ ...styles.button, width: "100%" }}
@@ -119,7 +130,7 @@ const PastQuiz = ({ navigation }) => {
                 navigation.navigate("QuizDetailScreen", { quiz: item });
               }}
             >
-              <Text style={{ color: "#fff", fontSize: 16 }}>View details</Text>
+              <Text style={{ color: "#fff", fontSize: 14 }}>View details</Text>
             </TouchableOpacity>
           </>
         </View>

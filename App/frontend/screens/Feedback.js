@@ -12,15 +12,14 @@ import {
 } from "react-native";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import Colors from "../constants/Colors";
-import { Ionicons } from "@expo/vector-icons";
 import Constants from "expo-constants";
 import axios from "axios";
 import baseUrl from "../baseUrl";
 import AuthContext from "../auth/context";
+import CustomHeader from "../components/CustomHeader";
 
-const Feedback = ({ setIsFeedBack }) => {
+const Feedback = ({ navigation }) => {
   const authContext = useContext(AuthContext);
-  const { setTabBarVisible } = useContext(AuthContext);
 
   const [feedback, setFeedback] = useState("");
   const [feedbacks, setFeedbacks] = useState([]);
@@ -68,33 +67,9 @@ const Feedback = ({ setIsFeedBack }) => {
       "Thank you again! We’re looking forward to making your experience even better in the future!"
     );
   };
-
-  const Header = ({ title }) => {
-    return (
-      <View style={styles.headerContainer}>
-        <TouchableOpacity
-          style={{
-            left: 10,
-            position: "absolute",
-            alignSelf: "flex-end",
-            bottom: 5,
-          }}
-          onPress={() => {
-            setIsFeedBack(false);
-            setTabBarVisible(true);
-          }}
-        >
-          <Ionicons name="arrow-back-circle-outline" size={32} color="#fff" />
-        </TouchableOpacity>
-        <View>
-          <Text style={styles.title}>{title}</Text>
-        </View>
-      </View>
-    );
-  };
   return (
     <View style={styles.container}>
-      <Header title="Feedback" />
+      <CustomHeader title={"Feedback"} isBack={true} navigation={navigation} />
       <FlatList
         style={{
           marginBottom: 20,
@@ -186,7 +161,7 @@ export default Feedback;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flex: 0.93,
   },
   headerContainer: {
     width: "100%",

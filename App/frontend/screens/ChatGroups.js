@@ -6,13 +6,7 @@ import {
   View,
   Image,
 } from "react-native";
-import React, {
-  useContext,
-  useState,
-  useEffect,
-  useLayoutEffect,
-  useCallback,
-} from "react";
+import React, { useContext, useState, useEffect, useCallback } from "react";
 import CustomHeader from "../components/CustomHeader";
 import { Ionicons } from "@expo/vector-icons";
 // import ChatContext from "../chat/context";
@@ -78,6 +72,7 @@ const ChatGroups = ({ navigation }) => {
 
   useFocusEffect(
     useCallback(() => {
+      setTabBarVisible(true);
       fetchLatestMessageAll();
     }, [])
   );
@@ -90,7 +85,7 @@ const ChatGroups = ({ navigation }) => {
       const lastest5 = await cache.get("group5latest");
       if (lastest1) {
         setLastMessage1(lastest1);
-        console.log(lastmessage1);
+        // console.log(lastmessage1);
       }
       if (lastest2) {
         setLastMessage2(lastest2);
@@ -104,7 +99,6 @@ const ChatGroups = ({ navigation }) => {
       if (lastest5) {
         setLastMessage5(lastest5);
       }
-      setLoading(false);
 
       const group1NewMessages = await fetchLatestMessage({ group: "group1" });
       const group2NewMessages = await fetchLatestMessage({ group: "group2" });
@@ -367,11 +361,11 @@ const ChatGroups = ({ navigation }) => {
               <Text style={styles.groupName}>{name}</Text>
               <Text
                 style={{
-                  maxWidth: 200,
+                  maxWidth: 180,
                   fontSize: 14,
                   color: "grey",
                   overflow: "hidden",
-                  marginHorizontal: 20,
+                  marginLeft: 20,
                 }}
                 numberOfLines={1}
               >
@@ -548,7 +542,7 @@ const styles = StyleSheet.create({
     // elevation: 10,
     // borderRadius: 20,
     flexDirection: "row",
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,
     // paddingVertical: 4,
     justifyContent: "space-between",
     // backgroundColor: "#17cfe3",
@@ -558,7 +552,7 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     marginLeft: 20,
     textAlignVertical: "center",
-    maxWidth: 200,
+    maxWidth: 160,
     // maxHeight: 40,
   },
   avatar: {

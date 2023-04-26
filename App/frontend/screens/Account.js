@@ -1,5 +1,5 @@
-import { FontAwesome, Ionicons } from "@expo/vector-icons";
-import React, { useContext, useState } from "react";
+import { Ionicons } from "@expo/vector-icons";
+import React, { useContext } from "react";
 import {
   View,
   Text,
@@ -8,7 +8,6 @@ import {
   TouchableOpacity,
   Share,
   Alert,
-  Linking,
 } from "react-native";
 
 import CustomHeader from "../components/CustomHeader";
@@ -18,14 +17,11 @@ import AuthContext from "../auth/context";
 import authStorage from "../auth/storage";
 import axios from "axios";
 import baseUrl from "../baseUrl";
-import Feedback from "./Feedback";
 
-const AccountScreen = () => {
+const AccountScreen = ({ navigation }) => {
   const authContext = useContext(AuthContext);
-  const { setTabBarVisible } = useContext(AuthContext);
 
   const { name, phone } = useContext(AuthContext);
-  const [isFeedback, setIsFeedback] = useState(false);
 
   const deleteAccountHandler = async () => {
     const res = await axios.delete(`${baseUrl}/auth/delete`, {
@@ -79,68 +75,64 @@ const AccountScreen = () => {
   };
 
   return (
-    <>
-      {isFeedback ? (
-        <Feedback setIsFeedBack={setIsFeedback} />
-      ) : (
-        <View style={styles.container}>
-          <CustomHeader title="Account" />
-          <View
+    <View style={styles.container}>
+      <CustomHeader title="Account" />
+      <View
+        style={{
+          flex: 1,
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <View style={styles.cardContainer}>
+          <View style={styles.profileContainer}>
+            <Image
+              source={require("../assets/avatar.png")}
+              style={styles.profileImage}
+            />
+            <View>
+              <Text style={styles.name}>{name}</Text>
+              <Text style={styles.phone}>{phone}</Text>
+              <DeleteAccount />
+            </View>
+          </View>
+          <TouchableOpacity
             style={{
-              flex: 1,
-              alignItems: "center",
+              flexDirection: "row",
               justifyContent: "center",
+              alignItems: "center",
+              borderWidth: 1,
+              borderColor: Colors.primary,
+              borderRadius: 5,
+              height: 40,
+              width: "100%",
+              backgroundColor: "#90AAD5",
+            }}
+            activeOpacity={0.6}
+            onPress={async () => {
+              await cache.clear();
+              authStorage.removeToken();
+              authContext.setToken(null);
+              authContext.setName(null);
             }}
           >
-            <View style={styles.cardContainer}>
-              <View style={styles.profileContainer}>
-                <Image
-                  source={require("../assets/avatar.png")}
-                  style={styles.profileImage}
-                />
-                <View>
-                  <Text style={styles.name}>{name}</Text>
-                  <Text style={styles.phone}>{phone}</Text>
-                  <DeleteAccount />
-                </View>
-              </View>
-              <TouchableOpacity
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  borderWidth: 1,
-                  borderColor: Colors.primary,
-                  borderRadius: 5,
-                  height: 40,
-                  width: "100%",
-                  backgroundColor: "#90AAD5",
-                }}
-                activeOpacity={0.6}
-                onPress={async () => {
-                  await cache.clear();
-                  authStorage.removeToken();
-                  authContext.setToken(null);
-                  authContext.setName(null);
-                }}
-              >
-                <Text
-                  style={{
-                    fontSize: 17,
-                    color: Colors.primary,
-                    marginRight: 10,
-                  }}
-                >
-                  Logout
-                </Text>
-                <Ionicons
-                  name={"log-out-outline"}
-                  size={27}
-                  color={Colors.primary}
-                />
-              </TouchableOpacity>
-            </View>
-            {/* <View
+            <Text
+              style={{
+                fontSize: 17,
+                color: Colors.primary,
+                marginRight: 10,
+              }}
+            >
+              Logout
+            </Text>
+            <Ionicons
+              name={"log-out-outline"}
+              size={27}
+              color={Colors.primary}
+            />
+          </TouchableOpacity>
+        </View>
+        {/* <View
               style={[
                 styles.cardContainer,
                 {
@@ -218,78 +210,75 @@ const AccountScreen = () => {
                 />
               </TouchableOpacity>
             </View> */}
-            <TouchableOpacity
-              style={{
-                flexDirection: "row",
-                justifyContent: "center",
-                alignItems: "center",
-                borderWidth: 1,
-                borderColor: Colors.primary,
-                borderRadius: 5,
-                height: 40,
-                width: "85%",
-                backgroundColor: "#90AAD5",
-                marginTop: 30,
-                // marginRight: 40,
-              }}
-              activeOpacity={0.6}
-              onPress={async () =>
-                await Share.share({
-                  message:
-                    "Hey! Download this app and start practising right away.\n\nhttps://play.google.com/store/apps/details?id=com.examSathi.examSathi",
-                })
-              }
-            >
-              <Text
-                style={{
-                  fontSize: 17,
-                  color: Colors.primary,
-                  marginRight: 10,
-                }}
-              >
-                Share App
-              </Text>
-              <Ionicons
-                name="share-social-outline"
-                size={20}
-                color={Colors.primary}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{
-                flexDirection: "row",
-                justifyContent: "center",
-                alignItems: "center",
-                borderWidth: 1,
-                borderColor: Colors.primary,
-                borderRadius: 5,
-                height: 40,
-                width: "85%",
-                backgroundColor: "#90AAD5",
-                marginTop: 30,
-                // marginRight: 40,
-              }}
-              activeOpacity={0.6}
-              onPress={() => {
-                setTabBarVisible(false);
-                setIsFeedback(true);
-              }}
-            >
-              <Text
-                style={{
-                  fontSize: 17,
-                  color: Colors.primary,
-                  marginRight: 10,
-                }}
-              >
-                Feedback
-              </Text>
-              {/* <Ionicons name="share-social-outline" size={20} color={Colors.primary} /> */}
-            </TouchableOpacity>
-          </View>
-        </View>
-      )}
-    </>
+        <TouchableOpacity
+          style={{
+            flexDirection: "row",
+            justifyContent: "center",
+            alignItems: "center",
+            borderWidth: 1,
+            borderColor: Colors.primary,
+            borderRadius: 5,
+            height: 40,
+            width: "85%",
+            backgroundColor: "#90AAD5",
+            marginTop: 30,
+            // marginRight: 40,
+          }}
+          activeOpacity={0.6}
+          onPress={async () =>
+            await Share.share({
+              message:
+                "Hey! Download this app and start practising right away.\n\nhttps://play.google.com/store/apps/details?id=com.examSathi.examSathi",
+            })
+          }
+        >
+          <Text
+            style={{
+              fontSize: 17,
+              color: Colors.primary,
+              marginRight: 10,
+            }}
+          >
+            Share App
+          </Text>
+          <Ionicons
+            name="share-social-outline"
+            size={20}
+            color={Colors.primary}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={{
+            flexDirection: "row",
+            justifyContent: "center",
+            alignItems: "center",
+            borderWidth: 1,
+            borderColor: Colors.primary,
+            borderRadius: 5,
+            height: 40,
+            width: "85%",
+            backgroundColor: "#90AAD5",
+            marginTop: 30,
+            // marginRight: 40,
+          }}
+          activeOpacity={0.6}
+          onPress={() => {
+            navigation.navigate("Feedback");
+          }}
+        >
+          <Text
+            style={{
+              fontSize: 17,
+              color: Colors.primary,
+              marginRight: 10,
+            }}
+          >
+            Feedback
+          </Text>
+          {/* <Ionicons name="share-social-outline" size={20} color={Colors.primary} /> */}
+        </TouchableOpacity>
+      </View>
+    </View>
   );
 };
 

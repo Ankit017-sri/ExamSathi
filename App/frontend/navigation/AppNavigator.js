@@ -49,6 +49,7 @@ import NewGroup from "../screens/NewGroup";
 import GroupDescription from "../screens/GroupDescription";
 import GroupChat from "../screens/GroupChat";
 import cache from "../utilities/cache";
+import FeedbackScreen from "../screens/Feedback";
 
 let defaultNavOptions = {
   ...TransitionPresets.SlideFromRightIOS,
@@ -188,6 +189,18 @@ const ChatsNavigator = () => {
     </ChatContext.Provider>
   );
 };
+const AccountStackNavigator = createStackNavigator();
+const AccountNavigator = () => {
+  return (
+    <AccountStackNavigator.Navigator screenOptions={defaultNavOptions}>
+      <AccountStackNavigator.Screen name="Account" component={AccountScreen} />
+      <AccountStackNavigator.Screen
+        name="Feedback"
+        component={FeedbackScreen}
+      />
+    </AccountStackNavigator.Navigator>
+  );
+};
 
 const Tab = createBottomTabNavigator();
 
@@ -247,7 +260,7 @@ export const AppNavigator = ({ onLayout }) => {
                   style={{ height: 30, width: 70 }}
                 />
               );
-            else if (route.name === "Account") {
+            else if (route.name === "AccountNFeedback") {
               iconName = focused ? "person" : "person-outline";
               size = focused ? 23 : 21;
             } else if (route.name === "Past Quiz") {
@@ -319,8 +332,8 @@ export const AppNavigator = ({ onLayout }) => {
         />
 
         <Tab.Screen
-          name="Account"
-          component={AccountScreen}
+          name="AccountNFeedback"
+          component={AccountNavigator}
           listeners={{
             tabPress: (e) => {
               // e.preventDefault();
