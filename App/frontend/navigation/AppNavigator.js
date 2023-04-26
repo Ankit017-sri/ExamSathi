@@ -5,7 +5,7 @@ import baseUrl from "../baseUrl";
 import { Keyboard } from "react-native";
 import {
   TransitionPresets,
-  CardStyleInterpolators,
+  // CardStyleInterpolators,
   createStackNavigator,
 } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -45,9 +45,9 @@ import Solution from "../screens/Solution";
 import AuthContext from "../auth/context";
 import ChatContext from "../chat/context";
 import ChatGroups from "../screens/ChatGroups";
-import NewGroup from "../screens/NewGroup";
-import GroupDescription from "../screens/GroupDescription";
-import GroupChat from "../screens/GroupChat";
+// import NewGroup from "../screens/NewGroup";
+// import GroupDescription from "../screens/GroupDescription";
+// import GroupChat from "../screens/GroupChat";
 import cache from "../utilities/cache";
 import FeedbackScreen from "../screens/Feedback";
 
@@ -179,12 +179,12 @@ const ChatsNavigator = () => {
       <ChatStackNavigator.Navigator screenOptions={defaultNavOptions}>
         <ChatStackNavigator.Screen name="Chat Groups" component={ChatGroups} />
         <ChatStackNavigator.Screen name="Chat" component={ChatsScreen} />
-        <ChatStackNavigator.Screen name="Group Chat" component={GroupChat} />
-        <ChatStackNavigator.Screen name="New Group" component={NewGroup} />
-        <ChatStackNavigator.Screen
+        {/* <ChatStackNavigator.Screen name="Group Chat" component={GroupChat} />
+        <ChatStackNavigator.Screen name="New Group" component={NewGroup} /> */}
+        {/* <ChatStackNavigator.Screen
           name="Group Description"
           component={GroupDescription}
-        />
+        /> */}
       </ChatStackNavigator.Navigator>
     </ChatContext.Provider>
   );

@@ -1,20 +1,20 @@
-import { StyleSheet, Text, View } from "react-native";
-import React from "react";
-import CustomHeader from "../components/CustomHeader";
+// import { StyleSheet, Text, View } from "react-native";
+// import React from "react";
+// import CustomHeader from "../components/CustomHeader";
 
-const GroupDescription = ({ navigation }) => {
-  return (
-    <View>
-      <CustomHeader
-        title={"New Group"}
-        sub={"group description"}
-        isBack
-        navigation={navigation}
-      />
-    </View>
-  );
-};
+// const GroupDescription = ({ navigation }) => {
+//   return (
+//     <View>
+//       <CustomHeader
+//         title={"New Group"}
+//         sub={"group description"}
+//         isBack
+//         navigation={navigation}
+//       />
+//     </View>
+//   );
+// };
 
-export default GroupDescription;
+// export default GroupDescription;
 
-const styles = StyleSheet.create({});
+// const styles = StyleSheet.create({});

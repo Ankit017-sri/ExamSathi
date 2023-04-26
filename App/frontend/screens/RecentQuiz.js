@@ -452,7 +452,7 @@ const RecentQuiz = ({ navigation }) => {
 
   useEffect(() => {
     const backAction = () => {
-      if (quizStarted)
+      if (quizStarted) {
         Alert.alert(
           "Watch Out!",
           "If you go back test will be submitted with the response. You want to continue?",
@@ -469,8 +469,10 @@ const RecentQuiz = ({ navigation }) => {
           ],
           { cancelable: false }
         );
-      else BackHandler.exitApp();
-      return true;
+        return true;
+      } else {
+        return false;
+      }
     };
 
     const backHandler = BackHandler.addEventListener(

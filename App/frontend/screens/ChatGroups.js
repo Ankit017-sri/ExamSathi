@@ -78,27 +78,29 @@ const ChatGroups = ({ navigation }) => {
   );
   const fetchLatestMessageAll = async () => {
     try {
-      const lastest1 = await cache.get("group1latest");
-      const lastest2 = await cache.get("group2latest");
-      const lastest3 = await cache.get("group3latest");
-      const lastest4 = await cache.get("group4latest");
-      const lastest5 = await cache.get("group5latest");
-      if (lastest1) {
-        setLastMessage1(lastest1);
-        // console.log(lastmessage1);
-      }
-      if (lastest2) {
-        setLastMessage2(lastest2);
-      }
-      if (lastest3) {
-        setLastMessage3(lastest3);
-      }
-      if (lastest4) {
-        setLastMessage4(lastest4);
-      }
-      if (lastest5) {
-        setLastMessage5(lastest5);
-      }
+      setTimeout(async () => {
+        const lastest1 = await cache.get("group1latest");
+        const lastest2 = await cache.get("group2latest");
+        const lastest3 = await cache.get("group3latest");
+        const lastest4 = await cache.get("group4latest");
+        const lastest5 = await cache.get("group5latest");
+        if (lastest1) {
+          setLastMessage1(lastest1);
+          // console.log(lastmessage1);
+        }
+        if (lastest2) {
+          setLastMessage2(lastest2);
+        }
+        if (lastest3) {
+          setLastMessage3(lastest3);
+        }
+        if (lastest4) {
+          setLastMessage4(lastest4);
+        }
+        if (lastest5) {
+          setLastMessage5(lastest5);
+        }
+      }, 1000);
 
       const group1NewMessages = await fetchLatestMessage({ group: "group1" });
       const group2NewMessages = await fetchLatestMessage({ group: "group2" });
