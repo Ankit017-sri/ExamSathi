@@ -2,7 +2,7 @@
   "expo": {
     "name": "Exam साथी",
     "slug": "examSathi",
-    "version": "5.0.0",
+    "version": "6.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -12,18 +12,16 @@
       "backgroundColor": "#ffffff"
     },
     "updates": {
-      "fallbackToCacheTimeout": 3000,
-      "url": "https://u.expo.dev/2e7d0ef9-8844-46bf-a37c-e3941ca74c86"
+      "enabled": true,
+      "fallbackToCacheTimeout": 3000
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true
     },
     "android": {
       "package": "com.examSathi.examSathi",
-      "versionCode": 15
+      "versionCode": 16
     },
     "web": {
       "favicon": "./assets/favicon.png"
