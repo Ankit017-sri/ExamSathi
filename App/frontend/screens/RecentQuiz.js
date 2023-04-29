@@ -222,7 +222,7 @@ const RecentQuiz = ({ navigation }) => {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-      console.log(res.data);
+      // console.log(res.data);
     } catch (error) {
       console.log(error);
     }
@@ -237,7 +237,7 @@ const RecentQuiz = ({ navigation }) => {
         headers: { Authorization: `Bearer ${token}` },
       }
     );
-    console.log(quizDetails.data);
+    // console.log(quizDetails.data);
     setLoading(false);
     setQuizData(quizDetails.data);
     setLastPage(quizDetails.data.quizDetails.length / 2);
@@ -321,7 +321,7 @@ const RecentQuiz = ({ navigation }) => {
 
   const submitHandler = async () => {
     setIsSubmitting(true);
-    console.log(response);
+    // console.log(response);
     await axios
       .post(
         `${baseUrl}/submitQuiz`,
@@ -421,15 +421,19 @@ const RecentQuiz = ({ navigation }) => {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-      console.log("data ......", data.data);
+      // console.log("data ......", data.data);
       setAllQuizdata(data.data);
-      const all = [];
-      data.data.forEach((element) => {
-        all.push(...element.categories);
-      });
-      setAllCategoryData(all);
-      setActiveTag("all");
-      setTagDetails(all);
+      if (activeTag == "") {
+        const daily = data.data.filter((item) => item.tag == "daily");
+        // console.log("daily...", daily);
+        // data.data.forEach((element) => {
+        //   daily.push(...element.categories);
+        // });
+        // setAllCategoryData(all);
+        setActiveTag(daily[0].tag);
+
+        setTagDetails(daily[0].categories);
+      }
       setIsLoading(false);
     } catch (error) {
       console.log(error);
@@ -440,6 +444,7 @@ const RecentQuiz = ({ navigation }) => {
   useFocusEffect(
     useCallback(() => {
       getAllQuiz();
+      setViewAll(false);
     }, [])
   );
 
@@ -875,7 +880,7 @@ const RecentQuiz = ({ navigation }) => {
               style={{ maxHeight: 60, minHeight: 60, paddingHorizontal: 12 }}
               contentContainerStyle={{ alignItems: "center" }}
             >
-              <TouchableOpacity
+              {/* <TouchableOpacity
                 onPress={() => {
                   setActiveTag("all");
                   setTagDetails(allCategoryData);
@@ -894,7 +899,7 @@ const RecentQuiz = ({ navigation }) => {
                 >
                   All
                 </Text>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
               {allQuizData.map((item, index) => {
                 return (
                   <TouchableOpacity
@@ -908,6 +913,7 @@ const RecentQuiz = ({ navigation }) => {
                     onPress={() => {
                       setActiveTag(item.tag);
                       setTagDetails(item.categories);
+                      scrollRef.current.scrollTo({ y: 0, animated: false });
                     }}
                     key={index}
                   >

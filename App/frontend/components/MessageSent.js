@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from "react-native";
+import { Linking, StyleSheet, Text, View } from "react-native";
 import React, { useContext, useEffect } from "react";
 import FullscreenImage from "./ImageView";
 import PDFViewer from "./PDFViewer";
@@ -22,7 +22,7 @@ const MessageSent = ({
 
   // socket.current.disconnect();
   useEffect(() => {
-    console.log("above...");
+    // console.log("above...");
     // console.log(sendMessage);
     setSendMessage(() => {
       async () => {
@@ -51,8 +51,42 @@ const MessageSent = ({
         }
       };
     });
-    console.log("send....");
+    // console.log("send....");
   }, []);
+
+  const ChatMessage = ({ message }) => {
+    const regex = /(https?:\/\/[^\s]+)/g;
+
+    const textParts = message.split(regex);
+    // console.log(textParts);
+
+    return (
+      <Text
+        style={{
+          color: "#000",
+          fontSize: 16,
+          marginHorizontal: 6,
+          marginVertical: 4,
+        }}
+      >
+        {textParts.map((part, i) => {
+          if (part.match(regex)) {
+            return (
+              <Text
+                key={i}
+                style={{ color: "blue" }}
+                onPress={() => Linking.openURL(part)}
+              >
+                {part}
+              </Text>
+            );
+          }
+          return <Text key={i}>{part}</Text>;
+        })}
+      </Text>
+    );
+  };
+
   return (
     <View style={{ marginBottom: 6, borderRadius: 10 }}>
       {msg.replyOn?.name && (
@@ -89,7 +123,8 @@ const MessageSent = ({
                 )}
               </>
             ) : (
-              <Text style={{ fontSize: 16 }}>{msg.replyOn.text}</Text>
+              <ChatMessage message={msg.replyOn.text} />
+              // <Text style={{ fontSize: 16 }}>{msg.replyOn.text}</Text>
             )}
           </View>
         </View>
@@ -115,16 +150,7 @@ const MessageSent = ({
             )}
           </>
         ) : (
-          <Text
-            style={{
-              color: "#000",
-              fontSize: 16,
-              marginHorizontal: 6,
-              marginVertical: 4,
-            }}
-          >
-            {msg.text}
-          </Text>
+          <ChatMessage message={msg.text} />
         )}
         <Text style={{ color: "#000", textAlign: "right", fontSize: 10 }}>
           {format(msg.createdAt)}
