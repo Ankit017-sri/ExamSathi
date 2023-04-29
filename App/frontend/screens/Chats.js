@@ -17,6 +17,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   Image,
+  Linking,
 } from "react-native";
 import { io } from "socket.io-client";
 import axios from "axios";
@@ -288,6 +289,33 @@ const ChatsScreen = ({ navigation, route }) => {
     }
   };
 
+  const ChatMessage = ({ message }) => {
+    const regex = /(https?:\/\/[^\s]+)/g;
+
+    const textParts = message.split(regex);
+    // console.log(textParts);
+
+    return (
+      <Text style={styles.messageText}>
+        {textParts.map((part, i) => {
+          if (part.match(regex)) {
+            return (
+              <Text
+                key={i}
+                style={{ color: "blue" }}
+                onPress={() => Linking.openURL(part)}
+              >
+                {part}
+              </Text>
+            );
+          }
+
+          return <Text key={i}>{part}</Text>;
+        })}
+      </Text>
+    );
+  };
+
   const MessageRecieved = ({ msg }) => {
     return (
       <View
@@ -333,7 +361,8 @@ const ChatsScreen = ({ navigation, route }) => {
                   )}
                 </>
               ) : (
-                <Text style={{ fontSize: 16 }}>{msg.replyOn.text}</Text>
+                <ChatMessage message={msg.replyOn.text} />
+                // <Text style={{ fontSize: 16 }}>{msg.replyOn.text}</Text>
               )}
             </View>
           </View>
@@ -356,9 +385,10 @@ const ChatsScreen = ({ navigation, route }) => {
               )}
             </>
           ) : (
-            <Text style={[styles.messageText, { color: "black" }]}>
-              {msg.text}
-            </Text>
+            <ChatMessage message={msg.text} />
+            // <Text style={[styles.messageText, { color: "black" }]}>
+            //   {msg.text}
+            // </Text>
           )}
 
           <Text style={{ color: "#3C4048", textAlign: "right", fontSize: 10 }}>
@@ -532,7 +562,8 @@ const ChatsScreen = ({ navigation, route }) => {
                     )}
                   </>
                 )}
-                <Text style={{ fontSize: 12 }}>{replyMessage.text}</Text>
+                {/* <Text style={{ fontSize: 12 }}>{replyMessage.text}</Text> */}
+                <ChatMessage message={replyMessage.text} />
               </View>
             </View>
           )}
@@ -553,7 +584,7 @@ const ChatsScreen = ({ navigation, route }) => {
           />
           {message ? (
             <TouchableOpacity
-              style={styles.button}
+              style={[styles.button, { backgroundColor: Colors.primary }]}
               onPress={async () => {
                 await sendMessage();
               }}
@@ -632,7 +663,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginHorizontal: 6,
     marginVertical: 4,
-    color: "#fff",
+    color: "#000",
   },
   inputContainer: {
     flexDirection: "row",
@@ -653,7 +684,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
   },
   button: {
-    backgroundColor: "black",
+    backgroundColor: "#000",
     borderRadius: 5,
     paddingHorizontal: 10,
     paddingVertical: 8,

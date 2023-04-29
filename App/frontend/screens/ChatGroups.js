@@ -61,7 +61,7 @@ const ChatGroups = ({ navigation }) => {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-      console.log(res.data);
+      // console.log(res.data);
     } catch (error) {
       console.log(error);
     }
@@ -136,7 +136,7 @@ const ChatGroups = ({ navigation }) => {
           });
         return messages.data;
       } else {
-        console.log("fetching");
+        // console.log("fetching");
         const messages = await axios
           .get(`${baseUrl}/message/${group}`, {
             headers: { Authorization: `Bearer ${token}` },
@@ -150,7 +150,7 @@ const ChatGroups = ({ navigation }) => {
         return messages.data;
       }
     } else {
-      console.log("fetching");
+      // console.log("fetching");
       const messages = await axios
         .get(`${baseUrl}/message/${group}`, {
           headers: { Authorization: `Bearer ${token}` },
@@ -172,7 +172,7 @@ const ChatGroups = ({ navigation }) => {
     // await cache.clear(`${group}`);
     if (data !== null) {
       // setMessages(data);
-      console.log("passing");
+      // console.log("passing");
       const lastmessage = data[data.length - 1];
       if (lastmessage) {
         const messages = await axios
@@ -197,7 +197,7 @@ const ChatGroups = ({ navigation }) => {
           imgUri,
         });
       } else {
-        console.log("fetching");
+        // console.log("fetching");
         const date = new Date(Date.now() - 1.814e9);
         const messages = await axios
           .get(`${baseUrl}/message/${group}`, {
@@ -222,7 +222,7 @@ const ChatGroups = ({ navigation }) => {
         });
       }
     } else {
-      console.log("fetching");
+      // console.log("fetching");
       const date = new Date(Date.now() - 1.814e9);
       const messages = await axios
         .get(`${baseUrl}/message/${group}`, {
