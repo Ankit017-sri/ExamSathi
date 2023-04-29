@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "921468660865",
+    "project_id": "examsathi-49b67",
+    "storage_bucket": "examsathi-49b67.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:921468660865:android:b8a1d80fc4720600b57180",
+        "android_client_info": {
+          "package_name": "com.examSathi.examSathi"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "921468660865-j7in3nugv9nsce9b8a4dvbcd3h3f8cgi.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD_xKWXwUUEkQyYqPKNTbqOrieC6AvUVy0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "921468660865-j7in3nugv9nsce9b8a4dvbcd3h3f8cgi.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

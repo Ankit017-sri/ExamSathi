@@ -1,55 +1,30 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState, useEffect, useRef } from "react";
 import { Text, View, Animated, Dimensions, Image } from "react-native";
 import axios from "axios";
 import baseUrl from "../baseUrl";
 import { Keyboard } from "react-native";
 import {
   TransitionPresets,
-  // CardStyleInterpolators,
   createStackNavigator,
 } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
-
-// import { useSelector } from "react-redux";
+import * as Device from "expo-device";
+import * as Notifications from "expo-notifications";
 
 import AccountScreen from "../screens/Account";
 import PastQuizScreen from "../screens/PastQuiz";
 import RecentQuizScreen from "../screens/RecentQuiz";
 import ChatsScreen from "../screens/Chats";
-// import ProductsOverviewScreen, {
-//   screenOptions as productsOverviewScreenOptions,
-// } from "../screens/shop/ProductsOverviewScreen";
-// import ProductDetailScreen, {
-//   screenOptions as productDetailScreenOptions,
-// } from "../screens/shop/ProductDetailScreen";
-// import CartScreen, {
-//   screenOptions as cartScreenOptions,
-// } from "../screens/shop/CartScreen";
-// import OrdersScreen, {
-//   screenOptions as ordersScreenOptions,
-// } from "../screens/shop/OrdersScreen";
-// import UserProductsScreen, {
-//   screenOptions as userProductsScreenOptions,
-// } from "../screens/user/UserProductsScreen";
-// import AuthScreen, {
-//   screenOptions as authScreenOptions,
-// } from "../screens/user/AuthScreen";
-// import EditProductScreen, {
-//   screenOptions as editProductScreenOptions,
-// } from "../screens/user/EditProductScreen";
-// import StartupScreen from "../screens/StartupScreen";
 import Colors from "../constants/Colors";
 import QuizDetails from "../screens/QuizDetails";
 import Solution from "../screens/Solution";
 import AuthContext from "../auth/context";
 import ChatContext from "../chat/context";
 import ChatGroups from "../screens/ChatGroups";
-// import NewGroup from "../screens/NewGroup";
-// import GroupDescription from "../screens/GroupDescription";
-// import GroupChat from "../screens/GroupChat";
 import cache from "../utilities/cache";
 import FeedbackScreen from "../screens/Feedback";
+import { registerForPushNotificationsAsync } from "../utilities/notifications";
 
 let defaultNavOptions = {
   ...TransitionPresets.SlideFromRightIOS,
@@ -67,36 +42,6 @@ let defaultNavOptions = {
   headerShown: false,
   headerLeft: null,
 };
-
-// const ProductsStackNavigator = createStackNavigator();
-
-// export const ProductsNavigator = () => {
-//   return (
-//     <ProductsStackNavigator.Navigator screenOptions={defaultNavOptions}>
-//       <ProductsStackNavigator.Screen
-//         title="All Products"
-//         name="ProductsOverview"
-//         component={ProductsOverviewScreen}
-//         options={productsOverviewScreenOptions}
-//       />
-//       <ProductsStackNavigator.Screen
-//         name="ProductDetail"
-//         component={ProductDetailScreen}
-//         options={productDetailScreenOptions}
-//       />
-//     </ProductsStackNavigator.Navigator>
-//   );
-// };
-
-// export const ProductsNavigator = createStackNavigator(
-//   {
-//     ProductsOverview: ProductsOverviewScreen,
-//     ProductDetail: ProductDetailScreen,
-//   },
-//   {
-//     defaultNavigationOptions: defaultNavOptions,
-//   }
-// );
 
 const QuizStackNavigator = createStackNavigator();
 
@@ -179,12 +124,6 @@ const ChatsNavigator = () => {
       <ChatStackNavigator.Navigator screenOptions={defaultNavOptions}>
         <ChatStackNavigator.Screen name="Chat Groups" component={ChatGroups} />
         <ChatStackNavigator.Screen name="Chat" component={ChatsScreen} />
-        {/* <ChatStackNavigator.Screen name="Group Chat" component={GroupChat} />
-        <ChatStackNavigator.Screen name="New Group" component={NewGroup} /> */}
-        {/* <ChatStackNavigator.Screen
-          name="Group Description"
-          component={GroupDescription}
-        /> */}
       </ChatStackNavigator.Navigator>
     </ChatContext.Provider>
   );
@@ -204,9 +143,21 @@ const AccountNavigator = () => {
 
 const Tab = createBottomTabNavigator();
 
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+  }),
+});
+
 export const AppNavigator = ({ onLayout }) => {
   const { width } = Dimensions.get("screen");
   const [position] = useState(new Animated.ValueXY());
+  const [expoPushToken, setExpoPushToken] = useState("");
+  const [notification, setNotification] = useState(false);
+  const notificationListener = useRef();
+  const responseListener = useRef();
 
   const { tabBarVisible } = useContext(AuthContext);
   const [keyboardIsVisible, setKeyboardIsVisible] = useState(false);
@@ -218,6 +169,38 @@ export const AppNavigator = ({ onLayout }) => {
       setKeyboardIsVisible(false);
     });
   }, []);
+
+  useEffect(() => {
+    registerForPushNotificationsAsync().then((token) =>
+      setExpoPushToken(token)
+    );
+
+    notificationListener.current =
+      Notifications.addNotificationReceivedListener((notification) => {
+        setNotification(notification);
+      });
+
+    responseListener.current =
+      Notifications.addNotificationResponseReceivedListener((response) => {
+        console.log(response);
+      });
+
+    return () => {
+      Notifications.removeNotificationSubscription(
+        notificationListener.current
+      );
+      Notifications.removeNotificationSubscription(responseListener.current);
+    };
+  }, []);
+
+  useEffect(() => {
+    console.log("Expo Push Token: ", expoPushToken);
+    if (notification) {
+      console.log("Title: ", notification.request.content.title);
+      console.log("Body: ", notification.request.content.body);
+      console.log("Data: ", notification.request.content.data);
+    }
+  }, [notification, expoPushToken]);
 
   const animStyles = {
     position: "absolute",
@@ -302,15 +285,6 @@ export const AppNavigator = ({ onLayout }) => {
         <Tab.Screen
           name="New Quiz"
           component={RecentQuizScreen}
-          // options={{
-          //   // tabBarBadge: cartItems.length,
-          //   tabBarBadgeStyle: {
-          //     backgroundColor: "#de3c3c",
-          //     color: "white",
-          //     fontFamily: "product-sans-medium",
-          //     marginTop: 2,
-          //   },
-          // }}
           listeners={{
             tabPress: (e) => {
               // e.preventDefault();
@@ -346,24 +320,3 @@ export const AppNavigator = ({ onLayout }) => {
     </>
   );
 };
-
-// const ShopNavigator = createBottomTabNavigator(tabScreenConfig, {
-//   tabBarOptions: {
-//     animationEnabled: true,
-//     activeTintColor: Colors.text,
-//     // inactiveTintColor: Colors.accent,
-//     keyboardHidesTabBar: true,
-//     tabStyle: {
-//       paddingTop: 17,
-//     },
-//   },
-//   tabBarComponent: (props) => <CustomBottomBar {...props} />,
-// });
-
-// const MainNavigator = createSwitchNavigator({
-//   Startup: StartupScreen,
-//   Auth: AuthNavigator,
-//   Shop: ShopNavigator,
-// });
-
-// export default createAppContainer(MainNavigator);

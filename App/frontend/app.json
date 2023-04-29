@@ -15,15 +15,14 @@
       "enabled": true,
       "fallbackToCacheTimeout": 3000
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true
     },
     "android": {
       "package": "com.examSathi.examSathi",
-      "versionCode": 21
+      "versionCode": 21,
+      "googleServicesFile": "./google-services.json"
     },
     "web": {
       "favicon": "./assets/favicon.png"
