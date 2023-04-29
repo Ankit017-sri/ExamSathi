@@ -423,7 +423,7 @@ const RecentQuiz = ({ navigation }) => {
       );
       // console.log("data ......", data.data);
       setAllQuizdata(data.data);
-      if (activeTag == "") {
+      if (!activeTag) {
         const daily = data.data.filter((item) => item.tag == "daily");
         // console.log("daily...", daily);
         // data.data.forEach((element) => {
@@ -433,6 +433,9 @@ const RecentQuiz = ({ navigation }) => {
         setActiveTag(daily[0].tag);
 
         setTagDetails(daily[0].categories);
+      } else {
+        const tagData = data.data.find((value) => value.tag == activeTag);
+        setTagDetails(tagData.categories);
       }
       setIsLoading(false);
     } catch (error) {
@@ -665,7 +668,7 @@ const RecentQuiz = ({ navigation }) => {
     <View style={styles.container}>
       <CustomHeader
         title="New Quiz"
-        share={true}
+        share={!quizStarted}
         appShareCount={appShareCount}
       />
       {loading || isloading ? (
