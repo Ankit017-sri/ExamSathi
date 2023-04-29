@@ -9,10 +9,24 @@ import React, { useContext, useRef } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { Swipeable } from "react-native-gesture-handler";
 import ChatContext from "../chat/context";
+import MessageSent from "./MessageSent";
 
-const SwipeableMessage = ({ data, Id, MessageRecieved, MessageSent }) => {
+const SwipeableMessage = ({
+  data,
+  Id,
+  MessageRecieved,
+  setMessage,
+  socket,
+  // MessageSent,
+  message,
+  group,
+  setSendMessage,
+}) => {
   const { setReplyMessage } = useContext(ChatContext);
   const swipeableRef = useRef(null);
+  // console.log("setSendMessage");
+  // console.log(setSendMessage);
+
   const closeSwipeable = () => {
     console.log("closed");
     // swipeableRef.current.close();
@@ -60,7 +74,15 @@ const SwipeableMessage = ({ data, Id, MessageRecieved, MessageSent }) => {
     >
       {data.senderId == Id ? (
         <View style={styles.messageSent}>
-          <MessageSent msg={data} />
+          <MessageSent
+            msg={data}
+            setSendMessage={setSendMessage}
+            message={message}
+            group={group}
+            socket={socket}
+            setMessage={setMessage}
+            setReplyMessage={setReplyMessage}
+          />
         </View>
       ) : (
         <View style={styles.messageRecieved}>

@@ -13,8 +13,8 @@ const quizSchema = new mongoose.Schema(
       required: true,
     },
     maxMarks: Number,
-  }
-  // { timestamps: true }
+  },
+  { timestamps: true }
 );
 
 const Quiz = mongoose.model("Quiz", quizSchema);

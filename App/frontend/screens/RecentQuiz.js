@@ -382,9 +382,7 @@ const RecentQuiz = ({ navigation }) => {
   const startTimer = () => {
     // const countdownTime = new Date().getTime() + 15 * 60 * 1000;
 
-    var countDownDate =
-      new Date().getTime() +
-      (quizData.quizDetails.length === 100 ? 90 : 15) * 60 * 1000;
+    var countDownDate = new Date().getTime() + quizData.maxTime * 60 * 1000;
     // console.log(countdownTime - new Date().getTime());
 
     interval = setInterval(() => {
@@ -546,9 +544,7 @@ const RecentQuiz = ({ navigation }) => {
                 marginBottom: 10,
               }}
             >
-              <Text style={{ fontSize: 12 }}>
-                Time: {item.maxMarks == 100 ? 90 : item.maxMarks} min
-              </Text>
+              <Text style={{ fontSize: 12 }}>Time: {item.maxTime} min</Text>
               <Text style={{ marginLeft: 16, fontSize: 12 }}>
                 Marks: {item.maxMarks}
               </Text>

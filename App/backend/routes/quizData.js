@@ -22,7 +22,7 @@ router.get("/", auth, async (req, res) => {
 router.get("/quiz/:id", auth, async (req, res) => {
   try {
     const quizId = req.params.id;
-    const quizData = await QuizData.findById(quizId);
+    const quizData = await Quiz.findById(quizId);
     res.status(200).send(quizData);
   } catch (error) {
     console.log(error);
