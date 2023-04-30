@@ -54,9 +54,10 @@ const MessageSent = ({
 
   const ChatMessage = ({ message }) => {
     const regex = /(https?:\/\/[^\s]+)/g;
+    const regex2 =
+      /^[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&//=]*)$/;
 
-    const textParts = message.split(regex);
-    // console.log(textParts);
+    const textParts = message.split(" ");
 
     return (
       <Text
@@ -68,18 +69,24 @@ const MessageSent = ({
         }}
       >
         {textParts.map((part, i) => {
-          if (part.match(regex)) {
+          if (part.trim().match(regex) || regex2.test(part.trim())) {
             return (
               <Text
                 key={i}
                 style={{ color: "blue" }}
-                onPress={() => Linking.openURL(part)}
+                onPress={() =>
+                  Linking.openURL(part.match(regex) ? part : `https://${part}`)
+                }
               >
-                {part}
+                {`${part} `}
               </Text>
             );
           }
-          return <Text key={i}>{part}</Text>;
+          return (
+            <Text style={{ marginHorizontal: 4 }} key={i}>
+              {`${part} `}
+            </Text>
+          );
         })}
       </Text>
     );

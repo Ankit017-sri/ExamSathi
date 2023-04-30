@@ -212,7 +212,7 @@ const ChatsScreen = ({ navigation, route }) => {
       });
       setVisible(false);
       if (result.type == "success") {
-        console.log(result);
+        // console.log(result);
         const base64 = await getBase64(result.uri);
 
         if (base64 !== "") {
@@ -223,9 +223,9 @@ const ChatsScreen = ({ navigation, route }) => {
             upload_preset: "lylmg545",
           };
           const response = await axios.post(CloudURL, formdata);
-          console.log(response.data);
+          // console.log(response.data);
           if (response.data.secure_url) {
-            console.log(response.data.secure_url);
+            // console.log(response.data.secure_url);
             // setImage(data.secure_url);
             setVisible(false);
             setUploading(true);
@@ -260,7 +260,7 @@ const ChatsScreen = ({ navigation, route }) => {
       .then(async (response) => {
         let data = await response.json();
         if (data.secure_url) {
-          console.log(data.secure_url);
+          // console.log(data.secure_url);
           // setImage(data.secure_url);
           handleUpload({ uri: data.secure_url });
           // alert("Upload successful");
@@ -440,26 +440,39 @@ const ChatsScreen = ({ navigation, route }) => {
 
   const ChatMessage = ({ message }) => {
     const regex = /(https?:\/\/[^\s]+)/g;
+    const regex2 =
+      /^[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&//=]*)$/;
 
-    const textParts = message.split(regex);
-    // console.log(textParts);
+    const textParts = message.split(" ");
 
     return (
-      <Text style={styles.messageText}>
+      <Text
+        style={{
+          color: "#000",
+          fontSize: 16,
+          marginHorizontal: 6,
+          marginVertical: 4,
+        }}
+      >
         {textParts.map((part, i) => {
-          if (part.match(regex)) {
+          if (part.trim().match(regex) || regex2.test(part.trim())) {
             return (
               <Text
                 key={i}
                 style={{ color: "blue" }}
-                onPress={() => Linking.openURL(part)}
+                onPress={() =>
+                  Linking.openURL(part.match(regex) ? part : `https://${part}`)
+                }
               >
-                {part}
+                {`${part} `}
               </Text>
             );
           }
-
-          return <Text key={i}>{part}</Text>;
+          return (
+            <Text style={{ marginHorizontal: 4 }} key={i}>
+              {`${part} `}
+            </Text>
+          );
         })}
       </Text>
     );
@@ -713,8 +726,10 @@ const ChatsScreen = ({ navigation, route }) => {
                     )}
                   </>
                 )}
-                {/* <Text style={{ fontSize: 12 }}>{replyMessage.text}</Text> */}
-                <ChatMessage message={replyMessage.text} />
+                <Text style={{ fontSize: 12 }} numberOfLines={2}>
+                  {replyMessage.text}
+                </Text>
+                {/* <ChatMessage message={replyMessage.text} /> */}
               </View>
             </View>
           )}
