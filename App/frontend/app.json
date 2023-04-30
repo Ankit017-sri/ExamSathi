@@ -2,7 +2,7 @@
   "expo": {
     "name": "Exam साथी",
     "slug": "examSathi",
-    "version": "6.1.0",
+    "version": "6.2.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -15,14 +15,17 @@
       "enabled": true,
       "fallbackToCacheTimeout": 3000
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true
     },
     "android": {
       "package": "com.examSathi.examSathi",
-      "versionCode": 21,
-      "googleServicesFile": "./google-services.json"
+      "versionCode": 22,
+      "googleServicesFile": "./google-services.json",
+      "useNextNotificationsApi": true
     },
     "web": {
       "favicon": "./assets/favicon.png"

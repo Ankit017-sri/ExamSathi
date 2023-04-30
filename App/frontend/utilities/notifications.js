@@ -2,6 +2,9 @@ import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
 import { Platform } from "react-native";
 
+import appConfig from "../app.json";
+import axios from "axios";
+
 // Can use this function below OR use Expo's Push Notification Tool from: https://expo.dev/notifications;
 async function sendPushNotification(expoPushToken) {
   const message = {
@@ -25,6 +28,9 @@ async function sendPushNotification(expoPushToken) {
 
 async function registerForPushNotificationsAsync() {
   let token;
+
+  const projectId = appConfig?.expo?.extra?.eas?.projectId;
+
   if (Device.isDevice) {
     const { status: existingStatus } =
       await Notifications.getPermissionsAsync();
@@ -37,8 +43,7 @@ async function registerForPushNotificationsAsync() {
       alert("Failed to get push token for push notification!");
       return;
     }
-    token = (await Notifications.getExpoPushTokenAsync()).data;
-    console.log(token);
+    token = (await Notifications.getExpoPushTokenAsync({ projectId })).data;
   } else {
     alert("Must use physical device for Push Notifications");
   }

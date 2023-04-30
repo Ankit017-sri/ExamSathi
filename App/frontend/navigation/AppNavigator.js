@@ -9,7 +9,6 @@ import {
 } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
-import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
 
 import AccountScreen from "../screens/Account";
@@ -146,8 +145,8 @@ const Tab = createBottomTabNavigator();
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,
-    shouldPlaySound: false,
-    shouldSetBadge: false,
+    shouldPlaySound: true,
+    shouldSetBadge: true,
   }),
 });
 
@@ -161,6 +160,9 @@ export const AppNavigator = ({ onLayout }) => {
 
   const { tabBarVisible } = useContext(AuthContext);
   const [keyboardIsVisible, setKeyboardIsVisible] = useState(false);
+
+  const { token } = useContext(AuthContext);
+
   useEffect(() => {
     Keyboard.addListener("keyboardDidShow", () => {
       setKeyboardIsVisible(true);
@@ -194,13 +196,32 @@ export const AppNavigator = ({ onLayout }) => {
   }, []);
 
   useEffect(() => {
-    console.log("Expo Push Token: ", expoPushToken);
-    if (notification) {
-      console.log("Title: ", notification.request.content.title);
-      console.log("Body: ", notification.request.content.body);
-      console.log("Data: ", notification.request.content.data);
+    const storeToken = async () => {
+      await axios
+        .put(
+          `${baseUrl}/notifications/subscribe`,
+          { expoPushToken },
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        )
+        .then((res) => console.log(res.data))
+        .catch((err) => console.log(err));
+    };
+
+    if (expoPushToken && token) {
+      storeToken();
     }
-  }, [notification, expoPushToken]);
+  }, [expoPushToken, token]);
+
+  // useEffect(() => {
+  //   console.log("Expo Push Token: ", expoPushToken);
+  //   if (notification) {
+  //     console.log("Title: ", notification.request.content.title);
+  //     console.log("Body: ", notification.request.content.body);
+  //     console.log("Data: ", notification.request.content.data);
+  //   }
+  // }, [notification, expoPushToken]);
 
   const animStyles = {
     position: "absolute",

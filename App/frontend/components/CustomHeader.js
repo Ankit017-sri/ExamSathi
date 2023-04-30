@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -13,6 +13,9 @@ import Constants from "expo-constants";
 
 import Colors from "../constants/Colors";
 import { Ionicons } from "@expo/vector-icons";
+import axios from "axios";
+import baseUrl from "../baseUrl";
+import AuthContext from "../auth/context";
 
 const CustomHeader = ({
   title,
@@ -23,7 +26,13 @@ const CustomHeader = ({
   setTabBarVisible,
   share,
   appShareCount,
+  mute,
+  group,
 }) => {
+  const [isMuted, setIsMuted] = useState(false);
+
+  const { token } = useContext(AuthContext);
+
   const shareMessage = `मित्रा, हे app डाउनलोड कर आणि ग्रुप मध्ये जॉईन हो! भरतीच्या तयारी साठी खूप उपयुक्त आहे. ह्यात भरपूर free टेस्ट, fast updates आणि discussion ग्रुप आहेत. 
   Exam Sathi app
   https://play.google.com/store/apps/details?id=com.examSathi.examSathi`;
@@ -42,6 +51,44 @@ const CustomHeader = ({
       console.log(error);
     }
   };
+
+  const handleToggleMute = async () => {
+    const res = await axios
+      .put(
+        `${baseUrl}/group/toggle-mute/${group}`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      )
+      .then((res) => {
+        setIsMuted(!isMuted);
+        console.log(res.data);
+      })
+      .catch((e) => console.log(e));
+
+    // console.log(res);
+  };
+
+  const fetchMutedGroups = async () => {
+    const res = await axios
+      .put(
+        `${baseUrl}/group/muted-groups`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      )
+      .then((res) => {
+        if (res.data.find((grp) => grp === group)) setIsMuted(true);
+        console.log(res.data);
+      })
+      .catch((e) => console.log(e));
+  };
+
+  useEffect(() => {
+    fetchMutedGroups();
+  }, []);
 
   return (
     <View
@@ -74,25 +121,45 @@ const CustomHeader = ({
       {imgUri && <Image source={imgUri} style={styles.avatar} />}
       <View
         style={
-          share && {
+          (share || mute) && {
             flexDirection: "row",
             justifyContent: "space-between",
-            width: "90%",
+            width: mute ? "60%" : "90%",
+            marginLeft: mute ? 50 : 0,
           }
         }
       >
-        <Text
-          style={[
-            styles.title,
-            {
-              fontSize: sub ? 16 : 20,
-              // marginLeft: imgUri ? 50 : 0,
-            },
-          ]}
-        >
-          {title}
-        </Text>
-        {sub && <Text style={styles.sub}>{sub}</Text>}
+        <View>
+          <Text
+            style={[
+              styles.title,
+              {
+                fontSize: sub ? 16 : 20,
+                // marginLeft: imgUri ? 50 : 0,
+              },
+            ]}
+          >
+            {title}
+          </Text>
+          {sub && <Text style={styles.sub}>{sub}</Text>}
+        </View>
+        {mute && (
+          <TouchableOpacity
+            style={{
+              alignItems: "center",
+            }}
+            onPress={handleToggleMute}
+          >
+            <Text style={{ color: "white" }}>
+              {isMuted ? "Unmute" : "Mute"}
+            </Text>
+            <Ionicons
+              name={isMuted ? "volume-high" : "volume-mute"}
+              size={20}
+              color={"white"}
+            />
+          </TouchableOpacity>
+        )}
         {share && (
           <TouchableOpacity
             style={{

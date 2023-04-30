@@ -24,35 +24,33 @@ const MessageSent = ({
   useEffect(() => {
     // console.log("above...");
     // console.log(sendMessage);
-    setSendMessage(() => {
-      async () => {
-        if (message) {
-          const res = await axios
-            .post(
-              `${baseUrl}/message`,
-              {
-                text: message,
-                replyOn: replyMessage._id ? replyMessage : {},
-                group,
-              },
-              {
-                headers: { Authorization: `Bearer ${token}` },
-              }
-            )
-            .catch((e) => console.log(e));
-          if (!res.data.text) {
-            return alert("something went wrong please try again !");
-          } else {
-            console.log(res.data);
-            setReplyMessage({});
-            socket.current.emit("message", { message: res.data, group });
-            setMessage("");
-          }
+    setSendMessage(async () => {
+      if (message) {
+        const res = await axios
+          .post(
+            `${baseUrl}/message`,
+            {
+              text: message,
+              replyOn: replyMessage._id ? replyMessage : {},
+              group,
+            },
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          )
+          .catch((e) => console.log(e));
+        if (!res.data.text) {
+          return alert("something went wrong please try again !");
+        } else {
+          console.log(res.data);
+          setReplyMessage({});
+          socket.current.emit("message", { message: res.data, group });
+          setMessage("");
         }
-      };
+      }
     });
     // console.log("send....");
-  }, []);
+  }, [message]);
 
   const ChatMessage = ({ message }) => {
     const regex = /(https?:\/\/[^\s]+)/g;
