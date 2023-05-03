@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   View,
   Image,
+  Dimensions,
 } from "react-native";
 import React, { useContext, useState, useEffect, useCallback } from "react";
 import CustomHeader from "../components/CustomHeader";
@@ -20,6 +21,7 @@ import Loader from "../components/Loader";
 
 const ChatGroups = ({ navigation }) => {
   // const { groups, setGroups } = useContext(ChatContext);
+  const { width } = Dimensions.get("screen");
   const { token, setTabBarVisible, Id } = useContext(AuthContext);
   const [loading, setLoading] = useState(true);
 
@@ -537,15 +539,21 @@ const ChatGroups = ({ navigation }) => {
         </Text>
       </TouchableOpacity> */}
       <View
-        style={{ position: "absolute", bottom: 70, left: "25%", zIndex: 60 }}
+        style={{
+          position: "absolute",
+          bottom: 70,
+          left: width / 4,
+          paddingHorizontal: 8,
+          zIndex: 60,
+        }}
       >
         <TalkBubble />
         <Text
           style={{
             alignSelf: "center",
-            fontSize: 18,
+            fontSize: 14,
             position: "absolute",
-            top: 10,
+            top: 6,
             fontWeight: "600",
             color: "#fff",
             elevation: 10,
@@ -601,8 +609,8 @@ const styles = StyleSheet.create({
     elevation: 10,
   },
   talkBubbleSquare: {
-    width: 100,
-    height: 60,
+    width: 80,
+    height: 50,
     backgroundColor: "#FF6464",
     borderRadius: 10,
   },
