@@ -435,7 +435,7 @@ const ChatGroups = ({ navigation }) => {
   };
 
   return (
-    <View style={{ position: "relative", flex: 0.9 }}>
+    <View style={{ position: "relative", flex: 1 }}>
       <CustomHeader
         title={"Study Groups"}
         share={true}
@@ -536,7 +536,9 @@ const ChatGroups = ({ navigation }) => {
           Create New Group
         </Text>
       </TouchableOpacity> */}
-      <View style={{ position: "absolute", bottom: 0, left: "25%" }}>
+      <View
+        style={{ position: "absolute", bottom: 70, left: "25%", zIndex: 60 }}
+      >
         <TalkBubble />
         <Text
           style={{
@@ -548,9 +550,10 @@ const ChatGroups = ({ navigation }) => {
             color: "#fff",
             elevation: 10,
             padding: 8,
-            backgroundColor: "#ED2B2A",
+            backgroundColor: "#F55050",
             borderRadius: 10,
           }}
+          onPress={() => navigation.navigate("New Quiz")}
         >
           नवीन टेस्ट
         </Text>
@@ -600,24 +603,24 @@ const styles = StyleSheet.create({
   talkBubbleSquare: {
     width: 100,
     height: 60,
-    backgroundColor: "red",
+    backgroundColor: "#FF6464",
     borderRadius: 10,
   },
   talkBubbleTriangle: {
     position: "absolute",
     // left: -26,
     // top: 26,
-    bottom: -24,
+    bottom: -20,
     alignSelf: "center",
     zIndex: 40,
     transform: [{ rotate: "-90deg" }],
     width: 0,
     height: 0,
     borderTopColor: "transparent",
-    borderTopWidth: 13,
-    borderRightWidth: 26,
-    borderRightColor: "red",
-    borderBottomWidth: 13,
+    borderTopWidth: 10,
+    borderRightWidth: 20,
+    borderRightColor: "#FF6464",
+    borderBottomWidth: 10,
     borderBottomColor: "transparent",
   },
 });
