@@ -48,6 +48,7 @@ const ChatsScreen = ({ navigation, route }) => {
     Id,
     name: fullName,
   } = useContext(AuthContext);
+
   const {
     // messages: fetchedData,
     memCount: counts,
@@ -564,6 +565,7 @@ const ChatsScreen = ({ navigation, route }) => {
   const toggleBottomNavigationView = () => {
     setVisible(!visible);
   };
+
   return (
     <View style={{ flex: 1, backgroundColor: "#E5DDD5" }}>
       <CustomHeader
