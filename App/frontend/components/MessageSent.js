@@ -53,11 +53,12 @@ const MessageSent = ({
   }, [message]);
 
   const ChatMessage = ({ message }) => {
-    const regex = /(https?:\/\/[^\s]+)/g;
+    const regex1 = /(https?:\/\/[^\s]+)/g;
+    const regex = /((?:https?:\/\/)?(?:www\.)?[^\s]+)/gi;
     const regex2 =
-      /^[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&//=]*)$/;
+      /^[-a-zA-Z0-9@:%._\+~#=]\.[a-zA-Z0-9()]\b(?:[-a-zA-Z0-9()@:%_\+.~#?&//=]*)$/;
 
-    const textParts = message.split(" ");
+    const textParts = message.split(regex);
 
     return (
       <Text
@@ -69,22 +70,22 @@ const MessageSent = ({
         }}
       >
         {textParts.map((part, i) => {
-          if (part.trim().match(regex) || regex2.test(part.trim())) {
+          if (part.trim().match(regex1) || regex2.test(part.trim())) {
             return (
               <Text
                 key={i}
                 style={{ color: "blue" }}
                 onPress={() =>
-                  Linking.openURL(part.match(regex) ? part : `https://${part}`)
+                  Linking.openURL(part.match(regex1) ? part : `https://${part}`)
                 }
               >
-                {`${part} `}
+                {`${part}`}
               </Text>
             );
           }
           return (
             <Text style={{ marginHorizontal: 4 }} key={i}>
-              {`${part} `}
+              {`${part}`}
             </Text>
           );
         })}

@@ -138,6 +138,7 @@ const CustomHeader = ({
                 // marginLeft: imgUri ? 50 : 0,
               },
             ]}
+            numberOfLines={1}
           >
             {title}
           </Text>

@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   View,
   Image,
+  Dimensions,
 } from "react-native";
 import React, { useContext, useState, useEffect, useCallback } from "react";
 import CustomHeader from "../components/CustomHeader";
@@ -20,6 +21,7 @@ import Loader from "../components/Loader";
 
 const ChatGroups = ({ navigation }) => {
   // const { groups, setGroups } = useContext(ChatContext);
+  const { width } = Dimensions.get("screen");
   const { token, setTabBarVisible, Id } = useContext(AuthContext);
   const [loading, setLoading] = useState(true);
 
@@ -306,6 +308,15 @@ const ChatGroups = ({ navigation }) => {
   //   }, [])
   // );
 
+  const TalkBubble = () => {
+    return (
+      <View style={styles.talkBubble}>
+        <View style={styles.talkBubbleSquare} />
+        <View style={styles.talkBubbleTriangle} />
+      </View>
+    );
+  };
+
   const Group = ({ name, imgUri, group, newMessages, lastmessage }) => {
     const unreads = newMessages.length;
     const createdAt = newMessages[unreads - 1]?.createdAt;
@@ -426,7 +437,7 @@ const ChatGroups = ({ navigation }) => {
   };
 
   return (
-    <View style={{ position: "relative", flex: 0.9 }}>
+    <View style={{ position: "relative", flex: 1 }}>
       <CustomHeader
         title={"Study Groups"}
         share={true}
@@ -527,6 +538,34 @@ const ChatGroups = ({ navigation }) => {
           Create New Group
         </Text>
       </TouchableOpacity> */}
+      <View
+        style={{
+          position: "absolute",
+          bottom: 70,
+          left: width / 4,
+          paddingHorizontal: 8,
+          zIndex: 60,
+        }}
+      >
+        <TalkBubble />
+        <Text
+          style={{
+            alignSelf: "center",
+            fontSize: 14,
+            position: "absolute",
+            top: 6,
+            fontWeight: "600",
+            color: "#fff",
+            elevation: 10,
+            padding: 8,
+            backgroundColor: "#F55050",
+            borderRadius: 10,
+          }}
+          onPress={() => navigation.navigate("New Quiz")}
+        >
+          नवीन टेस्ट
+        </Text>
+      </View>
     </View>
   );
 };
@@ -564,5 +603,32 @@ const styles = StyleSheet.create({
     marginTop: 4,
     backgroundColor: "#17cfe3",
     justifyContent: "center",
+  },
+  talkBubble: {
+    backgroundColor: "transparent",
+    elevation: 10,
+  },
+  talkBubbleSquare: {
+    width: 80,
+    height: 50,
+    backgroundColor: "#FF6464",
+    borderRadius: 10,
+  },
+  talkBubbleTriangle: {
+    position: "absolute",
+    // left: -26,
+    // top: 26,
+    bottom: -20,
+    alignSelf: "center",
+    zIndex: 40,
+    transform: [{ rotate: "-90deg" }],
+    width: 0,
+    height: 0,
+    borderTopColor: "transparent",
+    borderTopWidth: 10,
+    borderRightWidth: 20,
+    borderRightColor: "#FF6464",
+    borderBottomWidth: 10,
+    borderBottomColor: "transparent",
   },
 });

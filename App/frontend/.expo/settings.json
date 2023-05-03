@@ -5,6 +5,6 @@
   "minify": false,
   "urlRandomness": null,
   "https": false,
-  "devClient": true,
-  "scheme": "exp+examsathi"
+  "scheme": "exp+examsathi",
+  "devClient": false
 }

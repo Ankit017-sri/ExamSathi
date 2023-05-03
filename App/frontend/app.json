@@ -15,9 +15,7 @@
       "enabled": true,
       "fallbackToCacheTimeout": 3000
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true
     },

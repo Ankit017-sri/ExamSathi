@@ -117,32 +117,32 @@ const ChatsScreen = ({ navigation, route }) => {
     }
   }, [receiveMessage?.createdAt]);
 
-  async function fetchMessages() {
-    const lastmessage = fetchedData[fetchedData.length - 1];
-    if (lastmessage) {
-      await axios
-        .post(
-          `${baseUrl}/message/latest`,
-          { date: lastmessage.createdAt, group },
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        )
-        .then((data) => {
-          fetchedData.push(...data.data);
-          setMessages(fetchedData);
-        })
-        .catch((e) => {
-          console.log(e);
-        });
-    }
-  }
+  // async function fetchMessages() {
+  //   const lastmessage = fetchedData[fetchedData.length - 1];
+  //   if (lastmessage) {
+  //     await axios
+  //       .post(
+  //         `${baseUrl}/message/latest`,
+  //         { date: lastmessage.createdAt, group },
+  //         {
+  //           headers: { Authorization: `Bearer ${token}` },
+  //         }
+  //       )
+  //       .then((data) => {
+  //         fetchedData.push(...data.data);
+  //         setMessages(fetchedData);
+  //       })
+  //       .catch((e) => {
+  //         console.log(e);
+  //       });
+  //   }
+  // }
 
-  useFocusEffect(
-    useCallback(() => {
-      fetchMessages();
-    }, [])
-  );
+  // useFocusEffect(
+  //   useCallback(() => {
+  //     fetchMessages();
+  //   }, [])
+  // );
 
   useEffect(() => {
     if (replyMessage.name) {
@@ -330,39 +330,6 @@ const ChatsScreen = ({ navigation, route }) => {
     const { Id, token } = useContext(AuthContext);
     const { replyMessage } = useContext(ChatContext);
 
-    const ChatMessage = ({ message }) => {
-      const regex = /(https?:\/\/[^\s]+)/g;
-
-      const textParts = message.split(regex);
-      // console.log(textParts);
-
-      return (
-        <Text
-          style={{
-            color: "#000",
-            fontSize: 16,
-            marginHorizontal: 6,
-            marginVertical: 4,
-          }}
-        >
-          {textParts.map((part, i) => {
-            if (part.match(regex)) {
-              return (
-                <Text
-                  key={i}
-                  style={{ color: "blue" }}
-                  onPress={() => Linking.openURL(part)}
-                >
-                  {part}
-                </Text>
-              );
-            }
-            return <Text key={i}>{part}</Text>;
-          })}
-        </Text>
-      );
-    };
-
     return (
       <View style={{ marginBottom: 6, borderRadius: 10 }}>
         {msg.replyOn?.name && (
@@ -440,11 +407,12 @@ const ChatsScreen = ({ navigation, route }) => {
   };
 
   const ChatMessage = ({ message }) => {
-    const regex = /(https?:\/\/[^\s]+)/g;
+    const regex1 = /(https?:\/\/[^\s]+)/g;
+    const regex = /((?:https?:\/\/)?(?:www\.)?[^\s]+)/gi;
     const regex2 =
-      /^[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&//=]*)$/;
+      /^[-a-zA-Z0-9@:%._\+~#=]\.[a-zA-Z0-9()]\b(?:[-a-zA-Z0-9()@:%_\+.~#?&//=]*)$/;
 
-    const textParts = message.split(" ");
+    const textParts = message.split(regex);
 
     return (
       <Text
@@ -456,22 +424,22 @@ const ChatsScreen = ({ navigation, route }) => {
         }}
       >
         {textParts.map((part, i) => {
-          if (part.trim().match(regex) || regex2.test(part.trim())) {
+          if (part.trim().match(regex1) || regex2.test(part.trim())) {
             return (
               <Text
                 key={i}
                 style={{ color: "blue" }}
                 onPress={() =>
-                  Linking.openURL(part.match(regex) ? part : `https://${part}`)
+                  Linking.openURL(part.match(regex1) ? part : `https://${part}`)
                 }
               >
-                {`${part} `}
+                {`${part}`}
               </Text>
             );
           }
           return (
             <Text style={{ marginHorizontal: 4 }} key={i}>
-              {`${part} `}
+              {`${part}`}
             </Text>
           );
         })}
