@@ -306,6 +306,15 @@ const ChatGroups = ({ navigation }) => {
   //   }, [])
   // );
 
+  const TalkBubble = () => {
+    return (
+      <View style={styles.talkBubble}>
+        <View style={styles.talkBubbleSquare} />
+        <View style={styles.talkBubbleTriangle} />
+      </View>
+    );
+  };
+
   const Group = ({ name, imgUri, group, newMessages, lastmessage }) => {
     const unreads = newMessages.length;
     const createdAt = newMessages[unreads - 1]?.createdAt;
@@ -527,6 +536,25 @@ const ChatGroups = ({ navigation }) => {
           Create New Group
         </Text>
       </TouchableOpacity> */}
+      <View style={{ position: "absolute", bottom: 0, left: "25%" }}>
+        <TalkBubble />
+        <Text
+          style={{
+            alignSelf: "center",
+            fontSize: 18,
+            position: "absolute",
+            top: 10,
+            fontWeight: "600",
+            color: "#fff",
+            elevation: 10,
+            padding: 8,
+            backgroundColor: "#ED2B2A",
+            borderRadius: 10,
+          }}
+        >
+          नवीन टेस्ट
+        </Text>
+      </View>
     </View>
   );
 };
@@ -564,5 +592,32 @@ const styles = StyleSheet.create({
     marginTop: 4,
     backgroundColor: "#17cfe3",
     justifyContent: "center",
+  },
+  talkBubble: {
+    backgroundColor: "transparent",
+    elevation: 10,
+  },
+  talkBubbleSquare: {
+    width: 100,
+    height: 60,
+    backgroundColor: "red",
+    borderRadius: 10,
+  },
+  talkBubbleTriangle: {
+    position: "absolute",
+    // left: -26,
+    // top: 26,
+    bottom: -24,
+    alignSelf: "center",
+    zIndex: 40,
+    transform: [{ rotate: "-90deg" }],
+    width: 0,
+    height: 0,
+    borderTopColor: "transparent",
+    borderTopWidth: 13,
+    borderRightWidth: 26,
+    borderRightColor: "red",
+    borderBottomWidth: 13,
+    borderBottomColor: "transparent",
   },
 });
