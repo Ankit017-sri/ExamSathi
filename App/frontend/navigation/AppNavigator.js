@@ -24,6 +24,7 @@ import ChatGroups from "../screens/ChatGroups";
 import cache from "../utilities/cache";
 import FeedbackScreen from "../screens/Feedback";
 import { registerForPushNotificationsAsync } from "../utilities/notifications";
+import RevisionQuizScreen from "../screens/RevisionQuizScreen";
 
 let defaultNavOptions = {
   ...TransitionPresets.SlideFromRightIOS,
@@ -66,67 +67,68 @@ export const QuizNavigator = () => {
   );
 };
 
-const ChatStackNavigator = createStackNavigator();
+// const ChatStackNavigator = createStackNavigator();
 
-const ChatsNavigator = () => {
-  const { token } = useContext(AuthContext);
-  const [groups, setGroups] = useState([]);
-  const [memCount, setMemCount] = useState();
-  const [replyMessage, setReplyMessage] = useState({});
-  const handleGroup = (group) => {
-    setGroups([...groups, group]);
-  };
-  const fetchGroups = async () => {
-    const groupDetails = await cache.get("groups");
-    if (groupDetails !== null) {
-      setGroups(groupDetails);
-    } else {
-      const res = await axios
-        .get(`${baseUrl}/group/names`, {
-          headers: { Authorization: `Bearer ${token}` },
-        })
-        .catch((e) => console.log(e));
-      // console.log(res.data);
-      if (res?.data) {
-        setGroups(res?.data);
-      }
-    }
-  };
+// const ChatsNavigator = () => {
+//   const { token } = useContext(AuthContext);
+//   const [groups, setGroups] = useState([]);
+//   const [memCount, setMemCount] = useState();
+//   const [replyMessage, setReplyMessage] = useState({});
+//   const handleGroup = (group) => {
+//     setGroups([...groups, group]);
+//   };
+//   const fetchGroups = async () => {
+//     const groupDetails = await cache.get("groups");
+//     if (groupDetails !== null) {
+//       setGroups(groupDetails);
+//     } else {
+//       const res = await axios
+//         .get(`${baseUrl}/group/names`, {
+//           headers: { Authorization: `Bearer ${token}` },
+//         })
+//         .catch((e) => console.log(e));
+//       // console.log(res.data);
+//       if (res?.data) {
+//         setGroups(res?.data);
+//       }
+//     }
+//   };
 
-  async function fetchCounts() {
-    await axios
-      .get(`${baseUrl}/auth/users/count`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      .then((data) => {
-        // console.log(data.data[0].count);
-        setMemCount(data.data[0].count);
-      })
-      .catch((e) => console.log(e));
-  }
+//   async function fetchCounts() {
+//     await axios
+//       .get(`${baseUrl}/auth/users/count`, {
+//         headers: { Authorization: `Bearer ${token}` },
+//       })
+//       .then((data) => {
+//         // console.log(data.data[0].count);
+//         setMemCount(data.data[0].count);
+//       })
+//       .catch((e) => console.log(e));
+//   }
 
-  useEffect(() => {
-    fetchGroups();
-    fetchCounts();
-  }, []);
-  return (
-    <ChatContext.Provider
-      value={{
-        handleGroup,
-        groups,
-        setGroups,
-        memCount,
-        replyMessage,
-        setReplyMessage,
-      }}
-    >
-      <ChatStackNavigator.Navigator screenOptions={defaultNavOptions}>
-        <ChatStackNavigator.Screen name="Chat Groups" component={ChatGroups} />
-        <ChatStackNavigator.Screen name="Chat" component={ChatsScreen} />
-      </ChatStackNavigator.Navigator>
-    </ChatContext.Provider>
-  );
-};
+//   useEffect(() => {
+//     fetchGroups();
+//     fetchCounts();
+//   }, []);
+//   return (
+//     <ChatContext.Provider
+//       value={{
+//         handleGroup,
+//         groups,
+//         setGroups,
+//         memCount,
+//         replyMessage,
+//         setReplyMessage,
+//       }}
+//     >
+//       <ChatStackNavigator.Navigator screenOptions={defaultNavOptions}>
+//         <ChatStackNavigator.Screen name="Chat Groups" component={ChatGroups} />
+//         <ChatStackNavigator.Screen name="Chat" component={ChatsScreen} />
+//       </ChatStackNavigator.Navigator>
+//     </ChatContext.Provider>
+//   );
+// };
+
 const AccountStackNavigator = createStackNavigator();
 const AccountNavigator = () => {
   return (
@@ -255,7 +257,7 @@ export const AppNavigator = ({ onLayout }) => {
             color = focused ? Colors.text : "black";
             size = focused ? 26 : 24;
 
-            if (route.name === "Chats")
+            if (route.name === "RevisionQuiz")
               iconName = focused ? "home" : "home-outline";
             else if (route.name === "New Quiz")
               return (
@@ -292,8 +294,8 @@ export const AppNavigator = ({ onLayout }) => {
       >
         {/* <Animated.View style={animStyles} /> */}
         <Tab.Screen
-          name="Chats"
-          component={ChatsNavigator}
+          name="RevisionQuiz"
+          component={RevisionQuizScreen}
           listeners={{
             tabPress: (e) => {
               // e.preventDefault();

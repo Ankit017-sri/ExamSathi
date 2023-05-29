@@ -4,11 +4,17 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Colors from "../constants/Colors";
 import CompletedTestOptionCircle from "./CompletedTestOptionCircle";
 
-const CompletedQuesCard = ({ quesData, submittedQuizData, navigation }) => {
-  const [selectedOption, setSelectedOption] = useState(null);
+const CompletedQuesCard = ({
+  quesData,
+  submittedQuizData,
+  navigation,
+  selectedOp,
+  quesNo,
+}) => {
+  const [selectedOption, setSelectedOption] = useState();
 
-  const foundObject = submittedQuizData.find(
-    (e) => e.quesIndex === quesData.qNo - 1
+  const foundObject = submittedQuizData?.find(
+    (e) => e.quesIndex === (quesData.qNo ? quesData.qNo : quesNo) - 1
   );
 
   useEffect(() => {
@@ -18,14 +24,16 @@ const CompletedQuesCard = ({ quesData, submittedQuizData, navigation }) => {
   return (
     <View style={styles.quesContainer}>
       <Text style={styles.quesText}>
-        <Text style={{ fontWeight: "bold" }}>{quesData.qNo})</Text>{" "}
+        <Text style={{ fontWeight: "bold" }}>
+          {quesData.qNo ? quesData.qNo : quesNo})
+        </Text>{" "}
         {quesData.ques}
       </Text>
       <Text style={styles.quesText}>{quesData.hindiQues}</Text>
 
-      {!foundObject ? (
+      {!foundObject && !selectedOp ? (
         <Text style={{ color: "red", fontWeight: "bold" }}>Not Attempted</Text>
-      ) : foundObject.value == quesData.correctOp ? (
+      ) : (foundObject?.value || selectedOp) == quesData.correctOp ? (
         <Text style={{ color: Colors.correctAns, fontWeight: "bold" }}>
           Attempted and Correct answer
         </Text>
@@ -39,7 +47,7 @@ const CompletedQuesCard = ({ quesData, submittedQuizData, navigation }) => {
           <CompletedTestOptionCircle
             selectedOption={selectedOption}
             num={1}
-            attempted={foundObject?.value}
+            attempted={foundObject?.value || selectedOp}
           />
           <Text style={styles.optionText}>{quesData.op1}</Text>
         </View>
@@ -47,7 +55,7 @@ const CompletedQuesCard = ({ quesData, submittedQuizData, navigation }) => {
           <CompletedTestOptionCircle
             selectedOption={selectedOption}
             num={2}
-            attempted={foundObject?.value}
+            attempted={foundObject?.value || selectedOp}
           />
           <Text style={styles.optionText}>{quesData.op2}</Text>
         </View>
@@ -55,7 +63,7 @@ const CompletedQuesCard = ({ quesData, submittedQuizData, navigation }) => {
           <CompletedTestOptionCircle
             selectedOption={selectedOption}
             num={3}
-            attempted={foundObject?.value}
+            attempted={foundObject?.value || selectedOp}
           />
           <Text style={styles.optionText}>{quesData.op3}</Text>
         </View>
@@ -63,39 +71,41 @@ const CompletedQuesCard = ({ quesData, submittedQuizData, navigation }) => {
           <CompletedTestOptionCircle
             selectedOption={selectedOption}
             num={4}
-            attempted={foundObject?.value}
+            attempted={foundObject?.value || selectedOp}
           />
           <Text style={styles.optionText}>{quesData.op4}</Text>
         </View>
       </View>
-      <TouchableOpacity
-        activeOpacity={0.6}
-        onPress={() =>
-          navigation.navigate("SolutionScreen", {
-            exp: quesData.exp,
-            ytLink: quesData.ytLink,
-          })
-        }
-        style={{
-          backgroundColor: Colors.primary,
-          elevation: 5,
-          alignSelf: "flex-end",
-          marginTop: 10,
-          borderRadius: 4,
-        }}
-      >
-        <Text
+      {quesData.exp && (
+        <TouchableOpacity
+          activeOpacity={0.6}
+          onPress={() =>
+            navigation.navigate("SolutionScreen", {
+              exp: quesData.exp,
+              ytLink: quesData.ytLink,
+            })
+          }
           style={{
-            fontSize: 16,
-            color: "white",
-            textAlign: "right",
-            fontWeight: "bold",
-            padding: 8,
+            backgroundColor: Colors.primary,
+            elevation: 5,
+            alignSelf: "flex-end",
+            marginTop: 10,
+            borderRadius: 4,
           }}
         >
-          उत्तर पहा / See Solution {">"}
-        </Text>
-      </TouchableOpacity>
+          <Text
+            style={{
+              fontSize: 16,
+              color: "white",
+              textAlign: "right",
+              fontWeight: "bold",
+              padding: 8,
+            }}
+          >
+            उत्तर पहा / See Solution {">"}
+          </Text>
+        </TouchableOpacity>
+      )}
     </View>
   );
 };

@@ -134,7 +134,6 @@ const Feedback = ({ navigation }) => {
                     backgroundColor: "#90AAD5",
                     marginTop: 10,
                     marginBottom: 20,
-                    // marginRight: 40,
                   }}
                   activeOpacity={0.6}
                   onPress={() => sendFeedBack()}

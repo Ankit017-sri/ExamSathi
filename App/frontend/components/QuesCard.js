@@ -4,70 +4,106 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Colors from "../constants/Colors";
 import OptionCircle from "./OptionCircle";
 
-const QuesCard = React.memo(({ data, onSelect, selected, setSelected }) => {
-  const handleChange = (i) => {
-    let arr = selected;
-    arr[data.qNo - 1] = i;
-    setSelected(arr);
-    console.log(selected[data.qNo - 1]);
+const QuesCard = React.memo(
+  ({
+    data,
+    onSelect,
+    selected,
+    setSelected,
+    isRevision,
+    timeRemaining,
+    quesNo,
+  }) => {
+    const handleChange = (i) => {
+      let arr = selected;
+      arr[(data.qNo ? data.qNo : quesNo) - 1] = i;
+      setSelected(arr);
+      // console.log(selected[data.qNo - 1]);
 
-    onSelect(data.qNo - 1, i);
-  };
+      onSelect((data.qNo ? data.qNo : quesNo) - 1, i);
+    };
 
-  return (
-    <View style={styles.quesContainer}>
-      <Text style={styles.quesText}>
-        <Text style={{ fontWeight: "bold" }}>{data.qNo})</Text> {data.ques}
-      </Text>
-      <Text style={styles.quesText}>{data.hindiQues}</Text>
-      <View style={styles.optionsContainer}>
-        <TouchableOpacity
-          style={[
-            styles.optionContainer,
-            selected[data.qNo - 1] == 1 && styles.selectedOption,
-          ]}
-          onPress={() => handleChange(1)}
-        >
-          <OptionCircle selectedOption={selected[data.qNo - 1]} num={1} />
-          <Text style={styles.optionText}>{data.op1}</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[
-            styles.optionContainer,
-            selected[data.qNo - 1] === 2 && styles.selectedOption,
-          ]}
-          onPress={() => handleChange(2)}
-        >
-          <OptionCircle selectedOption={selected[data.qNo - 1]} num={2} />
+    return (
+      <View style={styles.quesContainer}>
+        {isRevision && (
+          <Text
+            style={{ alignSelf: "flex-end", color: "red", fontWeight: "bold" }}
+          >
+            {timeRemaining}
+          </Text>
+        )}
+        <Text style={styles.quesText}>
+          <Text style={{ fontWeight: "bold" }}>
+            {data.qNo ? data.qNo : quesNo})
+          </Text>{" "}
+          {data.ques}
+        </Text>
+        <Text style={styles.quesText}>{data.hindiQues}</Text>
+        <View style={styles.optionsContainer}>
+          <TouchableOpacity
+            style={[
+              styles.optionContainer,
+              selected[(data.qNo ? data.qNo : quesNo) - 1] == 1 &&
+                styles.selectedOption,
+            ]}
+            onPress={() => handleChange(1)}
+          >
+            <OptionCircle
+              selectedOption={selected[(data.qNo ? data.qNo : quesNo) - 1]}
+              num={1}
+            />
+            <Text style={styles.optionText}>{data.op1}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[
+              styles.optionContainer,
+              selected[(data.qNo ? data.qNo : quesNo) - 1] === 2 &&
+                styles.selectedOption,
+            ]}
+            onPress={() => handleChange(2)}
+          >
+            <OptionCircle
+              selectedOption={selected[(data.qNo ? data.qNo : quesNo) - 1]}
+              num={2}
+            />
 
-          <Text style={styles.optionText}>{data.op2}</Text>
-        </TouchableOpacity>
+            <Text style={styles.optionText}>{data.op2}</Text>
+          </TouchableOpacity>
 
-        <TouchableOpacity
-          style={[
-            styles.optionContainer,
-            selected[data.qNo - 1] === 3 && styles.selectedOption,
-          ]}
-          onPress={() => handleChange(3)}
-        >
-          <OptionCircle selectedOption={selected[data.qNo - 1]} num={3} />
+          <TouchableOpacity
+            style={[
+              styles.optionContainer,
+              selected[(data.qNo ? data.qNo : quesNo) - 1] === 3 &&
+                styles.selectedOption,
+            ]}
+            onPress={() => handleChange(3)}
+          >
+            <OptionCircle
+              selectedOption={selected[(data.qNo ? data.qNo : quesNo) - 1]}
+              num={3}
+            />
 
-          <Text style={styles.optionText}>{data.op3}</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[
-            styles.optionContainer,
-            selected[data.qNo - 1] === 4 && styles.selectedOption,
-          ]}
-          onPress={() => handleChange(4)}
-        >
-          <OptionCircle selectedOption={selected[data.qNo - 1]} num={4} />
-          <Text style={styles.optionText}>{data.op4}</Text>
-        </TouchableOpacity>
+            <Text style={styles.optionText}>{data.op3}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[
+              styles.optionContainer,
+              selected[(data.qNo ? data.qNo : quesNo) - 1] === 4 &&
+                styles.selectedOption,
+            ]}
+            onPress={() => handleChange(4)}
+          >
+            <OptionCircle
+              selectedOption={selected[(data.qNo ? data.qNo : quesNo) - 1]}
+              num={4}
+            />
+            <Text style={styles.optionText}>{data.op4}</Text>
+          </TouchableOpacity>
+        </View>
       </View>
-    </View>
-  );
-});
+    );
+  }
+);
 
 const styles = StyleSheet.create({
   container: {

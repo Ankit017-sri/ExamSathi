@@ -15,7 +15,7 @@ const Pagination = ({
   const [items, setItems] = useState([]);
 
   const fetchData = () => {
-    console.log(data);
+    // console.log(data);
     const startIndex = page * PAGE_SIZE;
     const endIndex = startIndex + PAGE_SIZE;
     const newItems = data.slice(startIndex, endIndex);

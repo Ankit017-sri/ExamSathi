@@ -4,7 +4,6 @@ import Colors from "../constants/Colors";
 
 const CompletedTestOptionCircle = ({ selectedOption, num, attempted }) => {
   let backgroundColor = "#fff";
-  console.log(selectedOption, num, attempted);
   if (attempted && selectedOption == num && attempted == num) {
     backgroundColor = Colors.correctAns;
   } else if (
