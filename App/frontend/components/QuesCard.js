@@ -1,8 +1,15 @@
 import React, { useState } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  Vibration,
+  View,
+} from "react-native";
 
 import Colors from "../constants/Colors";
 import OptionCircle from "./OptionCircle";
+import { attempting } from "../utilities/getNumbers";
 
 const QuesCard = React.memo(
   ({
@@ -15,11 +22,10 @@ const QuesCard = React.memo(
     quesNo,
   }) => {
     const handleChange = (i) => {
+      Vibration.vibrate(70);
       let arr = selected;
       arr[(data.qNo ? data.qNo : quesNo) - 1] = i;
       setSelected(arr);
-      // console.log(selected[data.qNo - 1]);
-
       onSelect((data.qNo ? data.qNo : quesNo) - 1, i);
     };
 
@@ -100,6 +106,11 @@ const QuesCard = React.memo(
             <Text style={styles.optionText}>{data.op4}</Text>
           </TouchableOpacity>
         </View>
+        {isRevision && (
+          <Text style={{ marginTop: 10, fontWeight: "bold" }}>
+            {attempting} answers
+          </Text>
+        )}
       </View>
     );
   }
@@ -111,7 +122,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
   },
   quesContainer: {
-    // borderWidth: 1,
     borderColor: Colors.primary,
     backgroundColor: "#fff",
     elevation: 5,
@@ -125,13 +135,20 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   optionsContainer: {
-    borderWidth: 1,
-    borderColor: Colors.primary,
+    // borderWidth: 1,
+    width: "100%",
+    // flexWrap: "wrap-reverse",
+    // minHeight: 100,
+    // borderColor: Colors.primary,
     borderRadius: 5,
-    padding: 5,
-    paddingHorizontal: 10,
-    backgroundColor: "rgba(23, 207, 227, 0.3)",
+    // padding: 5,
+    // paddingHorizontal: 10,
+    // backgroundColor: "rgba(23, 207, 227, 0.3)",
+    alignSelf: "center",
     marginTop: 10,
+  },
+  optionText: {
+    width: "90%",
   },
   filledCircle: {
     height: 15,
@@ -155,6 +172,14 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 10,
+    elevation: 5,
+    padding: 11,
+    borderRadius: 5,
+    backgroundColor: "#fff",
+  },
+  selectedOption: {
+    borderWidth: 2,
+    borderColor: "rgba(23, 207, 227, 0.5)",
   },
 });
 

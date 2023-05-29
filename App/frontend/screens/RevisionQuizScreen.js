@@ -14,6 +14,7 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
+  Vibration,
   View,
 } from "react-native";
 import CustomHeader from "../components/CustomHeader";
@@ -33,6 +34,7 @@ import AuthContext from "../auth/context";
 import { useFocusEffect } from "@react-navigation/native";
 import { io } from "socket.io-client";
 import ChatContext from "../chat/context";
+import { online } from "../utilities/getNumbers";
 
 // const questions = [
 //   {
@@ -116,7 +118,7 @@ const RevisionQuizScreen = () => {
   const [feedback, setFeedback] = useState("");
   const [feedbacks, setFeedbacks] = useState([]);
   const [isFeedbackSent, setIsFeedbackSent] = useState(false);
-  const [len, setLen] = useState(0);
+  const [len, setLen] = useState(online);
   const [memCount, setMemCount] = useState();
   const [isSubmitted, setIsSubmitted] = useState(false);
 
@@ -162,7 +164,7 @@ const RevisionQuizScreen = () => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => {
-        console.log(res.data.length);
+        // console.log(res.data.length);
         setSelectedOptions(Array(res.data.length).fill(null));
         setQuestions(res.data);
       })
@@ -200,9 +202,14 @@ const RevisionQuizScreen = () => {
 
       const nextNearestTime =
         timesOfDay.find((time) => time > currentTime) ||
-        timesOfDay[0] + " tomorrow";
+        timesOfDay[0] + " उद्या";
 
-      setNextTime(nextNearestTime);
+      setNextTime(
+        nextNearestTime.split(":")[0] -
+          12 +
+          " " +
+          nextNearestTime.split(":")[2].split(" ")[1]
+      );
 
       if (timesOfDay.includes(currentTime)) {
         setIsQuizStarted(true);
@@ -269,6 +276,7 @@ const RevisionQuizScreen = () => {
     const message = feedback.trimStart();
     const arr = message.split(" ");
 
+    setFeedbacks([...feedbacks, message]);
     if (arr[0] === "") {
       return Alert.alert(
         "Feedback is Empty!",
@@ -285,7 +293,7 @@ const RevisionQuizScreen = () => {
         }
       )
       .catch((e) => console.log(e));
-    setFeedbacks([...feedbacks, message]);
+    console.log("message");
     socket.current.emit("send-feedback", { feedback: message });
     setFeedback("");
     setIsFeedbackSent(true);
@@ -294,13 +302,13 @@ const RevisionQuizScreen = () => {
   useEffect(() => {
     socket.current = io(baseUrl);
     socket.current.emit("new-user-add", { Id });
-    socket.current.on("get-active-users", (data) => {
-      setLen(data);
-    });
+    // socket.current.on("get-active-users", (data) => {
+    //   setLen(data);
+    // });
     socket.current.on("receive-feedback", (data) => {
       setFeedbacks([...feedbacks, data]);
     });
-  }, [Id]);
+  }, []);
 
   const handleScroll = (event) => {
     const offsetY = event.nativeEvent.contentOffset.y;
@@ -311,11 +319,17 @@ const RevisionQuizScreen = () => {
     <>
       <CustomHeader
         title="Revision"
-        sub={`${memCount} members, ${len} online`}
+        // sub={`${memCount} members, ${len} online`}
       />
       {!isQuizStarted && (
         <View>
-          <Text>Next Test will start at {nextTime}</Text>
+          <Text style={{ textAlign: "center" }}>
+            पुढची revision{" "}
+            {nextTime.split(" ")[1] !== "undefined"
+              ? nextTime.split(" ")[1]
+              : ""}{" "}
+            संध्याकाळी {nextTime.split(" ")[0]} वाजता
+          </Text>
         </View>
       )}
       {!quizFinished && isQuizStarted && (
@@ -333,7 +347,9 @@ const RevisionQuizScreen = () => {
               Next Question in 2 seconds
             </Text>
           ) : (
-            <></>
+            <Text>
+              {questions[0].testName} - तुमच्यासोबत {online} लोकं सोडवत आहेत
+            </Text>
           )}
         </View>
       )}
@@ -396,8 +412,8 @@ const RevisionQuizScreen = () => {
                 marginHorizontal: 20,
               }}
               data={feedbacks}
-              ref={ref}
-              keyExtractor={(item) => item._id}
+              // ref={ref}
+              keyExtractor={(item) => item}
               renderItem={({ item, index }) => (
                 <View
                   style={{
