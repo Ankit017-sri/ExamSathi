@@ -348,7 +348,7 @@ const RevisionQuizScreen = () => {
             </Text>
           ) : (
             <Text>
-              {questions[0].testName} - तुमच्यासोबत {online} लोकं सोडवत आहेत
+              {questions[0]?.testName} - तुमच्यासोबत {online} लोकं सोडवत आहेत
             </Text>
           )}
         </View>
