@@ -205,7 +205,7 @@ const RevisionQuizScreen = () => {
   }, [currentQuestionIndex, isQuizStarted]);
 
   useEffect(() => {
-    const timesOfDay = ["19:00:00", "20:00:00", "21:00:00", "22:00:00"];
+    const timesOfDay = ["18:00:00", "19:00:00", "20:00:00", "21:00:00"];
 
     const interval = setInterval(() => {
       const currentTime = new Date().toLocaleTimeString([], {
