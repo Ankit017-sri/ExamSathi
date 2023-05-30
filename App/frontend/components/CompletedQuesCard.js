@@ -21,6 +21,19 @@ const CompletedQuesCard = ({
     setSelectedOption(quesData.correctOp);
   });
 
+  let bgColor = "";
+
+  if ((foundObject?.value || selectedOp) == quesData.correctOp) {
+    bgColor = "green";
+  } else if ((foundObject?.value || selectedOp) !== quesData.correctOp) {
+    bgColor = "red";
+  }
+
+  console.log(foundObject?.value);
+
+  const [selOp, setSelOp] = useState(foundObject?.value || selectedOp);
+  const correctOption = quesData.correctOp;
+
   return (
     <View style={styles.quesContainer}>
       <Text style={styles.quesText}>
@@ -43,7 +56,21 @@ const CompletedQuesCard = ({
         </Text>
       )}
       <View style={styles.optionsContainer}>
-        <View style={[styles.optionContainer]}>
+        <View
+          style={[
+            styles.optionContainer,
+            selOp == 1 && {
+              backgroundColor: "#f7a1a1",
+              borderColor: "#f55151",
+              borderWidth: 1,
+            },
+            correctOption == 1 && {
+              backgroundColor: "#acfabf",
+              borderColor: "#51f577",
+              borderWidth: 1,
+            },
+          ]}
+        >
           <CompletedTestOptionCircle
             selectedOption={selectedOption}
             num={1}
@@ -51,7 +78,21 @@ const CompletedQuesCard = ({
           />
           <Text style={styles.optionText}>{quesData.op1}</Text>
         </View>
-        <View style={[styles.optionContainer]}>
+        <View
+          style={[
+            styles.optionContainer,
+            selOp == 2 && {
+              backgroundColor: "#f7a1a1",
+              borderColor: "#f55151",
+              borderWidth: 1,
+            },
+            correctOption == 2 && {
+              backgroundColor: "#acfabf",
+              borderColor: "#51f577",
+              borderWidth: 1,
+            },
+          ]}
+        >
           <CompletedTestOptionCircle
             selectedOption={selectedOption}
             num={2}
@@ -59,7 +100,21 @@ const CompletedQuesCard = ({
           />
           <Text style={styles.optionText}>{quesData.op2}</Text>
         </View>
-        <View style={[styles.optionContainer]}>
+        <View
+          style={[
+            styles.optionContainer,
+            selOp == 3 && {
+              backgroundColor: "#f7a1a1",
+              borderColor: "#f55151",
+              borderWidth: 1,
+            },
+            correctOption == 3 && {
+              backgroundColor: "#acfabf",
+              borderColor: "#51f577",
+              borderWidth: 1,
+            },
+          ]}
+        >
           <CompletedTestOptionCircle
             selectedOption={selectedOption}
             num={3}
@@ -67,7 +122,21 @@ const CompletedQuesCard = ({
           />
           <Text style={styles.optionText}>{quesData.op3}</Text>
         </View>
-        <View style={[styles.optionContainer]}>
+        <View
+          style={[
+            styles.optionContainer,
+            selOp == 4 && {
+              backgroundColor: "#f7a1a1",
+              borderColor: "#f55151",
+              borderWidth: 1,
+            },
+            correctOption == 4 && {
+              backgroundColor: "#acfabf",
+              borderColor: "#51f577",
+              borderWidth: 1,
+            },
+          ]}
+        >
           <CompletedTestOptionCircle
             selectedOption={selectedOption}
             num={4}
@@ -116,7 +185,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
   },
   quesContainer: {
-    // borderWidth: 1,
     borderColor: Colors.primary,
     backgroundColor: "#fff",
     elevation: 5,
@@ -130,13 +198,13 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   optionsContainer: {
-    borderWidth: 1,
-    borderColor: Colors.primary,
+    width: "100%",
     borderRadius: 5,
-    padding: 5,
-    paddingHorizontal: 10,
-    backgroundColor: "rgba(23, 207, 227, 0.3)",
+    alignSelf: "center",
     marginTop: 10,
+  },
+  optionText: {
+    width: "90%",
   },
   filledCircle: {
     height: 15,
@@ -160,6 +228,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 10,
+    elevation: 5,
+    padding: 11,
+    borderRadius: 5,
+    backgroundColor: "#fff",
   },
 });
 

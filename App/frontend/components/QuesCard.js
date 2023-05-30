@@ -135,15 +135,8 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   optionsContainer: {
-    // borderWidth: 1,
     width: "100%",
-    // flexWrap: "wrap-reverse",
-    // minHeight: 100,
-    // borderColor: Colors.primary,
     borderRadius: 5,
-    // padding: 5,
-    // paddingHorizontal: 10,
-    // backgroundColor: "rgba(23, 207, 227, 0.3)",
     alignSelf: "center",
     marginTop: 10,
   },
@@ -156,7 +149,6 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     backgroundColor: Colors.primary,
   },
-
   circle: {
     borderWidth: 1,
     height: 20,
@@ -178,8 +170,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
   },
   selectedOption: {
-    borderWidth: 2,
-    borderColor: "rgba(23, 207, 227, 0.5)",
+    borderWidth: 1,
+    backgroundColor: "#a2ebfa",
+    borderColor: "#61e0fa",
   },
 });
 

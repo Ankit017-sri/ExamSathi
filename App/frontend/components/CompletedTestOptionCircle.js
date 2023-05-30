@@ -21,7 +21,8 @@ const CompletedTestOptionCircle = ({ selectedOption, num, attempted }) => {
         borderRadius: 20,
         justifyContent: "center",
         alignItems: "center",
-        borderColor: Colors.primary,
+        borderColor:
+          backgroundColor !== "#fff" ? backgroundColor : Colors.primary,
         backgroundColor: "#fff",
         marginRight: 10,
         overflow: "hidden",
