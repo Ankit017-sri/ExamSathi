@@ -29,8 +29,6 @@ const CompletedQuesCard = ({
     bgColor = "red";
   }
 
-  console.log(foundObject?.value);
-
   const [selOp, setSelOp] = useState(foundObject?.value || selectedOp);
   const correctOption = quesData.correctOp;
 

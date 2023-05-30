@@ -9,7 +9,6 @@ import {
 
 import Colors from "../constants/Colors";
 import OptionCircle from "./OptionCircle";
-import { attempting } from "../utilities/getNumbers";
 
 const QuesCard = React.memo(
   ({
@@ -20,6 +19,7 @@ const QuesCard = React.memo(
     isRevision,
     timeRemaining,
     quesNo,
+    attempting,
   }) => {
     const handleChange = (i) => {
       Vibration.vibrate(70);

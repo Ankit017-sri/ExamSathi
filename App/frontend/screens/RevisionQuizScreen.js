@@ -34,7 +34,7 @@ import AuthContext from "../auth/context";
 import { useFocusEffect } from "@react-navigation/native";
 import { io } from "socket.io-client";
 import ChatContext from "../chat/context";
-import { online } from "../utilities/getNumbers";
+import { attempting, online } from "../utilities/getNumbers";
 
 // const questions = [
 //   {
@@ -121,13 +121,26 @@ const RevisionQuizScreen = () => {
   const [len, setLen] = useState(online);
   const [memCount, setMemCount] = useState();
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [randomNums, setRandomNums] = useState({ attempting: 0, online: 0 });
 
   const { token, Id } = useContext(AuthContext);
 
+  // console.log(randomNums);
+
   const socket = useRef();
-  const ref = useRef();
+  // const ref = useRef();
   const scrollViewRef = useRef(null);
   const scrollY = useRef(new Animated.Value(0)).current;
+
+  const getNumbers = async () => {
+    const nums = await axios.get(`${baseUrl}/revision/numbers`, {
+      headers: {
+        Authorization: "Bearer " + token,
+      },
+    });
+
+    setRandomNums(nums.data);
+  };
 
   const getCurrQueIndex = async () => {
     const res = await axios
@@ -184,6 +197,7 @@ const RevisionQuizScreen = () => {
       setQuizFinished(true);
     } else if (isQuizStarted) {
       startTimer();
+      getNumbers();
       return () => {
         clearInterval(interval);
       };
@@ -348,7 +362,8 @@ const RevisionQuizScreen = () => {
             </Text>
           ) : (
             <Text>
-              {questions[0]?.testName} - तुमच्यासोबत {online} लोकं सोडवत आहेत
+              {questions[0]?.testName} - तुमच्यासोबत {randomNums?.online} लोकं
+              सोडवत आहेत
             </Text>
           )}
         </View>
@@ -378,6 +393,7 @@ const RevisionQuizScreen = () => {
                       selected={selectedOptions}
                       setSelected={setSelectedOptions}
                       onSelect={handleOptionPress}
+                      attempting={randomNums?.attempting}
                       isRevision
                       timeRemaining={
                         timerMinutes +
