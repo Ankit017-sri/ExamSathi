@@ -9,8 +9,10 @@ import {
   Alert,
   Animated,
   Button,
+  Image,
   Keyboard,
   KeyboardAvoidingView,
+  Linking,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -118,7 +120,7 @@ const RevisionQuizScreen = () => {
   const [feedback, setFeedback] = useState("");
   const [feedbacks, setFeedbacks] = useState([]);
   const [isFeedbackSent, setIsFeedbackSent] = useState(false);
-  const [len, setLen] = useState(online);
+  const [isDiscuss, setIsDiscuss] = useState(false);
   const [memCount, setMemCount] = useState();
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [randomNums, setRandomNums] = useState({ attempting: 0, online: 0 });
@@ -184,6 +186,22 @@ const RevisionQuizScreen = () => {
       .catch((e) => console.log(e));
   };
 
+  const joinWpGrp = async () => {
+    try {
+      const supported = await Linking.canOpenURL("https://bit.ly/wa-group-app");
+
+      if (supported) {
+        await Linking.openURL("https://bit.ly/wa-group-app");
+      } else {
+        console.log(
+          `Unable to open WhatsApp URL: ${"https://bit.ly/wa-group-app"}`
+        );
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useFocusEffect(
     useCallback(() => {
       fetchQues();
@@ -206,6 +224,12 @@ const RevisionQuizScreen = () => {
 
   useEffect(() => {
     const timesOfDay = ["18:00:00", "19:00:00", "20:00:00", "21:00:00"];
+    const timesForRemovingDiscuss = [
+      "18:35:00",
+      "19:35:00",
+      "20:35:00",
+      "21:35:00",
+    ];
 
     const interval = setInterval(() => {
       const currentTime = new Date().toLocaleTimeString([], {
@@ -230,6 +254,11 @@ const RevisionQuizScreen = () => {
         setQuizFinished(false);
         setIsSubmitted(false);
         console.log("Performing action at", currentTime);
+      }
+
+      if (timesForRemovingDiscuss.includes(currentTime)) {
+        setIsDiscuss(false);
+        console.log("Removing button at", currentTime);
       }
     }, 1000);
 
@@ -260,6 +289,7 @@ const RevisionQuizScreen = () => {
       setIsQuizStarted(false);
       setCurrentQuestionIndex(0);
       setIsSubmitted(true);
+      setIsDiscuss(true);
       return setQuizFinished(true);
     }
     setCurrentQuestionIndex(currentQuestionIndex + 1);
@@ -333,39 +363,86 @@ const RevisionQuizScreen = () => {
     <>
       <CustomHeader
         title="Revision"
+        share
         // sub={`${memCount} members, ${len} online`}
       />
+      {!isQuizStarted && isDiscuss && (
+        <View style={{ padding: 4, backgroundColor: "#fff" }}>
+          <TouchableOpacity
+            style={{
+              borderRadius: 4,
+              padding: 10,
+              backgroundColor: "#acfabf",
+              elevation: 5,
+              borderColor: "#51f577",
+              justifyContent: "space-evenly",
+              alignItems: "center",
+              flexDirection: "row",
+            }}
+            activeOpacity={0.6}
+            onPress={joinWpGrp}
+          >
+            <Text style={{ textAlign: "center", fontWeight: "bold" }}>
+              Discussion साठी जॉईन करा Whatsapp Group
+            </Text>
+            <Image
+              source={require("../assets/WhatsApp.svg.png")}
+              style={{ width: 30, height: 30 }}
+            />
+          </TouchableOpacity>
+        </View>
+      )}
       {!isQuizStarted && (
-        <View>
-          <Text style={{ textAlign: "center" }}>
-            पुढची revision{" "}
-            {nextTime.split(" ")[1] !== "undefined"
-              ? nextTime.split(" ")[1]
-              : ""}{" "}
-            संध्याकाळी {nextTime.split(" ")[0]} वाजता
-          </Text>
+        <View style={{ padding: 4, backgroundColor: "#fff" }}>
+          <View
+            style={{
+              borderRadius: 4,
+              padding: 10,
+              backgroundColor: "#a2ebfa",
+              elevation: 5,
+              borderColor: "#51f577",
+              justifyContent: "space-evenly",
+              alignItems: "center",
+              flexDirection: "row",
+            }}
+          >
+            <Text style={{ textAlign: "center", fontWeight: "bold" }}>
+              पुढची revision{" "}
+              {nextTime.split(" ")[1] !== "undefined"
+                ? nextTime.split(" ")[1]
+                : ""}{" "}
+              संध्याकाळी {nextTime.split(" ")[0]} वाजता
+            </Text>
+          </View>
         </View>
       )}
       {!quizFinished && isQuizStarted && (
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "center",
-            marginBottom: 10,
-          }}
-        >
-          {timerMinutes === 0 && timerSeconds === 0 ? (
-            <Text
-              style={{ color: "#fc6d6d", fontSize: 15, fontWeight: "bold" }}
-            >
-              Next Question in 2 seconds
-            </Text>
-          ) : (
-            <Text>
-              {questions[0]?.testName} - तुमच्यासोबत {randomNums?.online} लोकं
-              सोडवत आहेत
-            </Text>
-          )}
+        <View style={{ backgroundColor: "#fff" }}>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "center",
+              padding: 10,
+              backgroundColor: "#a2ebfa",
+              borderBottomLeftRadius: 12,
+              borderBottomRightRadius: 12,
+            }}
+          >
+            {timerMinutes === 0 && timerSeconds === 0 ? (
+              <Text
+                style={{ color: "#fc6d6d", fontSize: 15, fontWeight: "bold" }}
+              >
+                Next Question in 2 seconds
+              </Text>
+            ) : (
+              <Text style={{}}>
+                {questions[0]?.testName}
+                तुमच्यासोबत{" "}
+                <Text style={{ color: "red" }}>{randomNums?.online}</Text> लोकं
+                सोडवत आहेत
+              </Text>
+            )}
+          </View>
         </View>
       )}
       <ScrollView

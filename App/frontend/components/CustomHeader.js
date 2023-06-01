@@ -25,7 +25,7 @@ const CustomHeader = ({
   imgUri,
   setTabBarVisible,
   share,
-  appShareCount,
+  // appShareCount,
   mute,
   group,
 }) => {
@@ -37,6 +37,21 @@ const CustomHeader = ({
   Exam Sathi app
   https://play.google.com/store/apps/details?id=com.examSathi.examSathi`;
   const whatsappUrl = `whatsapp://send?text=${shareMessage}`;
+
+  const appShareCount = async () => {
+    try {
+      const res = await axios.put(
+        `${baseUrl}/auth/app/share`,
+        { screen: 1 },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      // console.log(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const Share = async () => {
     try {
@@ -205,7 +220,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "flex-end",
     elevation: 5,
-    marginBottom: 5,
+    // marginBottom: 5,
     paddingBottom: 10,
     flexDirection: "row",
   },
