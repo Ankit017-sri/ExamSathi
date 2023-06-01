@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -21,6 +21,14 @@ const QuesCard = React.memo(
     quesNo,
     attempting,
   }) => {
+    const [isShown, setIsShown] = useState(false);
+
+    useEffect(() => {
+      const isShownTime = Math.floor(Math.random() * (4000 - 7000) + 7000);
+      setTimeout(() => setIsShown(true), isShownTime);
+      // console.log(isShownTime);
+    }, []);
+
     const handleChange = (i) => {
       Vibration.vibrate(70);
       let arr = selected;
@@ -106,7 +114,7 @@ const QuesCard = React.memo(
             <Text style={styles.optionText}>{data.op4}</Text>
           </TouchableOpacity>
         </View>
-        {isRevision && (
+        {isRevision && isShown && (
           <Text style={{ marginTop: 10, fontWeight: "bold" }}>
             {attempting} answers
           </Text>

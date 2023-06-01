@@ -437,9 +437,12 @@ const RevisionQuizScreen = () => {
             ) : (
               <Text style={{}}>
                 {questions[0]?.testName}
+                {"\n"}
                 तुमच्यासोबत{" "}
-                <Text style={{ color: "red" }}>{randomNums?.online}</Text> लोकं
-                सोडवत आहेत
+                <Text style={{ color: "red", fontWeight: "bold" }}>
+                  {randomNums?.online}
+                </Text>{" "}
+                लोकं सोडवत आहेत
               </Text>
             )}
           </View>

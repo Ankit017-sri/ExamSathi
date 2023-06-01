@@ -139,6 +139,7 @@ const CustomHeader = ({
           (share || mute) && {
             flexDirection: "row",
             justifyContent: "space-between",
+            alignItems: "center",
             width: mute ? "60%" : "90%",
             marginLeft: mute ? 50 : 0,
           }
