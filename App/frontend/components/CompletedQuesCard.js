@@ -10,6 +10,8 @@ const CompletedQuesCard = ({
   navigation,
   selectedOp,
   quesNo,
+  setScore,
+  score,
 }) => {
   const [selectedOption, setSelectedOption] = useState();
 
@@ -25,6 +27,7 @@ const CompletedQuesCard = ({
 
   if ((foundObject?.value || selectedOp) == quesData.correctOp) {
     bgColor = "green";
+    if (score) setScore(score + 1);
   } else if ((foundObject?.value || selectedOp) !== quesData.correctOp) {
     bgColor = "red";
   }

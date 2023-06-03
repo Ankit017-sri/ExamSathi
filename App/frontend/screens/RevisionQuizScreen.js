@@ -8,7 +8,6 @@ import React, {
 import {
   Alert,
   Animated,
-  Button,
   Image,
   Keyboard,
   KeyboardAvoidingView,
@@ -16,10 +15,8 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  Vibration,
   View,
 } from "react-native";
-import CustomHeader from "../components/CustomHeader";
 import {
   FlatList,
   ScrollView,
@@ -27,83 +24,17 @@ import {
   TouchableWithoutFeedback,
 } from "react-native-gesture-handler";
 import Constants from "expo-constants";
+import axios from "axios";
+import { useFocusEffect } from "@react-navigation/native";
+import { io } from "socket.io-client";
+
+import CustomHeader from "../components/CustomHeader";
 import QuesCard from "../components/QuesCard";
 import CompletedQuesCard from "../components/CompletedQuesCard";
 import Colors from "../constants/Colors";
 import baseUrl from "../baseUrl";
-import axios from "axios";
 import AuthContext from "../auth/context";
-import { useFocusEffect } from "@react-navigation/native";
-import { io } from "socket.io-client";
-import ChatContext from "../chat/context";
-import { attempting, online } from "../utilities/getNumbers";
-
-// const questions = [
-//   {
-//     qNo: 1,
-//     ques: "Question 1",
-//     op1: "Option 1",
-//     op2: "Option 2",
-//     op3: "Option 3",
-//     op4: "Option 4",
-//     correctOp: "2",
-//   },
-//   {
-//     qNo: 2,
-//     ques: "Question 2",
-//     op1: "Option 1",
-//     op2: "Option 2",
-//     op3: "Option 3",
-//     op4: "Option 4",
-//     correctOp: "3",
-//   },
-//   {
-//     qNo: 3,
-//     ques: "Question 2",
-//     op1: "Option 1",
-//     op2: "Option 2",
-//     op3: "Option 3",
-//     op4: "Option 4",
-//     correctOp: "3",
-//   },
-//   {
-//     qNo: 4,
-//     ques: "Question 2",
-//     op1: "Option 1",
-//     op2: "Option 2",
-//     op3: "Option 3",
-//     op4: "Option 4",
-//     correctOp: "4",
-//   },
-// {
-//   qNo: 5,
-//   ques: "Question 2",
-//   op1: "Option 1",
-//   op2: "Option 2",
-//   op3: "Option 3",
-//   op4: "Option 4",
-//   correctOp: "Option 3",
-// },
-// {
-//   qNo: 6,
-//   ques: "Question 2",
-//   op1: "Option 1",
-//   op2: "Option 2",
-//   op3: "Option 3",
-//   op4: "Option 4",
-//   correctOp: "Option 3",
-// },
-// {
-//   qNo: 7,
-//   ques: "Question 2",
-//   op1: "Option 1",
-//   op2: "Option 2",
-//   op3: "Option 3",
-//   op4: "Option 4",
-//   correctOp: "Option 3",
-// },
-// Add more questions here
-// ];
+import cache from "../utilities/cache";
 
 const RevisionQuizScreen = () => {
   const [questions, setQuestions] = useState([]);
@@ -111,7 +42,6 @@ const RevisionQuizScreen = () => {
   const [selectedOptions, setSelectedOptions] = useState(
     Array(questions.length).fill(null)
   );
-  const [showCorrectAnswer, setShowCorrectAnswer] = useState(false);
   const [quizFinished, setQuizFinished] = useState(false);
   const [timerMinutes, setTimerMinutes] = useState("00");
   const [timerSeconds, setTimerSeconds] = useState("00");
@@ -121,16 +51,13 @@ const RevisionQuizScreen = () => {
   const [feedbacks, setFeedbacks] = useState([]);
   const [isFeedbackSent, setIsFeedbackSent] = useState(false);
   const [isDiscuss, setIsDiscuss] = useState(false);
-  const [memCount, setMemCount] = useState();
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [randomNums, setRandomNums] = useState({ attempting: 0, online: 0 });
+  const [score, setScore] = useState(0);
 
   const { token, Id } = useContext(AuthContext);
 
-  // console.log(randomNums);
-
   const socket = useRef();
-  // const ref = useRef();
   const scrollViewRef = useRef(null);
   const scrollY = useRef(new Animated.Value(0)).current;
 
@@ -161,17 +88,6 @@ const RevisionQuizScreen = () => {
       setQuizFinished(true);
     }
   };
-
-  function fetchCounts() {
-    axios
-      .get(`${baseUrl}/auth/users/count`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      .then((data) => {
-        setMemCount(data.data[0].count);
-      })
-      .catch((e) => console.log(e));
-  }
 
   const fetchQues = async () => {
     await axios
@@ -205,7 +121,6 @@ const RevisionQuizScreen = () => {
   useFocusEffect(
     useCallback(() => {
       fetchQues();
-      fetchCounts();
       getCurrQueIndex();
     }, [])
   );
@@ -275,21 +190,21 @@ const RevisionQuizScreen = () => {
   };
 
   const showCorrectAnswerAndMoveToNextQuestion = (shouldMove) => {
-    setShowCorrectAnswer(true);
     setTimeout(() => {
       if (shouldMove) {
-        setShowCorrectAnswer(false);
         moveToNextQuestion();
       }
     }, 2000); // Wait for 2 seconds after showing correct answer
   };
 
-  const moveToNextQuestion = () => {
+  const moveToNextQuestion = async () => {
     if (currentQuestionIndex === questions.length - 1) {
       setIsQuizStarted(false);
       setCurrentQuestionIndex(0);
       setIsSubmitted(true);
       setIsDiscuss(true);
+      await cache.store("questions", questions);
+      await cache.store("selectedOptions", selectedOptions);
       return setQuizFinished(true);
     }
     setCurrentQuestionIndex(currentQuestionIndex + 1);
@@ -359,8 +274,18 @@ const RevisionQuizScreen = () => {
     scrollY.setValue(offsetY);
   };
 
+  console.log(score);
+
   return (
-    <>
+    <View
+      style={{
+        backgroundColor: "#fff",
+        borderWidth: 2,
+        flex: 1,
+        // alignItems: "center",
+        // alignSelf: "center",
+      }}
+    >
       <CustomHeader
         title="Revision"
         share
@@ -393,7 +318,13 @@ const RevisionQuizScreen = () => {
         </View>
       )}
       {!isQuizStarted && (
-        <View style={{ padding: 4, backgroundColor: "#fff" }}>
+        <View
+          style={{
+            padding: 10,
+            flex: 2,
+            top: 250,
+          }}
+        >
           <View
             style={{
               borderRadius: 4,
@@ -411,7 +342,47 @@ const RevisionQuizScreen = () => {
               {nextTime.split(" ")[1] !== "undefined"
                 ? nextTime.split(" ")[1]
                 : ""}{" "}
-              संध्याकाळी {nextTime.split(" ")[0]} वाजता
+              संध्याकाळी {nextTime.split(" ")[0]} वाजता आहे.
+            </Text>
+          </View>
+          <TouchableOpacity
+            style={{
+              borderRadius: 4,
+              padding: 10,
+              marginTop: 10,
+              backgroundColor: "#acfabf",
+              elevation: 5,
+              borderColor: "#51f577",
+              justifyContent: "center",
+              alignItems: "center",
+              flexDirection: "row",
+            }}
+            activeOpacity={0.6}
+            onPress={joinWpGrp}
+          >
+            <Text style={{ textAlign: "center", fontWeight: "bold" }}>
+              आता revision तुमच्या मित्रांबरोबर द्या.{"\n"} मित्रांसोबत
+              देण्यासाठी Share करा
+            </Text>
+            <Image
+              source={require("../assets/WhatsApp.svg.png")}
+              style={{ width: 30, height: 30 }}
+            />
+          </TouchableOpacity>
+          <View
+            style={{
+              borderRadius: 4,
+              padding: 10,
+              backgroundColor: "#fc6d6d",
+              elevation: 5,
+              marginTop: 10,
+              justifyContent: "space-evenly",
+              alignItems: "center",
+              flexDirection: "row",
+            }}
+          >
+            <Text style={{ textAlign: "center", fontWeight: "bold" }}>
+              जाहिरात आली आहे, तय्यारी जोरदार चालू द्या!
             </Text>
           </View>
         </View>
@@ -486,6 +457,8 @@ const RevisionQuizScreen = () => {
                       quesData={que}
                       quesNo={index + 1}
                       selectedOp={selectedOptions[index]}
+                      setScore={setScore}
+                      score={score}
                     />
                   )}
                 </View>
@@ -500,6 +473,9 @@ const RevisionQuizScreen = () => {
                 quesNo={index + 1}
               />
             ))}
+            {/* <View>
+              <Text>Result</Text>
+            </View> */}
             <FlatList
               style={{
                 marginBottom: 20,
@@ -533,6 +509,7 @@ const RevisionQuizScreen = () => {
                 </View>
               )}
             />
+
             {!isFeedbackSent && (
               <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
                 <View>
@@ -587,7 +564,7 @@ const RevisionQuizScreen = () => {
           </View>
         )}
       </ScrollView>
-    </>
+    </View>
   );
 };
 
