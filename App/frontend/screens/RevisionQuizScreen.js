@@ -61,6 +61,40 @@ const RevisionQuizScreen = () => {
   const scrollViewRef = useRef(null);
   const scrollY = useRef(new Animated.Value(0)).current;
 
+  const shareMessage = `मित्रा, हे app डाउनलोड कर आणि ग्रुप मध्ये जॉईन हो! भरतीच्या तयारी साठी खूप उपयुक्त आहे. ह्यात भरपूर free टेस्ट, fast updates आणि discussion ग्रुप आहेत. 
+  Exam Sathi app
+  https://play.google.com/store/apps/details?id=com.examSathi.examSathi`;
+  const whatsappUrl = `whatsapp://send?text=${shareMessage}`;
+
+  const appShareCount = () => {
+    try {
+      axios.put(
+        `${baseUrl}/auth/app/share`,
+        { screen: 1 },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      // console.log(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const Share = async () => {
+    try {
+      const supported = await Linking.canOpenURL(whatsappUrl);
+      appShareCount();
+      if (supported) {
+        await Linking.openURL(whatsappUrl);
+      } else {
+        console.log(`Unable to open WhatsApp URL: ${whatsappUrl}`);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const getNumbers = async () => {
     const nums = await axios.get(`${baseUrl}/revision/numbers`, {
       headers: {
@@ -351,14 +385,14 @@ const RevisionQuizScreen = () => {
               padding: 10,
               marginTop: 10,
               backgroundColor: "#acfabf",
-              elevation: 5,
+              elevation: 10,
               borderColor: "#51f577",
               justifyContent: "center",
               alignItems: "center",
               flexDirection: "row",
             }}
             activeOpacity={0.6}
-            onPress={joinWpGrp}
+            onPress={Share}
           >
             <Text style={{ textAlign: "center", fontWeight: "bold" }}>
               आता revision तुमच्या मित्रांबरोबर द्या.{"\n"} मित्रांसोबत
