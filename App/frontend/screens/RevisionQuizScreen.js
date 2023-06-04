@@ -61,9 +61,9 @@ const RevisionQuizScreen = () => {
   const scrollViewRef = useRef(null);
   const scrollY = useRef(new Animated.Value(0)).current;
 
-  const shareMessage = `मित्रा, हे app डाउनलोड कर आणि ग्रुप मध्ये जॉईन हो! भरतीच्या तयारी साठी खूप उपयुक्त आहे. ह्यात भरपूर free टेस्ट, fast updates आणि discussion ग्रुप आहेत. 
+  const shareMessage = `मित्रा, हे app डाउनलोड कर आणि ग्रुप मध्ये जॉईन हो! तलाठी, दारूबंदी पोलिस, वनरक्षक आणि इतर भरतीच्या तयारी साठी खूप उपयुक्त आहे. ह्यात दररोज Live revision टेस्ट, भरपूर free टेस्ट सिरीज आणि discussion ग्रुप आहेत. 
   Exam Sathi app
-  https://play.google.com/store/apps/details?id=com.examSathi.examSathi`;
+https://bit.ly/exam-sathi-app-playstore`;
   const whatsappUrl = `whatsapp://send?text=${shareMessage}`;
 
   const appShareCount = () => {
