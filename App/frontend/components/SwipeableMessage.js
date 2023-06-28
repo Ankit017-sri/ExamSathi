@@ -35,7 +35,7 @@ const SwipeableMessage = ({
     if (data.replyOn) {
       delete data.replyOn;
     }
-    console.log(data);
+    //console.log(data);
     setReplyMessage(data);
     swipeableRef.current.close();
   };

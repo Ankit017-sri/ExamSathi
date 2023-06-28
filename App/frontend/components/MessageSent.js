@@ -42,7 +42,7 @@ const MessageSent = ({
         if (!res.data.text) {
           return alert("something went wrong please try again !");
         } else {
-          console.log(res.data);
+          //console.log(res.data);
           setReplyMessage({});
           socket.current.emit("message", { message: res.data, group });
           setMessage("");

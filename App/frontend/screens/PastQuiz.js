@@ -63,7 +63,7 @@ const PastQuiz = ({ navigation }) => {
       const response = await axios.get(`${baseUrl}/quizData/submitted`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      console.log(response.data);
+      // console.log(response.data);
       setAllQuizdata(response.data);
       const all = [];
       response.data.forEach((element) => {

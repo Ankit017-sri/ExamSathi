@@ -4,7 +4,7 @@ const objectsArray = [];
 
 const { Sheet5: allObjects } = require("./localization (5).json");
 
-console.log(allObjects);
+//console.log(allObjects);
 
 for (let i = 0; i < allObjects.length; i += 100) {
   let end = i + 100;
@@ -26,4 +26,4 @@ for (let i = 0; i < allObjects.length; i += 100) {
 
 fs.writeFileSync("output.json", JSON.stringify(objectsArray, null, 2));
 
-console.log(objectsArray);
+//console.log(objectsArray);

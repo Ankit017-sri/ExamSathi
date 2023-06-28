@@ -28,7 +28,7 @@ const AccountScreen = ({ navigation }) => {
       headers: { Authorization: `Bearer ${authContext.token}` },
     });
 
-    console.log(res);
+    //console.log(res);
 
     if (res.data.message === "USER_DELETED") {
       await cache.clear();
@@ -103,10 +103,10 @@ const AccountScreen = ({ navigation }) => {
               alignItems: "center",
               borderWidth: 1,
               borderColor: Colors.primary,
-              borderRadius: 5,
+              borderRadius: 20,
               height: 40,
               width: "100%",
-              backgroundColor: "#90AAD5",
+              backgroundColor: "#1F6E8C",
             }}
             activeOpacity={0.6}
             onPress={async () => {
@@ -119,17 +119,13 @@ const AccountScreen = ({ navigation }) => {
             <Text
               style={{
                 fontSize: 17,
-                color: Colors.primary,
+                color: "white",
                 marginRight: 10,
               }}
             >
               Logout
             </Text>
-            <Ionicons
-              name={"log-out-outline"}
-              size={27}
-              color={Colors.primary}
-            />
+            <Ionicons name={"log-out-outline"} size={27} color="white" />
           </TouchableOpacity>
         </View>
         {/* <View
@@ -217,37 +213,34 @@ const AccountScreen = ({ navigation }) => {
             alignItems: "center",
             borderWidth: 1,
             borderColor: Colors.primary,
-            borderRadius: 5,
+            borderRadius: 20,
             height: 40,
             width: "85%",
-            backgroundColor: "#90AAD5",
+            backgroundColor: "#1F6E8C",
             marginTop: 30,
             // marginRight: 40,
           }}
           activeOpacity={0.6}
           onPress={async () =>
             await Share.share({
-              message:
-                "Hey! Download this app and start practising right away.\n\nhttps://play.google.com/store/apps/details?id=com.examSathi.examSathi",
+              message: `मित्रा, हे app डाउनलोड कर आणि ग्रुप मध्ये जॉईन हो! भरतीच्या तयारी साठी खूप उपयुक्त आहे. ह्यात भरपूर free टेस्ट, fast updates आणि discussion ग्रुप आहेत. 
+  Exam Sathi app
+  https://play.google.com/store/apps/details?id=com.examSathi.examSathi`,
             })
           }
         >
           <Text
             style={{
               fontSize: 17,
-              color: Colors.primary,
+              color: "white",
               marginRight: 10,
             }}
           >
             Share App
           </Text>
-          <Ionicons
-            name="share-social-outline"
-            size={20}
-            color={Colors.primary}
-          />
+          <Ionicons name="share-social-outline" size={20} color={"white"} />
         </TouchableOpacity>
-        <TouchableOpacity
+        {/* <TouchableOpacity
           style={{
             flexDirection: "row",
             justifyContent: "center",
@@ -275,8 +268,8 @@ const AccountScreen = ({ navigation }) => {
           >
             Feedback
           </Text>
-          {/* <Ionicons name="share-social-outline" size={20} color={Colors.primary} /> */}
-        </TouchableOpacity>
+          
+        </TouchableOpacity> */}
       </View>
     </View>
   );

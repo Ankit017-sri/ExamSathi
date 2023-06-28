@@ -130,10 +130,13 @@ export const QuizNavigator = () => {
 // };
 
 const AccountStackNavigator = createStackNavigator();
-const AccountNavigator = () => {
+const RevisionScreenNavigator = () => {
   return (
     <AccountStackNavigator.Navigator screenOptions={defaultNavOptions}>
-      <AccountStackNavigator.Screen name="Account" component={AccountScreen} />
+      <AccountStackNavigator.Screen
+        name="RevisionScreen"
+        component={RevisionQuizScreen}
+      />
       <AccountStackNavigator.Screen
         name="Feedback"
         component={FeedbackScreen}
@@ -207,7 +210,7 @@ export const AppNavigator = ({ onLayout }) => {
             headers: { Authorization: `Bearer ${token}` },
           }
         )
-        .then((res) => console.log(res.data))
+        .then((res) => null)
         .catch((err) => console.log(err));
     };
 
@@ -295,7 +298,7 @@ export const AppNavigator = ({ onLayout }) => {
         {/* <Animated.View style={animStyles} /> */}
         <Tab.Screen
           name="RevisionQuiz"
-          component={RevisionQuizScreen}
+          component={RevisionScreenNavigator}
           listeners={{
             tabPress: (e) => {
               // e.preventDefault();
@@ -330,7 +333,7 @@ export const AppNavigator = ({ onLayout }) => {
 
         <Tab.Screen
           name="AccountNFeedback"
-          component={AccountNavigator}
+          component={AccountScreen}
           listeners={{
             tabPress: (e) => {
               // e.preventDefault();

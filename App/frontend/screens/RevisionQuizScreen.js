@@ -14,6 +14,8 @@ import {
   Linking,
   StyleSheet,
   Text,
+  TouchableHighlight,
+  TouchableNativeFeedbackBase,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -36,7 +38,7 @@ import baseUrl from "../baseUrl";
 import AuthContext from "../auth/context";
 import cache from "../utilities/cache";
 
-const RevisionQuizScreen = () => {
+const RevisionQuizScreen = ({ navigation }) => {
   const [questions, setQuestions] = useState([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedOptions, setSelectedOptions] = useState(
@@ -308,7 +310,7 @@ https://bit.ly/exam-sathi-app-playstore`;
     scrollY.setValue(offsetY);
   };
 
-  console.log(score);
+  //console.log(score);
 
   return (
     <View
@@ -354,8 +356,8 @@ https://bit.ly/exam-sathi-app-playstore`;
       {!isQuizStarted && (
         <View
           style={{
-            padding: 10,
-            flex: 2,
+            padding: 12,
+            flex: 4,
             top: 250,
           }}
         >
@@ -394,31 +396,42 @@ https://bit.ly/exam-sathi-app-playstore`;
             activeOpacity={0.6}
             onPress={Share}
           >
+            <Image
+              source={require("../assets/WhatsApp.svg.png")}
+              style={{ width: 40, height: 40, marginRight: 5 }}
+            />
             <Text style={{ textAlign: "center", fontWeight: "bold" }}>
               आता revision तुमच्या मित्रांबरोबर द्या.{"\n"} मित्रांसोबत
               देण्यासाठी Share करा
             </Text>
-            <Image
-              source={require("../assets/WhatsApp.svg.png")}
-              style={{ width: 30, height: 30 }}
-            />
           </TouchableOpacity>
-          <View
+          <TouchableOpacity
             style={{
-              borderRadius: 4,
-              padding: 10,
-              backgroundColor: "#fc6d6d",
+              borderRadius: 40,
+              padding: 12,
+              backgroundColor: "#1F6E8C",
               elevation: 5,
-              marginTop: 10,
+              marginTop: 20,
               justifyContent: "space-evenly",
               alignItems: "center",
               flexDirection: "row",
             }}
+            onPress={() => {
+              navigation.navigate("Feedback");
+            }}
           >
-            <Text style={{ textAlign: "center", fontWeight: "bold" }}>
-              जाहिरात आली आहे, तय्यारी जोरदार चालू द्या!
+            <Text
+              style={{
+                textAlign: "center",
+                fontWeight: "bold",
+                color: "white",
+                paddingHorizontal: 25,
+              }}
+            >
+              आता तुमचे प्रश्न पण revision मध्ये येईल 😃 तुमचे प्रश्न, 4 options
+              आणि बरोबर उत्तर पाठवा
             </Text>
-          </View>
+          </TouchableOpacity>
         </View>
       )}
       {!quizFinished && isQuizStarted && (

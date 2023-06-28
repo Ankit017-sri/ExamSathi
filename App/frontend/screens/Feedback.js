@@ -36,7 +36,7 @@ const Feedback = ({ navigation }) => {
     const feedbackArr = await axios.get(`${baseUrl}/feedback`, {
       headers: { Authorization: `Bearer ${authContext.token}` },
     });
-    console.log(feedbackArr.data);
+    //console.log(feedbackArr.data);
     setFeedbacks(feedbackArr.data);
   };
 
@@ -62,14 +62,15 @@ const Feedback = ({ navigation }) => {
       .catch((e) => console.log(e));
     setFeedbacks([...feedbacks, res.data]);
     setFeedback("");
-    Alert.alert(
-      "feedback sent successfully!",
-      "Thank you again! We’re looking forward to making your experience even better in the future!"
-    );
   };
+
   return (
     <View style={styles.container}>
-      <CustomHeader title={"Feedback"} isBack={true} navigation={navigation} />
+      <CustomHeader
+        title={"👑 तुमचे प्रश्नमंजुषा 🌟"}
+        isBack={true}
+        navigation={navigation}
+      />
       <FlatList
         style={{
           marginBottom: 20,
@@ -109,8 +110,15 @@ const Feedback = ({ navigation }) => {
             behavior={Platform.OS === "ios" ? "padding" : "height"}
           >
             <View>
-              <Text style={{ marginHorizontal: 20 }}>
-                Send us your feedback
+              <Text
+                style={{
+                  marginHorizontal: 20,
+                  marginBottom: 5,
+                  fontSize: 16,
+                  color: "#23395d",
+                }}
+              >
+                आता तुमचे प्रश्न पण revision मध्ये येईल 😃
               </Text>
               <View style={styles.inputContainer}>
                 <TextInput
@@ -119,7 +127,7 @@ const Feedback = ({ navigation }) => {
                   multiline={true}
                   numberOfLines={6}
                   onChangeText={(text) => setFeedback(text)}
-                  placeholder=" Type your feedback here..."
+                  placeholder="आपले प्रश्न इथे टाका...."
                 />
                 <TouchableOpacity
                   style={{
@@ -128,10 +136,10 @@ const Feedback = ({ navigation }) => {
                     alignItems: "center",
                     borderWidth: 1,
                     borderColor: Colors.primary,
-                    borderRadius: 5,
+                    borderRadius: 20,
                     height: 40,
                     width: "100%",
-                    backgroundColor: "#90AAD5",
+                    backgroundColor: "#1F6E8C",
                     marginTop: 10,
                     marginBottom: 20,
                   }}
@@ -141,10 +149,10 @@ const Feedback = ({ navigation }) => {
                   <Text
                     style={{
                       fontSize: 17,
-                      color: Colors.primary,
+                      color: "white",
                     }}
                   >
-                    Send feedback
+                    पाठवा
                   </Text>
                 </TouchableOpacity>
               </View>
@@ -187,7 +195,7 @@ const styles = StyleSheet.create({
     width: "100%",
     borderWidth: 1,
     borderColor: "#ccc",
-    borderRadius: 5,
+    borderRadius: 10,
     padding: 8,
     backgroundColor: "#fff",
   },
@@ -202,7 +210,7 @@ const styles = StyleSheet.create({
     padding: 15,
     paddingVertical: 25,
     elevation: 5,
-    backgroundColor: "#BCCCE5",
+    backgroundColor: "#a2ebfa",
     justifyContent: "space-evenly",
   },
 });

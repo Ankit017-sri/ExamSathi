@@ -22,7 +22,7 @@ router.post("/", auth, async (req, res) => {
       message: feedback,
     });
     const result = await newFeedback.save();
-    console.log(result);
+    // console.log(result);
     res.status(201).send(result);
   } catch (error) {
     res.status(500).send("something went wrong on our side!");

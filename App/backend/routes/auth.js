@@ -17,7 +17,7 @@ router.post("/", async (req, res) => {
 
   const analytic = await Analytic.find();
 
-  console.log(analytic);
+  //console.log(analytic);
 
   await Analytic.updateOne(
     {},
@@ -71,7 +71,7 @@ router.get("/users/count", auth, async (req, res) => {
       { $group: { _id: "$phoneNumber", count: { $sum: 1 } } },
       { $match: { count: 1 } },
     ]).count("count");
-    console.log(count);
+    //console.log(count);
     res.send(count);
   } catch (error) {
     res.status(500).send({ error: "Error getting count of users" });

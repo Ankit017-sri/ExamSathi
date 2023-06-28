@@ -49,7 +49,7 @@ const ChatGroups = ({ navigation }) => {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-      console.log(res.data);
+      //console.log(res.data);
     } catch (error) {
       console.log("error 0 ", error);
     }

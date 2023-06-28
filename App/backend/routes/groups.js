@@ -216,7 +216,7 @@ router.post("/:id/messages", auth, async (req, res) => {
   try {
     const groupId = req.params.id;
     const { text, uri, replyOn, pdfName } = req.body;
-    console.log(req.body);
+    //console.log(req.body);
     // Find the group by ID
     const group = await Group.findById(groupId);
     if (!group) {

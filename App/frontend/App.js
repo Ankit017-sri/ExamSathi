@@ -17,6 +17,30 @@ import authStorage from "./auth/storage";
 import cache from "./utilities/cache";
 import AuthContext from "./auth/context";
 
+// import React from "react";
+// import { Button, SafeAreaView } from "react-native";
+// import { Mixpanel } from "mixpanel-react-native";
+
+// const trackAutomaticEvents = true;
+// const mixpanel = new Mixpanel(
+//   "f601299fc807c669258f66d0997f015e",
+//   trackAutomaticEvents
+// );
+// mixpanel.init();
+
+// const SampleApp = () => {
+//   return (
+//     <SafeAreaView>
+//       <Button
+//         title="Select Premium Plan"
+//         onPress={() =>
+//           mixpanel.track("Signed Up", { "Signup Type": "Referral" })
+//         }
+//       />
+//     </SafeAreaView>
+//   );
+// };
+
 enableScreens();
 
 export default function App() {
@@ -43,7 +67,7 @@ export default function App() {
   const checkForUpdates = async () => {
     if (!__DEV__) {
       const currentVersion = Application.nativeApplicationVersion;
-      console.log(currentVersion);
+      //console.log(currentVersion);
       const storeUrl =
         Platform.OS === "android"
           ? `https://play.google.com/store/apps/details?id=com.examSathi.examSathi`
@@ -67,7 +91,7 @@ export default function App() {
             },
           ]);
         }
-        console.log(check);
+        // console.log(check);
       } catch (e) {
         console.log(e);
       }

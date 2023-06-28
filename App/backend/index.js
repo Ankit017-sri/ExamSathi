@@ -69,7 +69,7 @@ io.on("connection", (socket) => {
 
   // Listen for incoming messages
   socket.on("new-user-add", (data) => {
-    console.log(data);
+    //console.log(data);
     const { Id, group } = data;
     if (!activeUsers.some((user) => user.userId === Id)) {
       activeUsers.push({
@@ -115,7 +115,7 @@ io.on("connection", (socket) => {
     if (group) {
       // Join the group
       socket.join(group.id);
-      console.log(group);
+      //console.log(group);
     } else {
       groups.push({ id: data.groupId, members: data.members });
       socket.join(data.groupId);

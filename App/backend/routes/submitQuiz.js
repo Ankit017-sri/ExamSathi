@@ -15,7 +15,7 @@ router.post("/", auth, async (req, res) => {
 
   if (quiz.length > 0) return res.status(400).send("Quiz already submitted.");
 
-  console.log(req.body);
+  //console.log(req.body);
 
   if (!submittedQuizDetails)
     return res.status(400).send("Please select options.");
@@ -29,7 +29,7 @@ router.post("/", auth, async (req, res) => {
 
   await newQuiz.save();
 
-  console.log(newQuiz);
+  //console.log(newQuiz);
 
   return res.send(newQuiz);
 });
