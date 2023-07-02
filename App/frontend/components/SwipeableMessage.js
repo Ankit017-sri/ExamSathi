@@ -1,14 +1,8 @@
-import {
-  StyleSheet,
-  Text,
-  View,
-  Animated,
-  TouchableOpacity,
-} from "react-native";
-import React, { useContext, useRef } from "react";
-import { Ionicons } from "@expo/vector-icons";
-import { Swipeable } from "react-native-gesture-handler";
-import ChatContext from "../chat/context";
+import {StyleSheet, Text, View, Animated, TouchableOpacity} from 'react-native';
+import React, {useContext, useRef} from 'react';
+import {Ionicons} from 'react-native-vector-icons';
+import {Swipeable} from 'react-native-gesture-handler';
+import ChatContext from '../chat/context';
 // import MessageSent from "./MessageSent";
 
 const SwipeableMessage = ({
@@ -22,16 +16,16 @@ const SwipeableMessage = ({
   group,
   setSendMessage,
 }) => {
-  const { setReplyMessage } = useContext(ChatContext);
+  const {setReplyMessage} = useContext(ChatContext);
   const swipeableRef = useRef(null);
   // console.log("setSendMessage");
   // console.log(data);
 
   const closeSwipeable = () => {
-    console.log("closed");
+    console.log('closed');
     // swipeableRef.current.close();
   };
-  const swipeFromLeftOpen = (data) => {
+  const swipeFromLeftOpen = data => {
     if (data.replyOn) {
       delete data.replyOn;
     }
@@ -44,20 +38,18 @@ const SwipeableMessage = ({
     const trans = dragX.interpolate({
       inputRange: [0, 50],
       outputRange: [0, 1],
-      extrapolate: "clamp",
+      extrapolate: 'clamp',
     });
     return (
       <TouchableOpacity
-        style={{ padding: 4 }}
+        style={{padding: 4}}
         onPress={() => {
-          console.log("pressed");
+          console.log('pressed');
           swipeableRef.current.close();
-        }}
-      >
+        }}>
         <Animated.View
-          style={[styles.buttonText, { transform: [{ translateX: trans }] }]}
-        >
-          <Ionicons name="arrow-undo" size={20} color={"cyan"} />
+          style={[styles.buttonText, {transform: [{translateX: trans}]}]}>
+          <Ionicons name="arrow-undo" size={20} color={'cyan'} />
         </Animated.View>
       </TouchableOpacity>
     );
@@ -70,8 +62,7 @@ const SwipeableMessage = ({
       onSwipeableLeftOpen={() => swipeFromLeftOpen(data)}
       onSwipeableWillClose={closeSwipeable}
       style={styles.message}
-      ref={swipeableRef}
-    >
+      ref={swipeableRef}>
       {data.senderId == Id ? (
         <View style={styles.messageSent}>
           <MessageSent
@@ -97,19 +88,19 @@ export default SwipeableMessage;
 
 const styles = StyleSheet.create({
   message: {
-    backgroundColor: "#f1f1f1",
+    backgroundColor: '#f1f1f1',
     borderRadius: 5,
     marginBottom: 3,
     paddingHorizontal: 6,
   },
   messageSent: {
-    flexDirection: "column",
-    alignItems: "flex-end",
+    flexDirection: 'column',
+    alignItems: 'flex-end',
     marginBottom: 2,
   },
   messageRecieved: {
-    flexDirection: "column",
-    alignItems: "flex-start",
+    flexDirection: 'column',
+    alignItems: 'flex-start',
     marginBottom: 2,
   },
 });

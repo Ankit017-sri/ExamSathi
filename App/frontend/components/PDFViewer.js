@@ -1,7 +1,7 @@
-import { View, Text, TouchableOpacity, Linking } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import {View, Text, TouchableOpacity, Linking} from 'react-native';
+import {Ionicons} from 'react-native-vector-icons';
 
-const PDFViewer = ({ url, name }) => {
+const PDFViewer = ({url, name}) => {
   // const [pdfUri, setPdfUri] = useState(null);
   // const [location, setLocation] = useState("");
   // useEffect(() => {
@@ -54,33 +54,29 @@ const PDFViewer = ({ url, name }) => {
       <TouchableOpacity
         onPress={() => {
           openPdf();
-        }}
-      >
+        }}>
         <View
           style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            backgroundColor: "#EFF5F5",
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            backgroundColor: '#EFF5F5',
             padding: 4,
             borderRadius: 4,
-          }}
-        >
+          }}>
           <View>
-            <Ionicons name="document-outline" size={25} color={"red"} />
+            <Ionicons name="document-outline" size={25} color={'red'} />
             <Text
               style={{
                 fontSize: 10,
-                textTransform: "uppercase",
-                alignSelf: "center",
-              }}
-            >
+                textTransform: 'uppercase',
+                alignSelf: 'center',
+              }}>
               PDF
             </Text>
           </View>
           <Text
-            style={{ marginTop: 8, fontSize: 16, paddingHorizontal: 8 }}
-            numberOfLines={1}
-          >
+            style={{marginTop: 8, fontSize: 16, paddingHorizontal: 8}}
+            numberOfLines={1}>
             {name}
           </Text>
         </View>

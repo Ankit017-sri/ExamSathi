@@ -4,7 +4,7 @@ import React, {
   useRef,
   useContext,
   useCallback,
-} from "react";
+} from 'react';
 import {
   View,
   Text,
@@ -18,36 +18,31 @@ import {
   Keyboard,
   Image,
   Linking,
-} from "react-native";
-import { io } from "socket.io-client";
-import axios from "axios";
-import baseUrl from "../baseUrl";
-import CustomHeader from "../components/CustomHeader";
-import * as ImagePicker from "expo-image-picker";
-import * as DocumentPicker from "expo-document-picker";
-import * as FileSystem from "expo-file-system";
+} from 'react-native';
+import {io} from 'socket.io-client';
+import axios from 'axios';
+import baseUrl from '../baseUrl';
+import CustomHeader from '../components/CustomHeader';
+import * as ImagePicker from 'react-native-image-picker';
+import * as DocumentPicker from 'react-native-document-picker';
+// import * as FileSystem from 'expo-file-system';
 // import * as Linking from "expo-linking";
-import AuthContext from "../auth/context";
-import { format } from "timeago.js";
-import { Ionicons } from "@expo/vector-icons";
-import CloudURL from "../CloudURL";
-import FullscreenImage from "../components/ImageView";
-import { BottomSheet } from "react-native-btr";
-import cache from "../utilities/cache";
-import { useFocusEffect } from "@react-navigation/native";
-import ChatContext from "../chat/context";
-import SwipeableMessage from "../components/SwipeableMessage";
-import Colors from "../constants/Colors";
-import PDFViewer from "../components/PDFViewer";
+import AuthContext from '../auth/context';
+import {format} from 'timeago.js';
+import {Ionicons} from 'react-native-vector-icons';
+import CloudURL from '../CloudURL';
+import FullscreenImage from '../components/ImageView';
+import {BottomSheet} from 'react-native-btr';
+import cache from '../utilities/cache';
+import {useFocusEffect} from '@react-navigation/native';
+import ChatContext from '../chat/context';
+import SwipeableMessage from '../components/SwipeableMessage';
+import Colors from '../constants/Colors';
+import PDFViewer from '../components/PDFViewer';
 
-const ChatsScreen = ({ navigation, route }) => {
-  const { group, fetchedData, title, imgUri } = route.params;
-  const {
-    token,
-    setTabBarVisible,
-    Id,
-    name: fullName,
-  } = useContext(AuthContext);
+const ChatsScreen = ({navigation, route}) => {
+  const {group, fetchedData, title, imgUri} = route.params;
+  const {token, setTabBarVisible, Id, name: fullName} = useContext(AuthContext);
 
   const {
     // messages: fetchedData,
@@ -74,12 +69,11 @@ const ChatsScreen = ({ navigation, route }) => {
     setTabBarVisible(false);
     setMessages(fetchedData);
     setMemCount(counts);
-    scrollRef.current.scrollToEnd({ animated: false });
+    scrollRef.current.scrollToEnd({animated: false});
     (async () => {
-      const { status } =
-        await ImagePicker.requestMediaLibraryPermissionsAsync();
-      if (status !== "granted") {
-        alert("Sorry, we need camera roll permissions to make this work!");
+      const {status} = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (status !== 'granted') {
+        alert('Sorry, we need camera roll permissions to make this work!');
       }
     })();
 
@@ -94,17 +88,17 @@ const ChatsScreen = ({ navigation, route }) => {
   useEffect(() => {
     socket.current = io(baseUrl);
 
-    socket.current.emit("new-user-add", { Id, group });
-    socket.current.on("get-active-users", (data) => {
+    socket.current.emit('new-user-add', {Id, group});
+    socket.current.on('get-active-users', data => {
       setLen(data);
     });
-    socket.current.on("message-recieve", (data) => {
+    socket.current.on('message-recieve', data => {
       // console.log("recieved", data);
       setRecieveMessage(data);
       // console.log("recieve data", receiveMessage);
     });
     return () => {
-      socket.current.emit("leaveGroup", group);
+      socket.current.emit('leaveGroup', group);
     };
   }, [Id]);
 
@@ -113,7 +107,7 @@ const ChatsScreen = ({ navigation, route }) => {
       setMessages([...messages, receiveMessage]);
       fetchedData.push(receiveMessage);
       // console.log("messages : ", messages);
-      scrollRef.current.scrollToEnd({ animated: false });
+      scrollRef.current.scrollToEnd({animated: false});
     }
   }, [receiveMessage?.createdAt]);
 
@@ -150,17 +144,17 @@ const ChatsScreen = ({ navigation, route }) => {
     }
   }, [replyMessage]);
 
-  const getBase64 = async (uri) => {
+  const getBase64 = async uri => {
     try {
       const fileUri = uri; // Replace with your file URI
-      const base64 = await FileSystem.readAsStringAsync(fileUri, {
-        encoding: FileSystem.EncodingType.Base64,
-      });
+      // const base64 = await FileSystem.readAsStringAsync(fileUri, {
+      //   encoding: FileSystem.EncodingType.Base64,
+      // });
 
       return base64;
     } catch (error) {
       console.log(error);
-      return "";
+      return '';
     }
   };
 
@@ -208,20 +202,20 @@ const ChatsScreen = ({ navigation, route }) => {
   const pickDocument = async () => {
     try {
       let result = await DocumentPicker.getDocumentAsync({
-        type: "application/pdf",
+        type: 'application/pdf',
         file: 1,
       });
       setVisible(false);
-      if (result.type == "success") {
+      if (result.type == 'success') {
         // console.log(result);
         const base64 = await getBase64(result.uri);
 
-        if (base64 !== "") {
+        if (base64 !== '') {
           let base64PDF = `data:application/pdf;base64,${base64}`;
           let formdata = {
             file: base64PDF,
             public_id: result.name,
-            upload_preset: "lylmg545",
+            upload_preset: 'lylmg545',
           };
           const response = await axios.post(CloudURL, formdata);
           // console.log(response.data);
@@ -232,7 +226,7 @@ const ChatsScreen = ({ navigation, route }) => {
             setUploading(true);
             handleUpload({
               uri: response.data.secure_url,
-              pdfName: response.data.public_id.split("/")[1],
+              pdfName: response.data.public_id.split('/')[1],
             });
             // alert("Upload successful");
           }
@@ -243,50 +237,50 @@ const ChatsScreen = ({ navigation, route }) => {
     }
   };
 
-  const UploadImage = async (data) => {
+  const UploadImage = async data => {
     setUploading(true);
     const source = data.base64;
     let base64Img = `data:image/jpg;base64,${source}`;
     let formdata = {
       file: base64Img,
-      upload_preset: "lylmg545",
+      upload_preset: 'lylmg545',
     };
     fetch(CloudURL, {
       body: JSON.stringify(formdata),
       headers: {
-        "content-type": "application/json",
+        'content-type': 'application/json',
       },
-      method: "POST",
+      method: 'POST',
     })
-      .then(async (response) => {
+      .then(async response => {
         let data = await response.json();
         if (data.secure_url) {
           // console.log(data.secure_url);
           // setImage(data.secure_url);
-          handleUpload({ uri: data.secure_url });
+          handleUpload({uri: data.secure_url});
           // alert("Upload successful");
         }
       })
-      .catch((err) => alert("something went wrong"));
+      .catch(err => alert('something went wrong'));
   };
 
-  const handleUpload = async ({ uri, pdfName }) => {
+  const handleUpload = async ({uri, pdfName}) => {
     if (uri) {
       const res = await axios
         .post(
           `${baseUrl}/message`,
-          { uri, group, pdfName },
+          {uri, group, pdfName},
           {
-            headers: { Authorization: `Bearer ${token}` },
-          }
+            headers: {Authorization: `Bearer ${token}`},
+          },
         )
-        .catch((e) => console.log(e));
+        .catch(e => console.log(e));
       // console.log(res.data);
       if (!res.data.uri) {
         setUploading(false);
-        return alert("something went wrong please try again !");
+        return alert('something went wrong please try again !');
       } else {
-        socket.current.emit("message", { message: res.data, group });
+        socket.current.emit('message', {message: res.data, group});
         setUploading(false);
       }
     }
@@ -303,17 +297,17 @@ const ChatsScreen = ({ navigation, route }) => {
             group,
           },
           {
-            headers: { Authorization: `Bearer ${token}` },
-          }
+            headers: {Authorization: `Bearer ${token}`},
+          },
         )
-        .catch((e) => console.log(e));
+        .catch(e => console.log(e));
       if (!res.data.text) {
-        return alert("something went wrong please try again !");
+        return alert('something went wrong please try again !');
       } else {
         // console.log(res);
         setReplyMessage({});
-        socket.current.emit("message", { message: res.data, group });
-        setMessage("");
+        socket.current.emit('message', {message: res.data, group});
+        setMessage('');
       }
     }
   };
@@ -327,39 +321,37 @@ const ChatsScreen = ({ navigation, route }) => {
     setMessage,
     socket,
   }) => {
-    const { Id, token } = useContext(AuthContext);
-    const { replyMessage } = useContext(ChatContext);
+    const {Id, token} = useContext(AuthContext);
+    const {replyMessage} = useContext(ChatContext);
 
     return (
-      <View style={{ marginBottom: 6, borderRadius: 10 }}>
+      <View style={{marginBottom: 6, borderRadius: 10}}>
         {msg.replyOn?.name && (
           <View
             style={{
-              minWidth: "55%",
-              maxWidth: "95%",
-              backgroundColor: "#DEF6D4",
+              minWidth: '55%',
+              maxWidth: '95%',
+              backgroundColor: '#DEF6D4',
               borderRadius: 12,
               borderBottomRightRadius: 0,
               borderBottomLeftRadius: 0,
-            }}
-          >
+            }}>
             <View
               style={{
-                borderLeftColor: "cyan",
+                borderLeftColor: 'cyan',
                 borderLeftWidth: 4,
                 // backgroundColor: "#D6E4E5",
                 borderRadius: 8,
                 padding: 4,
-              }}
-            >
+              }}>
               <View>
-                <Text style={{ color: "#5837D0", fontWeight: "600" }}>
-                  {msg.replyOn.senderId == Id ? "you" : msg.replyOn.name}
+                <Text style={{color: '#5837D0', fontWeight: '600'}}>
+                  {msg.replyOn.senderId == Id ? 'you' : msg.replyOn.name}
                 </Text>
               </View>
               {msg.replyOn.uri ? (
                 <>
-                  {msg.replyOn.uri.split(".").slice(-1)[0] == "pdf" ? (
+                  {msg.replyOn.uri.split('.').slice(-1)[0] == 'pdf' ? (
                     <PDFViewer
                       url={msg.replyOn.uri}
                       name={msg.replyOn.pdfName}
@@ -377,19 +369,18 @@ const ChatsScreen = ({ navigation, route }) => {
         )}
         <View
           style={{
-            minWidth: "55%",
-            maxWidth: "95%",
-            backgroundColor: "#E7FFDD",
+            minWidth: '55%',
+            maxWidth: '95%',
+            backgroundColor: '#E7FFDD',
             borderRadius: 12,
             paddingHorizontal: 10,
             paddingVertical: 4,
             borderTopRightRadius: msg.replyOn?.name ? 0 : 12,
             borderTopLeftRadius: msg.replyOn?.name ? 0 : 12,
-          }}
-        >
+          }}>
           {msg.uri ? (
             <>
-              {msg.uri.split(".").slice(-1)[0] == "pdf" ? (
+              {msg.uri.split('.').slice(-1)[0] == 'pdf' ? (
                 <PDFViewer url={msg.uri} name={msg.pdfName} />
               ) : (
                 <FullscreenImage imageSource={msg.uri} />
@@ -398,7 +389,7 @@ const ChatsScreen = ({ navigation, route }) => {
           ) : (
             <ChatMessage message={msg.text} />
           )}
-          <Text style={{ color: "#000", textAlign: "right", fontSize: 10 }}>
+          <Text style={{color: '#000', textAlign: 'right', fontSize: 10}}>
             {format(msg.createdAt)}
           </Text>
         </View>
@@ -406,7 +397,7 @@ const ChatsScreen = ({ navigation, route }) => {
     );
   };
 
-  const ChatMessage = ({ message }) => {
+  const ChatMessage = ({message}) => {
     const regex1 = /(https?:\/\/[^\s]+)/g;
     const regex = /((?:https?:\/\/)?(?:www\.)?[^\s]+)/gi;
     const regex2 =
@@ -417,28 +408,26 @@ const ChatsScreen = ({ navigation, route }) => {
     return (
       <Text
         style={{
-          color: "#000",
+          color: '#000',
           fontSize: 16,
           marginHorizontal: 6,
           marginVertical: 4,
-        }}
-      >
+        }}>
         {textParts.map((part, i) => {
           if (part.trim().match(regex1) || regex2.test(part.trim())) {
             return (
               <Text
                 key={i}
-                style={{ color: "blue" }}
+                style={{color: 'blue'}}
                 onPress={() =>
                   Linking.openURL(part.match(regex1) ? part : `https://${part}`)
-                }
-              >
+                }>
                 {`${part}`}
               </Text>
             );
           }
           return (
-            <Text style={{ marginHorizontal: 4 }} key={i}>
+            <Text style={{marginHorizontal: 4}} key={i}>
               {`${part}`}
             </Text>
           );
@@ -447,45 +436,42 @@ const ChatsScreen = ({ navigation, route }) => {
     );
   };
 
-  const MessageRecieved = ({ msg }) => {
+  const MessageRecieved = ({msg}) => {
     return (
       <View
         style={{
-          backgroundColor: "#F5F7F6",
+          backgroundColor: '#F5F7F6',
           marginBottom: 6,
           borderRadius: 10,
-        }}
-      >
+        }}>
         <Text style={styles.name}>{msg.name}</Text>
         {msg.replyOn?.name && (
           <View
             style={{
-              minWidth: "55%",
-              maxWidth: "95%",
-              backgroundColor: "#EAEAEA",
+              minWidth: '55%',
+              maxWidth: '95%',
+              backgroundColor: '#EAEAEA',
               borderRadius: 12,
               borderBottomRightRadius: 0,
               borderBottomLeftRadius: 0,
               marginHorizontal: 8,
-            }}
-          >
+            }}>
             <View
               style={{
-                borderLeftColor: "cyan",
+                borderLeftColor: 'cyan',
                 borderLeftWidth: 4,
                 // backgroundColor: "#D6E4E5",
                 borderRadius: 8,
                 padding: 4,
-              }}
-            >
+              }}>
               <View>
-                <Text style={{ color: "#5837D0", fontWeight: "600" }}>
+                <Text style={{color: '#5837D0', fontWeight: '600'}}>
                   {msg.replyOn.name}
                 </Text>
               </View>
               {msg.replyOn.uri ? (
                 <>
-                  {msg.replyOn.uri.split(".").slice(-1)[0] == "pdf" ? (
+                  {msg.replyOn.uri.split('.').slice(-1)[0] == 'pdf' ? (
                     <PDFViewer url={msg.replyOn.uri} name={msg.pdfName} />
                   ) : (
                     <FullscreenImage imageSource={msg.replyOn.uri} />
@@ -500,16 +486,15 @@ const ChatsScreen = ({ navigation, route }) => {
         )}
         <View
           style={{
-            minWidth: "60%",
-            maxWidth: "85%",
+            minWidth: '60%',
+            maxWidth: '85%',
 
             borderRadius: 12,
             paddingHorizontal: 10,
-          }}
-        >
+          }}>
           {msg.uri ? (
             <>
-              {msg.uri.split(".").slice(-1)[0] == "pdf" ? (
+              {msg.uri.split('.').slice(-1)[0] == 'pdf' ? (
                 <PDFViewer url={msg.uri} name={msg.pdfName} />
               ) : (
                 <FullscreenImage imageSource={msg.uri} />
@@ -522,7 +507,7 @@ const ChatsScreen = ({ navigation, route }) => {
             // </Text>
           )}
 
-          <Text style={{ color: "#3C4048", textAlign: "right", fontSize: 10 }}>
+          <Text style={{color: '#3C4048', textAlign: 'right', fontSize: 10}}>
             {format(msg.createdAt)}
           </Text>
         </View>
@@ -535,9 +520,9 @@ const ChatsScreen = ({ navigation, route }) => {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: "#E5DDD5" }}>
+    <View style={{flex: 1, backgroundColor: '#E5DDD5'}}>
       <CustomHeader
-        title={title.split(":")[0]}
+        title={title.split(':')[0]}
         sub={`${memCount} members, ${len} online`}
         isBack={true}
         imgUri={imgUri}
@@ -547,35 +532,32 @@ const ChatsScreen = ({ navigation, route }) => {
         group={group}
       />
       <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={{ flexGrow: 1 }}
-      >
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={{flexGrow: 1}}>
         {uploading && (
           <View
             style={{
-              position: "absolute",
+              position: 'absolute',
               top: 0,
               zIndex: 40,
-              width: "100%",
-              backgroundColor: "#f1f1f1",
+              width: '100%',
+              backgroundColor: '#f1f1f1',
               paddingVertical: 4,
-            }}
-          >
-            <Text style={{ textAlign: "center" }}>Sending media...</Text>
+            }}>
+            <Text style={{textAlign: 'center'}}>Sending media...</Text>
           </View>
         )}
 
-        <View style={{ flex: 0.95 }}>
+        <View style={{flex: 0.95}}>
           <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
             <ScrollView
               style={[styles.messages]}
               ref={scrollRef}
               onContentSizeChange={() =>
-                scrollRef.current.scrollToEnd({ animated: false })
-              }
-            >
+                scrollRef.current.scrollToEnd({animated: false})
+              }>
               {messages.length == 0 && (
-                <Text style={{ alignSelf: "center", color: "black" }}>
+                <Text style={{alignSelf: 'center', color: 'black'}}>
                   No messages yet
                 </Text>
               )}
@@ -597,21 +579,20 @@ const ChatsScreen = ({ navigation, route }) => {
             </ScrollView>
           </TouchableWithoutFeedback>
           <TouchableOpacity
-            onPress={() => scrollRef.current.scrollToEnd({ animated: false })}
+            onPress={() => scrollRef.current.scrollToEnd({animated: false})}
             style={{
-              position: "absolute",
+              position: 'absolute',
               bottom: 10,
               right: 16,
-              backgroundColor: "black",
+              backgroundColor: 'black',
               borderRadius: 15,
               width: 30,
               height: 30,
               opacity: 0.4,
-              justifyContent: "center",
-              alignItems: "center",
+              justifyContent: 'center',
+              alignItems: 'center',
               zIndex: 30,
-            }}
-          >
+            }}>
             <Ionicons name="arrow-down" size={25} />
           </TouchableOpacity>
         </View>
@@ -619,84 +600,79 @@ const ChatsScreen = ({ navigation, route }) => {
           {replyMessage.name && (
             <View
               style={{
-                position: "absolute",
+                position: 'absolute',
                 top: -68,
                 marginHorizontal: 16,
-                backgroundColor: "white",
-                width: "87%",
+                backgroundColor: 'white',
+                width: '87%',
                 paddingHorizontal: 4,
                 paddingVertical: 4,
                 borderTopRightRadius: 8,
                 borderTopLeftRadius: 8,
                 borderWidth: 1,
                 borderBottomWidth: 0,
-                borderColor: "#ccc",
-              }}
-            >
+                borderColor: '#ccc',
+              }}>
               <View
                 style={{
-                  borderLeftColor: "cyan",
+                  borderLeftColor: 'cyan',
                   borderLeftWidth: 4,
                   height: 60,
-                  backgroundColor: "#D6E4E5",
+                  backgroundColor: '#D6E4E5',
                   borderRadius: 8,
                   padding: 4,
-                  overflow: "hidden",
-                }}
-              >
+                  overflow: 'hidden',
+                }}>
                 <View
                   style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <Text style={{ color: "#5837D0" }}>{replyMessage.name}</Text>
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                  }}>
+                  <Text style={{color: '#5837D0'}}>{replyMessage.name}</Text>
                   <TouchableOpacity onPress={() => setReplyMessage({})}>
                     <Ionicons name="close" size={20} />
                   </TouchableOpacity>
                 </View>
                 {replyMessage.uri && (
                   <>
-                    {replyMessage.uri.split(".").slice(-1)[0] == "pdf" ? (
+                    {replyMessage.uri.split('.').slice(-1)[0] == 'pdf' ? (
                       <View
                         style={{
-                          flexDirection: "row",
-                          backgroundColor: "#EFF5F5",
+                          flexDirection: 'row',
+                          backgroundColor: '#EFF5F5',
                           padding: 4,
                           borderRadius: 4,
-                        }}
-                      >
+                        }}>
                         <View>
                           <Ionicons
                             name="document-outline"
                             size={16}
-                            color={"red"}
+                            color={'red'}
                           />
                           <Text
                             style={{
                               fontSize: 10,
-                              textTransform: "uppercase",
-                              alignSelf: "center",
-                            }}
-                          >
-                            {replyMessage.uri.split(".").slice(-1)[0]}
+                              textTransform: 'uppercase',
+                              alignSelf: 'center',
+                            }}>
+                            {replyMessage.uri.split('.').slice(-1)[0]}
                           </Text>
                         </View>
-                        <Text style={{ fontSize: 14 }}>
+                        <Text style={{fontSize: 14}}>
                           {replyMessage.pdfName?.length > 0
                             ? replyMessage.pdfName
-                            : replyMessage.uri.split("/").pop()}
+                            : replyMessage.uri.split('/').pop()}
                         </Text>
                       </View>
                     ) : (
                       <Image
-                        source={{ uri: replyMessage.uri }}
-                        style={{ width: 40, height: 40 }}
+                        source={{uri: replyMessage.uri}}
+                        style={{width: 40, height: 40}}
                       />
                     )}
                   </>
                 )}
-                <Text style={{ fontSize: 12 }} numberOfLines={2}>
+                <Text style={{fontSize: 12}} numberOfLines={2}>
                   {replyMessage.text}
                 </Text>
                 {/* <ChatMessage message={replyMessage.text} /> */}
@@ -714,25 +690,23 @@ const ChatsScreen = ({ navigation, route }) => {
             ]}
             value={message}
             multiline={true}
-            onChangeText={(text) => setMessage(text)}
+            onChangeText={text => setMessage(text)}
             placeholder="Message "
             ref={inputRef}
           />
           {message ? (
             <TouchableOpacity
-              style={[styles.button, { backgroundColor: Colors.primary }]}
+              style={[styles.button, {backgroundColor: Colors.primary}]}
               onPress={async () => {
                 await sendMessage();
-              }}
-            >
+              }}>
               {/* <Text style={styles.buttonText}>Send</Text> */}
               <Ionicons name="send-sharp" color="#fff" size={20} />
             </TouchableOpacity>
           ) : (
             <TouchableOpacity
               // style={styles.button}
-              onPress={toggleBottomNavigationView}
-            >
+              onPress={toggleBottomNavigationView}>
               {/* <Text style={styles.buttonText}>Send</Text> */}
               <Ionicons name="attach" color="black" size={30} />
             </TouchableOpacity>
@@ -748,32 +722,27 @@ const ChatsScreen = ({ navigation, route }) => {
         //Toggling the visibility state on the clicking out side of the sheet
       >
         <View style={styles.bottomNavigationView}>
-          <TouchableOpacity
-            onPress={pickImage}
-            style={{ alignItems: "center" }}
-          >
+          <TouchableOpacity onPress={pickImage} style={{alignItems: 'center'}}>
             <View style={styles.button}>
               <Ionicons name="camera-outline" color="#fff" size={20} />
             </View>
-            <Text style={{ color: "#fff" }}>Camera</Text>
+            <Text style={{color: '#fff'}}>Camera</Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={openGallery}
-            style={{ alignItems: "center" }}
-          >
+            style={{alignItems: 'center'}}>
             <View style={styles.button}>
               <Ionicons name="images-outline" color="#fff" size={20} />
             </View>
-            <Text style={{ color: "#fff" }}>Gallery</Text>
+            <Text style={{color: '#fff'}}>Gallery</Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={pickDocument}
-            style={{ alignItems: "center" }}
-          >
+            style={{alignItems: 'center'}}>
             <View style={styles.button}>
               <Ionicons name="document-attach-outline" color="#fff" size={20} />
             </View>
-            <Text style={{ color: "#fff" }}>Document</Text>
+            <Text style={{color: '#fff'}}>Document</Text>
           </TouchableOpacity>
         </View>
       </BottomSheet>
@@ -790,7 +759,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   message: {
-    backgroundColor: "#f1f1f1",
+    backgroundColor: '#f1f1f1',
     borderRadius: 5,
     marginBottom: 4,
     paddingHorizontal: 6,
@@ -799,13 +768,13 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginHorizontal: 6,
     marginVertical: 4,
-    color: "#000",
+    color: '#000',
   },
   inputContainer: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     paddingHorizontal: 16,
-    position: "relative",
+    position: 'relative',
     top: 8,
     bottom: 8,
   },
@@ -813,62 +782,62 @@ const styles = StyleSheet.create({
     flex: 1,
     maxHeight: 120,
     borderWidth: 1,
-    borderColor: "#ccc",
+    borderColor: '#ccc',
     borderRadius: 16,
     padding: 8,
     marginRight: 8,
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
   },
   button: {
-    backgroundColor: "#000",
+    backgroundColor: '#000',
     borderRadius: 5,
     paddingHorizontal: 10,
     paddingVertical: 8,
   },
   messageSent: {
-    flexDirection: "column",
-    alignItems: "flex-end",
+    flexDirection: 'column',
+    alignItems: 'flex-end',
     marginBottom: 4,
   },
   messageRecieved: {
-    flexDirection: "column",
-    alignItems: "flex-start",
+    flexDirection: 'column',
+    alignItems: 'flex-start',
     marginBottom: 4,
   },
   name: {
-    color: "#00ABB3",
+    color: '#00ABB3',
     borderRadius: 10,
     marginHorizontal: 10,
   },
   modalContent: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "black",
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'black',
   },
   fullscreenImage: {
-    width: "100%",
-    height: "100%",
+    width: '100%',
+    height: '100%',
   },
   closeButton: {
-    position: "absolute",
+    position: 'absolute',
     top: 50,
     right: 20,
   },
   closeButtonText: {
-    color: "white",
+    color: 'white',
     fontSize: 20,
   },
   bottomNavigationView: {
     // backgroundColor: "#17cfe3",
     backgroundColor: Colors.primary,
-    width: "100%",
+    width: '100%',
     height: 200,
-    justifyContent: "space-around",
+    justifyContent: 'space-around',
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
   },
 });
 

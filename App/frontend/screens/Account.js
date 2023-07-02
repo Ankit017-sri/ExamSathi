@@ -1,5 +1,5 @@
-import { Ionicons } from "@expo/vector-icons";
-import React, { useContext } from "react";
+import {Ionicons} from 'react-native-vector-icons';
+import React, {useContext} from 'react';
 import {
   View,
   Text,
@@ -8,43 +8,43 @@ import {
   TouchableOpacity,
   Share,
   Alert,
-} from "react-native";
+} from 'react-native';
 
-import CustomHeader from "../components/CustomHeader";
-import Colors from "../constants/Colors";
-import cache from "../utilities/cache";
-import AuthContext from "../auth/context";
-import authStorage from "../auth/storage";
-import axios from "axios";
-import baseUrl from "../baseUrl";
+import CustomHeader from '../components/CustomHeader';
+import Colors from '../constants/Colors';
+import cache from '../utilities/cache';
+import AuthContext from '../auth/context';
+import authStorage from '../auth/storage';
+import axios from 'axios';
+import baseUrl from '../baseUrl';
 
-const AccountScreen = ({ navigation }) => {
+const AccountScreen = ({navigation}) => {
   const authContext = useContext(AuthContext);
 
-  const { name, phone } = useContext(AuthContext);
+  const {name, phone} = useContext(AuthContext);
 
   const deleteAccountHandler = async () => {
     const res = await axios.delete(`${baseUrl}/auth/delete`, {
-      headers: { Authorization: `Bearer ${authContext.token}` },
+      headers: {Authorization: `Bearer ${authContext.token}`},
     });
 
     //console.log(res);
 
-    if (res.data.message === "USER_DELETED") {
+    if (res.data.message === 'USER_DELETED') {
       await cache.clear();
       authStorage.removeToken();
       authContext.setToken(null);
       authContext.setName(null);
-    } else alert("Something went wrong. Please try again.");
+    } else alert('Something went wrong. Please try again.');
   };
 
   const deleteHandler = () => {
-    Alert.alert(null, "Are you sure you want to delete your account?", [
+    Alert.alert(null, 'Are you sure you want to delete your account?', [
       {
-        text: "Cancel",
-        style: "cancel",
+        text: 'Cancel',
+        style: 'cancel',
       },
-      { text: "YES", onPress: () => deleteAccountHandler() },
+      {text: 'YES', onPress: () => deleteAccountHandler()},
     ]);
   };
 
@@ -52,24 +52,22 @@ const AccountScreen = ({ navigation }) => {
     return (
       <TouchableOpacity
         style={{
-          flexDirection: "row",
-          justifyContent: "center",
-          alignItems: "center",
+          flexDirection: 'row',
+          justifyContent: 'center',
+          alignItems: 'center',
           height: 40,
         }}
         activeOpacity={0.6}
-        onPress={deleteHandler}
-      >
+        onPress={deleteHandler}>
         <Text
           style={{
             fontSize: 14,
             color: Colors.danger,
             marginRight: 10,
-          }}
-        >
+          }}>
           Delete Account
         </Text>
-        <Ionicons name={"trash-outline"} size={18} color={Colors.danger} />
+        <Ionicons name={'trash-outline'} size={18} color={Colors.danger} />
       </TouchableOpacity>
     );
   };
@@ -80,14 +78,13 @@ const AccountScreen = ({ navigation }) => {
       <View
         style={{
           flex: 1,
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}>
         <View style={styles.cardContainer}>
           <View style={styles.profileContainer}>
             <Image
-              source={require("../assets/avatar.png")}
+              source={require('../assets/avatar.png')}
               style={styles.profileImage}
             />
             <View>
@@ -98,15 +95,15 @@ const AccountScreen = ({ navigation }) => {
           </View>
           <TouchableOpacity
             style={{
-              flexDirection: "row",
-              justifyContent: "center",
-              alignItems: "center",
+              flexDirection: 'row',
+              justifyContent: 'center',
+              alignItems: 'center',
               borderWidth: 1,
               borderColor: Colors.primary,
               borderRadius: 20,
               height: 40,
-              width: "100%",
-              backgroundColor: "#1F6E8C",
+              width: '100%',
+              backgroundColor: '#1F6E8C',
             }}
             activeOpacity={0.6}
             onPress={async () => {
@@ -114,18 +111,16 @@ const AccountScreen = ({ navigation }) => {
               authStorage.removeToken();
               authContext.setToken(null);
               authContext.setName(null);
-            }}
-          >
+            }}>
             <Text
               style={{
                 fontSize: 17,
-                color: "white",
+                color: 'white',
                 marginRight: 10,
-              }}
-            >
+              }}>
               Logout
             </Text>
-            <Ionicons name={"log-out-outline"} size={27} color="white" />
+            <Ionicons name={'log-out-outline'} size={27} color="white" />
           </TouchableOpacity>
         </View>
         {/* <View
@@ -208,15 +203,15 @@ const AccountScreen = ({ navigation }) => {
             </View> */}
         <TouchableOpacity
           style={{
-            flexDirection: "row",
-            justifyContent: "center",
-            alignItems: "center",
+            flexDirection: 'row',
+            justifyContent: 'center',
+            alignItems: 'center',
             borderWidth: 1,
             borderColor: Colors.primary,
             borderRadius: 20,
             height: 40,
-            width: "85%",
-            backgroundColor: "#1F6E8C",
+            width: '85%',
+            backgroundColor: '#1F6E8C',
             marginTop: 30,
             // marginRight: 40,
           }}
@@ -227,18 +222,16 @@ const AccountScreen = ({ navigation }) => {
   Exam Sathi app
   https://play.google.com/store/apps/details?id=com.examSathi.examSathi`,
             })
-          }
-        >
+          }>
           <Text
             style={{
               fontSize: 17,
-              color: "white",
+              color: 'white',
               marginRight: 10,
-            }}
-          >
+            }}>
             Share App
           </Text>
-          <Ionicons name="share-social-outline" size={20} color={"white"} />
+          <Ionicons name="share-social-outline" size={20} color={'white'} />
         </TouchableOpacity>
         {/* <TouchableOpacity
           style={{
@@ -278,14 +271,14 @@ const AccountScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
   },
   cardContainer: {
-    width: "85%",
-    backgroundColor: "#fff",
+    width: '85%',
+    backgroundColor: '#fff',
     padding: 20,
     borderRadius: 10,
-    shadowColor: "#000",
+    shadowColor: '#000',
     shadowOffset: {
       width: 0,
       height: 2,
@@ -293,16 +286,16 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   profileContainer: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     marginBottom: 20,
     marginHorizontal: 20,
     // borderWidth: 1,
-    width: "100%",
+    width: '100%',
     // flexWrap: "wrap",
   },
   profileImage: {
@@ -313,15 +306,15 @@ const styles = StyleSheet.create({
   },
   name: {
     fontSize: 20,
-    fontWeight: "bold",
+    fontWeight: 'bold',
     // marginBottom: 5,
-    flexWrap: "wrap",
+    flexWrap: 'wrap',
     // maxWidth: "85%",
     // borderWidth: 1,
   },
   phone: {
     fontSize: 16,
-    color: "gray",
+    color: 'gray',
   },
 });
 

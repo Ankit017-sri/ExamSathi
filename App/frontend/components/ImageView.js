@@ -1,9 +1,9 @@
-import React, { useState } from "react";
-import { View, Modal, Image, TouchableOpacity } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
-import ImageViewer from "react-native-image-zoom-viewer";
+import React, {useState} from 'react';
+import {View, Modal, Image, TouchableOpacity} from 'react-native';
+import {Ionicons} from 'react-native-vector-icons';
+import ImageViewer from 'react-native-image-zoom-viewer';
 
-const FullscreenImage = ({ imageSource }) => {
+const FullscreenImage = ({imageSource}) => {
   const [modalVisible, setModalVisible] = useState(false);
   const images = [
     {
@@ -16,25 +16,23 @@ const FullscreenImage = ({ imageSource }) => {
     <View>
       <TouchableOpacity onPress={() => setModalVisible(true)}>
         <Image
-          source={{ uri: imageSource }}
-          style={{ maxwidth: 300, minHeight: 250 }}
+          source={{uri: imageSource}}
+          style={{maxwidth: 300, minHeight: 250}}
           resizeMode="contain"
         />
       </TouchableOpacity>
       <Modal
         visible={modalVisible}
         transparent={false}
-        style={{ backgroundColor: "black" }}
-      >
+        style={{backgroundColor: 'black'}}>
         <TouchableOpacity
           onPress={() => setModalVisible(false)}
           style={{
-            position: "absolute",
+            position: 'absolute',
             bottom: 40,
-            alignSelf: "center",
+            alignSelf: 'center',
             zIndex: 40,
-          }}
-        >
+          }}>
           <Ionicons name="close" color="black" size={40} />
         </TouchableOpacity>
         {/* <Image
@@ -44,7 +42,7 @@ const FullscreenImage = ({ imageSource }) => {
         /> */}
         <ImageViewer
           imageUrls={images}
-          backgroundColor={"#fff"}
+          backgroundColor={'#fff'}
           renderIndicator={() => null}
         />
       </Modal>

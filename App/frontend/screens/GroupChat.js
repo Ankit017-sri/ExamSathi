@@ -14,14 +14,14 @@
 // import React, { useState, useEffect, useRef, useContext } from "react";
 // import AuthContext from "../auth/context";
 // import { format } from "timeago.js";
-// import { Ionicons } from "@expo/vector-icons";
+// import { Ionicons } from "react-native-vector-icons";
 // import CustomHeader from "../components/CustomHeader";
 // import CloudURL from "../CloudURL";
 // import axios from "axios";
 // import FullscreenImage from "../components/ImageView";
 // import { BottomSheet } from "react-native-btr";
-// import * as ImagePicker from "expo-image-picker";
-// import * as DocumentPicker from "expo-document-picker";
+// import * as ImagePicker from "react-native-image-picker";
+// import * as DocumentPicker from "react-native-document-picker";
 // import * as FileSystem from "expo-file-system";
 // import * as Linking from "expo-linking";
 

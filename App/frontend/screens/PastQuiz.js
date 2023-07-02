@@ -4,7 +4,7 @@ import React, {
   useContext,
   useCallback,
   useRef,
-} from "react";
+} from 'react';
 import {
   View,
   Text,
@@ -13,36 +13,36 @@ import {
   ScrollView,
   ActivityIndicator,
   FlatList,
-} from "react-native";
-import axios from "axios";
-import AuthContext from "../auth/context";
-import Colors from "../constants/Colors";
-import CustomHeader from "../components/CustomHeader";
-import Loader from "../components/Loader";
-import baseUrl from "../baseUrl";
-import { useFocusEffect } from "@react-navigation/native";
-import { Ionicons } from "@expo/vector-icons";
+} from 'react-native';
+import axios from 'axios';
+import AuthContext from '../auth/context';
+import Colors from '../constants/Colors';
+import CustomHeader from '../components/CustomHeader';
+import Loader from '../components/Loader';
+import baseUrl from '../baseUrl';
+import {useFocusEffect} from '@react-navigation/native';
+import {Ionicons} from 'react-native-vector-icons';
 
-const PastQuiz = ({ navigation }) => {
+const PastQuiz = ({navigation}) => {
   // const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
   const [allQuizData, setAllQuizdata] = useState([]);
-  const [activeTag, setActiveTag] = useState("");
+  const [activeTag, setActiveTag] = useState('');
   const [tagDetails, setTagDetails] = useState([]);
   const [allCategoryData, setAllCategoryData] = useState([]);
   const [allQuiz, setAllQuiz] = useState([]);
   const [viewAll, setViewAll] = useState(false);
-  const [title, setTitle] = useState("");
+  const [title, setTitle] = useState('');
 
-  const { token } = useContext(AuthContext);
+  const {token} = useContext(AuthContext);
   const scrollRef = useRef();
 
   useFocusEffect(
     useCallback(() => {
       // fetchData();
       fetchAllData();
-    }, [])
+    }, []),
   );
   // const fetchData = async () => {
   //   try {
@@ -61,16 +61,16 @@ const PastQuiz = ({ navigation }) => {
   const fetchAllData = async () => {
     try {
       const response = await axios.get(`${baseUrl}/quizData/submitted`, {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: {Authorization: `Bearer ${token}`},
       });
       // console.log(response.data);
       setAllQuizdata(response.data);
       const all = [];
-      response.data.forEach((element) => {
+      response.data.forEach(element => {
         all.push(...element.categories);
       });
       setAllCategoryData(all);
-      setActiveTag("all");
+      setActiveTag('all');
       setTagDetails(all);
       setIsLoading(false);
     } catch (error) {
@@ -79,58 +79,53 @@ const PastQuiz = ({ navigation }) => {
     }
   };
 
-  const Card = ({ item, title }) => {
+  const Card = ({item, title}) => {
     return (
       <View
         style={{
-          flexDirection: "row",
+          flexDirection: 'row',
           marginLeft: 10,
           marginVertical: 4,
-          width: viewAll ? "45%" : 210,
-        }}
-      >
+          width: viewAll ? '45%' : 210,
+        }}>
         <View
           style={{
             ...styles.card,
-            width: "100%",
-            alignItems: "center",
-          }}
-        >
+            width: '100%',
+            alignItems: 'center',
+          }}>
           <>
             <Text
               style={{
-                textAlign: "center",
+                textAlign: 'center',
                 fontSize: 16,
-                fontWeight: "bold",
+                fontWeight: 'bold',
                 color: Colors.text,
                 marginBottom: 20,
                 marginTop: 10,
-              }}
-            >
+              }}>
               {item.quizTitle}
             </Text>
             <View
               style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
+                flexDirection: 'row',
+                justifyContent: 'space-between',
                 marginBottom: 10,
-              }}
-            >
-              <Text style={{ fontSize: 12 }}>
+              }}>
+              <Text style={{fontSize: 12}}>
                 Time: {item.maxMarks == 100 ? 90 : item.maxMarks} min
               </Text>
-              <Text style={{ marginLeft: 16, fontSize: 12 }}>
+              <Text style={{marginLeft: 16, fontSize: 12}}>
                 Marks: {item.maxMarks}
               </Text>
             </View>
             <TouchableOpacity
-              style={{ ...styles.button, width: "100%" }}
+              style={{...styles.button, width: '100%'}}
               activeOpacity={0.6}
               onPress={() => {
-                navigation.navigate("QuizDetailScreen", { quiz: item });
-              }}
-            >
-              <Text style={{ color: "#fff", fontSize: 14 }}>View details</Text>
+                navigation.navigate('QuizDetailScreen', {quiz: item});
+              }}>
+              <Text style={{color: '#fff', fontSize: 14}}>View details</Text>
             </TouchableOpacity>
           </>
         </View>
@@ -138,32 +133,29 @@ const PastQuiz = ({ navigation }) => {
     );
   };
 
-  const TestLists = ({ data, title }) => {
+  const TestLists = ({data, title}) => {
     return (
       <View
         style={{
           padding: 6,
-        }}
-      >
+        }}>
         <View
           style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
+            flexDirection: 'row',
+            justifyContent: 'space-between',
             marginHorizontal: 10,
-          }}
-        >
+          }}>
           <Text style={styles.title}>{title}</Text>
           {data?.length > 1 && (
             <TouchableOpacity
               onPress={() => {
                 setAllQuiz(data);
                 setTitle(title);
-                scrollRef.current.scrollTo({ y: 0, animated: false });
+                scrollRef.current.scrollTo({y: 0, animated: false});
                 setViewAll(true);
               }}
-              style={{ flexDirection: "row" }}
-            >
-              <Text style={{ marginRight: 4 }}>View All</Text>
+              style={{flexDirection: 'row'}}>
+              <Text style={{marginRight: 4}}>View All</Text>
               <Ionicons
                 name="chevron-forward-circle-outline"
                 size={20}
@@ -174,9 +166,9 @@ const PastQuiz = ({ navigation }) => {
         </View>
         {data && (
           <FlatList
-            renderItem={({ item }) => <Card item={item} title={title} />}
+            renderItem={({item}) => <Card item={item} title={title} />}
             data={data.slice(0, 10)}
-            keyExtractor={(item) => item._id}
+            keyExtractor={item => item._id}
             horizontal
           />
         )}
@@ -214,53 +206,48 @@ const PastQuiz = ({ navigation }) => {
           //     </TouchableOpacity>
           //   ))} */}
           // </ScrollView>
-          <View style={{ flex: 0.9 }}>
+          <View style={{flex: 0.9}}>
             {viewAll ? (
               <View
                 style={{
-                  flexDirection: "row",
+                  flexDirection: 'row',
                   // justifyContent: "space-between",
                   paddingVertical: 4,
                   paddingHorizontal: 6,
-                }}
-              >
+                }}>
                 <TouchableOpacity
                   onPress={() => {
                     setViewAll(false);
-                    scrollRef.current.scrollTo({ y: 0, animated: false });
-                  }}
-                >
+                    scrollRef.current.scrollTo({y: 0, animated: false});
+                  }}>
                   <Ionicons name="arrow-back" size={25} />
                 </TouchableOpacity>
-                <Text style={[styles.title, { marginLeft: 20 }]}>
+                <Text style={[styles.title, {marginLeft: 20}]}>
                   {title} Tests
                 </Text>
               </View>
             ) : (
               <ScrollView
                 horizontal
-                style={{ maxHeight: 60, minHeight: 60, paddingHorizontal: 12 }}
-                contentContainerStyle={{ alignItems: "center" }}
-              >
+                style={{maxHeight: 60, minHeight: 60, paddingHorizontal: 12}}
+                contentContainerStyle={{alignItems: 'center'}}>
                 <TouchableOpacity
                   onPress={() => {
-                    setActiveTag("all");
+                    setActiveTag('all');
                     setTagDetails(allCategoryData);
                   }}
                   style={[
                     styles.tag,
                     {
-                      backgroundColor: activeTag == "all" ? "#90AAD5" : "white",
+                      backgroundColor: activeTag == 'all' ? '#90AAD5' : 'white',
                     },
-                  ]}
-                >
+                  ]}>
                   <Text
                     style={{
                       fontSize: 16,
-                      alignSelf: "center",
-                      verticalAlign: "middle",
-                    }}
-                  >
+                      alignSelf: 'center',
+                      verticalAlign: 'middle',
+                    }}>
                     All
                   </Text>
                 </TouchableOpacity>
@@ -271,22 +258,20 @@ const PastQuiz = ({ navigation }) => {
                         styles.tag,
                         {
                           backgroundColor:
-                            activeTag == item.tag ? "#90AAD5" : "white",
+                            activeTag == item.tag ? '#90AAD5' : 'white',
                         },
                       ]}
                       onPress={() => {
                         setActiveTag(item.tag);
                         setTagDetails(item.categories);
                       }}
-                      key={index}
-                    >
+                      key={index}>
                       <Text
                         style={{
                           fontSize: 16,
-                          alignSelf: "center",
-                          verticalAlign: "middle",
-                        }}
-                      >
+                          alignSelf: 'center',
+                          verticalAlign: 'middle',
+                        }}>
                         {item.tag}
                       </Text>
                     </TouchableOpacity>
@@ -294,61 +279,56 @@ const PastQuiz = ({ navigation }) => {
                 })}
               </ScrollView>
             )}
-            <ScrollView style={{ paddingTop: 8 }} ref={scrollRef}>
+            <ScrollView style={{paddingTop: 8}} ref={scrollRef}>
               {viewAll ? (
                 <View
                   style={{
                     flex: 1,
-                    flexDirection: "row",
-                    flexWrap: "wrap",
-                    alignItems: "flex-start",
-                  }}
-                >
+                    flexDirection: 'row',
+                    flexWrap: 'wrap',
+                    alignItems: 'flex-start',
+                  }}>
                   {allQuiz.map((item, index) => {
                     return <Card item={item} key={index} />;
                   })}
                   {allQuiz.length == 0 && (
                     <View
                       style={{
-                        flexDirection: "row",
+                        flexDirection: 'row',
                         marginBottom: 20,
-                        justifyContent: "center",
-                      }}
-                    >
+                        justifyContent: 'center',
+                      }}>
                       <View
                         style={{
                           ...styles.card,
-                          width: "90%",
-                          alignItems: "center",
+                          width: '90%',
+                          alignItems: 'center',
                           // marginRight: 15,
                           marginHorizontal: 20,
                           // marginTop: -10,
-                        }}
-                      >
+                        }}>
                         <Text
                           style={{
-                            textAlign: "center",
+                            textAlign: 'center',
                             fontSize: 18,
-                            fontWeight: "bold",
+                            fontWeight: 'bold',
                             color: Colors.text,
-                          }}
-                        >
+                          }}>
                           {title}
                         </Text>
 
                         <Ionicons
                           name="checkmark-circle-outline"
                           size={50}
-                          color={"#26b1bf"}
+                          color={'#26b1bf'}
                         />
                         <Text
                           style={{
-                            textAlign: "center",
+                            textAlign: 'center',
                             fontSize: 20,
-                            fontWeight: "bold",
+                            fontWeight: 'bold',
                             color: Colors.text,
-                          }}
-                        >
+                          }}>
                           All Submitted
                         </Text>
                       </View>
@@ -369,44 +349,40 @@ const PastQuiz = ({ navigation }) => {
                   {tagDetails?.length == 0 && (
                     <View
                       style={{
-                        flexDirection: "row",
+                        flexDirection: 'row',
                         marginBottom: 20,
-                        justifyContent: "center",
-                      }}
-                    >
+                        justifyContent: 'center',
+                      }}>
                       <View
                         style={{
                           ...styles.card,
-                          width: "80%",
-                          alignItems: "center",
+                          width: '80%',
+                          alignItems: 'center',
                           // marginRight: 15,
                           // marginTop: -10,
-                        }}
-                      >
+                        }}>
                         <Text
                           style={{
-                            textAlign: "center",
+                            textAlign: 'center',
                             fontSize: 18,
-                            fontWeight: "bold",
+                            fontWeight: 'bold',
                             color: Colors.text,
-                          }}
-                        >
+                          }}>
                           {title}
                         </Text>
 
                         <Ionicons
                           name="search-circle-outline"
                           size={50}
-                          color={"#26b1bf"}
+                          color={'#26b1bf'}
                         />
                         <Text
                           style={{
-                            textAlign: "center",
+                            textAlign: 'center',
                             fontSize: 20,
-                            fontWeight: "bold",
+                            fontWeight: 'bold',
                             color: Colors.text,
-                          }}
-                        >
+                          }}>
                           No Quizzes Submitted yet
                         </Text>
                       </View>
@@ -428,7 +404,7 @@ const styles = StyleSheet.create({
     // alignItems: "center",
     // justifyContent: "center",
     // paddingBottom: 100,
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
   },
 
   // cardContainer: {
@@ -449,7 +425,7 @@ const styles = StyleSheet.create({
   },
   cardTitle: {
     fontSize: 20,
-    fontWeight: "bold",
+    fontWeight: 'bold',
     color: Colors.text,
   },
   cardBody: {
@@ -458,14 +434,14 @@ const styles = StyleSheet.create({
   cardText: {
     fontSize: 16,
     marginTop: 10,
-    color: "gray",
+    color: 'gray',
   },
   cardFooter: {
     padding: 20,
   },
   title: {
     fontSize: 18,
-    fontWeight: "500",
+    fontWeight: '500',
     marginBottom: 4,
   },
   listContainer: {
@@ -482,17 +458,17 @@ const styles = StyleSheet.create({
   },
   cardContainer: {
     // flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     paddingVertical: 20,
     marginBottom: 20,
   },
   button: {
     height: 35,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     borderRadius: 5,
-    backgroundColor: "#777777",
+    backgroundColor: '#777777',
     elevation: 5,
   },
   card: {
@@ -500,8 +476,8 @@ const styles = StyleSheet.create({
     padding: 15,
     paddingVertical: 25,
     elevation: 5,
-    backgroundColor: "#fff",
-    justifyContent: "space-evenly",
+    backgroundColor: '#fff',
+    justifyContent: 'space-evenly',
   },
 });
 

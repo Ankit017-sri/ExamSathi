@@ -1,9 +1,9 @@
-import * as SecureStore from "expo-secure-store";
+import * as SecureStore from '@react-native-async-storage/async-storage';
 
-const accessKey = "accessToken";
+const accessKey = 'accessToken';
 // const refreshKey = "refreshToken";
 
-const storeToken = async (token) => {
+const storeToken = async token => {
   try {
     await SecureStore.setItemAsync(accessKey, token);
   } catch (error) {
@@ -39,4 +39,4 @@ const removeToken = async () => {
   }
 };
 
-export default { storeToken, getToken, removeToken };
+export default {storeToken, getToken, removeToken};

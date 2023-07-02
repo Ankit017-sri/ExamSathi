@@ -1,14 +1,14 @@
-import { Ionicons } from "@expo/vector-icons";
-import { useFocusEffect } from "@react-navigation/native";
+import {Ionicons} from 'react-native-vector-icons';
+import {useFocusEffect} from '@react-navigation/native';
 // import { FlashList } from "@shopify/flash-list";
-import axios from "axios";
+import axios from 'axios';
 import React, {
   useCallback,
   useContext,
   useEffect,
   useRef,
   useState,
-} from "react";
+} from 'react';
 import {
   StyleSheet,
   Text,
@@ -19,21 +19,21 @@ import {
   BackHandler,
   Alert,
   ScrollView,
-} from "react-native";
+} from 'react-native';
 
-import AuthContext from "../auth/context";
-import baseUrl from "../baseUrl";
-import CustomHeader from "../components/CustomHeader";
-import Loader from "../components/Loader";
-import Pagination from "../components/Pagination";
+import AuthContext from '../auth/context';
+import baseUrl from '../baseUrl';
+import CustomHeader from '../components/CustomHeader';
+import Loader from '../components/Loader';
+import Pagination from '../components/Pagination';
 // import QuesCard from "../components/QuesCard";
-import Colors from "../constants/Colors";
+import Colors from '../constants/Colors';
 
-const RecentQuiz = ({ navigation }) => {
+const RecentQuiz = ({navigation}) => {
   const [response, setResponse] = useState([]);
-  const [timerHours, setTimerHours] = useState("00");
-  const [timerMinutes, setTimerMinutes] = useState("00");
-  const [timerSeconds, setTimerSeconds] = useState("00");
+  const [timerHours, setTimerHours] = useState('00');
+  const [timerMinutes, setTimerMinutes] = useState('00');
+  const [timerSeconds, setTimerSeconds] = useState('00');
   const [loading, setLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [quizData, setQuizData] = useState([]);
@@ -52,7 +52,7 @@ const RecentQuiz = ({ navigation }) => {
   // const [isPyqSubmitted, setIsPyqSubmitted] = useState(false);
   // const [lastAttempted, setLastAttempted] = useState(-1);
   const [viewAll, setViewAll] = useState(false);
-  const [title, setTitle] = useState("");
+  const [title, setTitle] = useState('');
   const SampleArr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
   const [allQuiz, setAllQuiz] = useState([]);
   const [isloading, setIsLoading] = useState(true);
@@ -67,22 +67,22 @@ const RecentQuiz = ({ navigation }) => {
   // const [latest100Feed, setLatest100Feed] = useState([]);
 
   const [allQuizData, setAllQuizdata] = useState([]);
-  const [activeTag, setActiveTag] = useState("");
+  const [activeTag, setActiveTag] = useState('');
   const [tagDetails, setTagDetails] = useState([]);
   const [allCategoryData, setAllCategoryData] = useState([]);
 
   const scrollList = useRef();
 
   const handleNext = () => {
-    scrollList.current.scrollToOffset({ animated: false, offset: 0 });
+    scrollList.current.scrollToOffset({animated: false, offset: 0});
     setPage(page + 1);
   };
   const handlePrev = () => {
-    scrollList.current.scrollToOffset({ animated: false, offset: 0 });
+    scrollList.current.scrollToOffset({animated: false, offset: 0});
     setPage(page - 1);
   };
 
-  const { token, setTabBarVisible } = useContext(AuthContext);
+  const {token, setTabBarVisible} = useContext(AuthContext);
   const scrollRef = useRef();
 
   // const getPyq = async () => {
@@ -217,10 +217,10 @@ const RecentQuiz = ({ navigation }) => {
     try {
       const res = await axios.put(
         `${baseUrl}/auth/app/share`,
-        { screen: 2 },
+        {screen: 2},
         {
-          headers: { Authorization: `Bearer ${token}` },
-        }
+          headers: {Authorization: `Bearer ${token}`},
+        },
       );
       // console.log(res.data);
     } catch (error) {
@@ -228,14 +228,14 @@ const RecentQuiz = ({ navigation }) => {
     }
   };
 
-  const startQuiz = async (quizId) => {
+  const startQuiz = async quizId => {
     setLoading(true);
     const quizDetails = await axios.get(
       `${baseUrl}/quizData/quiz/${quizId}`,
 
       {
-        headers: { Authorization: `Bearer ${token}` },
-      }
+        headers: {Authorization: `Bearer ${token}`},
+      },
     );
     // console.log(quizDetails.data);
     setLoading(false);
@@ -301,16 +301,16 @@ const RecentQuiz = ({ navigation }) => {
 
   const onSelect = (index, crctOption) => {
     if (response.length === 0) {
-      response.push({ quesIndex: index, value: crctOption });
+      response.push({quesIndex: index, value: crctOption});
       setResponse(response);
     } else {
-      const resIndex = response.map((p) => p.quesIndex).indexOf(index);
+      const resIndex = response.map(p => p.quesIndex).indexOf(index);
       const resAlreadyExists = resIndex !== -1;
       if (resAlreadyExists) {
         response[resIndex].value = crctOption;
         setResponse(response);
       } else {
-        response.push({ quesIndex: index, value: crctOption });
+        response.push({quesIndex: index, value: crctOption});
         setResponse(response);
       }
     }
@@ -330,8 +330,8 @@ const RecentQuiz = ({ navigation }) => {
           quizId: quizData._id,
         },
         {
-          headers: { Authorization: `Bearer ${token}` },
-        }
+          headers: {Authorization: `Bearer ${token}`},
+        },
       )
       .then(() => {
         setIsSubmitting(false);
@@ -369,10 +369,10 @@ const RecentQuiz = ({ navigation }) => {
         //   break;
         // }
 
-        navigation.navigate("QuizDetailScreen", { quiz: quizData });
+        navigation.navigate('QuizDetailScreen', {quiz: quizData});
       })
-      .catch((e) => {
-        alert("Something went wrong. Please try again.");
+      .catch(e => {
+        alert('Something went wrong. Please try again.');
         setIsSubmitting(false);
       });
   };
@@ -390,7 +390,7 @@ const RecentQuiz = ({ navigation }) => {
       const distance = countDownDate - now;
 
       const hours = Math.floor(
-        (distance % (1000 * 60 * 60 * 60)) / (1000 * 60 * 60)
+        (distance % (1000 * 60 * 60 * 60)) / (1000 * 60 * 60),
       );
       const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
       const seconds = Math.floor((distance % (1000 * 60)) / 1000);
@@ -418,13 +418,13 @@ const RecentQuiz = ({ navigation }) => {
         `${baseUrl}/quizData/all`,
 
         {
-          headers: { Authorization: `Bearer ${token}` },
-        }
+          headers: {Authorization: `Bearer ${token}`},
+        },
       );
       // console.log("data ......", data.data);
       setAllQuizdata(data.data);
       if (!activeTag) {
-        const daily = data.data.filter((item) => item.tag == "daily");
+        const daily = data.data.filter(item => item.tag == 'daily');
         // console.log("daily...", daily);
         // data.data.forEach((element) => {
         //   daily.push(...element.categories);
@@ -434,7 +434,7 @@ const RecentQuiz = ({ navigation }) => {
 
         setTagDetails(daily[0].categories);
       } else {
-        const tagData = data.data.find((value) => value.tag == activeTag);
+        const tagData = data.data.find(value => value.tag == activeTag);
         setTagDetails(tagData.categories);
       }
       setIsLoading(false);
@@ -448,7 +448,7 @@ const RecentQuiz = ({ navigation }) => {
     useCallback(() => {
       getAllQuiz();
       setViewAll(false);
-    }, [])
+    }, []),
   );
 
   useEffect(() => {
@@ -460,20 +460,20 @@ const RecentQuiz = ({ navigation }) => {
     const backAction = () => {
       if (quizStarted) {
         Alert.alert(
-          "Watch Out!",
-          "If you go back test will be submitted with the response. You want to continue?",
+          'Watch Out!',
+          'If you go back test will be submitted with the response. You want to continue?',
           [
             {
-              text: "Cancel Test and Submit",
+              text: 'Cancel Test and Submit',
               onPress: () => submitHandler(),
-              style: "cancel",
+              style: 'cancel',
             },
             {
-              text: "Continue Test!",
-              onPress: () => console.log("OK Pressed"),
+              text: 'Continue Test!',
+              onPress: () => console.log('OK Pressed'),
             },
           ],
-          { cancelable: false }
+          {cancelable: false},
         );
         return true;
       } else {
@@ -482,8 +482,8 @@ const RecentQuiz = ({ navigation }) => {
     };
 
     const backHandler = BackHandler.addEventListener(
-      "hardwareBackPress",
-      backAction
+      'hardwareBackPress',
+      backAction,
     );
 
     return () => backHandler.remove();
@@ -492,24 +492,22 @@ const RecentQuiz = ({ navigation }) => {
   // const TriangleCorner = () => {
   //   return <View style={[styles.triangleCorner]} />;
   // };
-  const Card = ({ item, title }) => {
+  const Card = ({item, title}) => {
     return (
       <View
         style={{
-          flexDirection: "row",
+          flexDirection: 'row',
           marginLeft: 10,
           marginVertical: 4,
-          width: viewAll ? "45%" : 210,
-        }}
-      >
+          width: viewAll ? '45%' : 210,
+        }}>
         <View
           style={{
             ...styles.card,
             // width: "45%",
-            width: "100%",
-            alignItems: "center",
-          }}
-        >
+            width: '100%',
+            alignItems: 'center',
+          }}>
           <>
             {/* {!viewAll && (
               <>
@@ -533,39 +531,36 @@ const RecentQuiz = ({ navigation }) => {
             )} */}
             <Text
               style={{
-                textAlign: "center",
+                textAlign: 'center',
                 fontSize: 16,
-                fontWeight: "bold",
+                fontWeight: 'bold',
                 color: Colors.text,
                 marginBottom: 20,
                 marginTop: 10,
                 // transform: [{ rotateZ: "45deg" }]
-              }}
-            >
+              }}>
               {/* नवीन मागील वर्षाची टेस्ट! */}
               {item.quizTitle}
             </Text>
             <View
               style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
+                flexDirection: 'row',
+                justifyContent: 'space-between',
                 marginBottom: 10,
-              }}
-            >
-              <Text style={{ fontSize: 12 }}>Time: {item.maxTime} min</Text>
-              <Text style={{ marginLeft: 16, fontSize: 12 }}>
+              }}>
+              <Text style={{fontSize: 12}}>Time: {item.maxTime} min</Text>
+              <Text style={{marginLeft: 16, fontSize: 12}}>
                 Marks: {item.maxMarks}
               </Text>
             </View>
             <TouchableOpacity
-              style={{ ...styles.button, width: "100%" }}
+              style={{...styles.button, width: '100%'}}
               activeOpacity={0.6}
               onPress={() => {
                 setTitle(title);
                 startQuiz(item._id);
-              }}
-            >
-              <Text style={{ color: "#fff", fontSize: 14 }}>Start Test</Text>
+              }}>
+              <Text style={{color: '#fff', fontSize: 14}}>Start Test</Text>
             </TouchableOpacity>
           </>
         </View>
@@ -573,32 +568,29 @@ const RecentQuiz = ({ navigation }) => {
     );
   };
 
-  const TestLists = ({ data, title }) => {
+  const TestLists = ({data, title}) => {
     return (
       <View
         style={{
           padding: 6,
-        }}
-      >
+        }}>
         <View
           style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
+            flexDirection: 'row',
+            justifyContent: 'space-between',
             marginHorizontal: 10,
-          }}
-        >
+          }}>
           <Text style={styles.title}>{title}</Text>
           {data?.length > 1 && (
             <TouchableOpacity
               onPress={() => {
                 setAllQuiz(data);
                 setTitle(title);
-                scrollRef.current.scrollTo({ y: 0, animated: false });
+                scrollRef.current.scrollTo({y: 0, animated: false});
                 setViewAll(true);
               }}
-              style={{ flexDirection: "row" }}
-            >
-              <Text style={{ marginRight: 4 }}>View All</Text>
+              style={{flexDirection: 'row'}}>
+              <Text style={{marginRight: 4}}>View All</Text>
               <Ionicons
                 name="chevron-forward-circle-outline"
                 size={20}
@@ -609,53 +601,49 @@ const RecentQuiz = ({ navigation }) => {
         </View>
         {data && (
           <FlatList
-            renderItem={({ item }) => <Card item={item} title={title} />}
+            renderItem={({item}) => <Card item={item} title={title} />}
             data={data.slice(0, 10)}
-            keyExtractor={(item) => item._id}
+            keyExtractor={item => item._id}
             horizontal
           />
         )}
         {data?.length == 0 && (
           <View
             style={{
-              flexDirection: "row",
+              flexDirection: 'row',
               marginBottom: 20,
-              justifyContent: "center",
-            }}
-          >
+              justifyContent: 'center',
+            }}>
             <View
               style={{
                 ...styles.card,
-                width: "80%",
-                alignItems: "center",
+                width: '80%',
+                alignItems: 'center',
                 // marginRight: 15,
                 // marginTop: -10,
-              }}
-            >
+              }}>
               <Text
                 style={{
-                  textAlign: "center",
+                  textAlign: 'center',
                   fontSize: 18,
-                  fontWeight: "bold",
+                  fontWeight: 'bold',
                   color: Colors.text,
-                }}
-              >
+                }}>
                 {title}
               </Text>
 
               <Ionicons
                 name="checkmark-circle-outline"
                 size={50}
-                color={"#26b1bf"}
+                color={'#26b1bf'}
               />
               <Text
                 style={{
-                  textAlign: "center",
+                  textAlign: 'center',
                   fontSize: 20,
-                  fontWeight: "bold",
+                  fontWeight: 'bold',
                   color: Colors.text,
-                }}
-              >
+                }}>
                 All Submitted
               </Text>
             </View>
@@ -674,16 +662,15 @@ const RecentQuiz = ({ navigation }) => {
       {loading || isloading ? (
         <Loader />
       ) : quizStarted ? (
-        <View style={{ marginBottom: 160 }}>
+        <View style={{marginBottom: 160}}>
           <View
             style={{
-              flexDirection: "row",
-              justifyContent: "center",
+              flexDirection: 'row',
+              justifyContent: 'center',
               marginBottom: 10,
-            }}
-          >
+            }}>
             {timerMinutes === 0 && timerSeconds === 0 && timerHours === 0 ? (
-              <Text style={{ color: "red", fontSize: 15, fontWeight: "bold" }}>
+              <Text style={{color: 'red', fontSize: 15, fontWeight: 'bold'}}>
                 Times Up
               </Text>
             ) : (
@@ -692,18 +679,16 @@ const RecentQuiz = ({ navigation }) => {
                   style={{
                     color: Colors.primary,
                     fontSize: 15,
-                    fontWeight: "bold",
-                  }}
-                >
-                  Time Remaining:{" "}
+                    fontWeight: 'bold',
+                  }}>
+                  Time Remaining:{' '}
                 </Text>
                 <Text
                   style={{
-                    color: timerMinutes < 3 ? "red" : Colors.primary,
+                    color: timerMinutes < 3 ? 'red' : Colors.primary,
                     fontSize: 15,
-                    fontWeight: "bold",
-                  }}
-                >
+                    fontWeight: 'bold',
+                  }}>
                   {timerHours}:{timerMinutes}:
                   {timerSeconds < 10 ? `0${timerSeconds}` : timerSeconds}
                 </Text>
@@ -711,7 +696,7 @@ const RecentQuiz = ({ navigation }) => {
             )}
           </View>
 
-          <View style={{ height: Dimensions.get("window").height - 140 }}>
+          <View style={{height: Dimensions.get('window').height - 140}}>
             {/* <FlashList
               data={quizData.quizDetails}
               key={quizData._id}
@@ -737,53 +722,48 @@ const RecentQuiz = ({ navigation }) => {
           </View>
           <View
             style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
+              flexDirection: 'row',
+              justifyContent: 'space-between',
               paddingHorizontal: 10,
-              width: "100%",
-            }}
-          >
+              width: '100%',
+            }}>
             <TouchableOpacity
               style={{
                 ...styles.button,
                 paddingHorizontal: 30,
-                alignSelf: "center",
+                alignSelf: 'center',
                 height: 40,
-                backgroundColor: isSubmitting ? "#aaa" : Colors.primary,
+                backgroundColor: isSubmitting ? '#aaa' : Colors.primary,
                 marginHorizontal: 10,
               }}
               activeOpacity={0.6}
               onPress={() => submitHandler()}
-              disabled={isSubmitting}
-            >
-              <Text style={{ color: "#fff", fontSize: 18, fontWeight: "bold" }}>
+              disabled={isSubmitting}>
+              <Text style={{color: '#fff', fontSize: 18, fontWeight: 'bold'}}>
                 Submit
               </Text>
             </TouchableOpacity>
             {page < lastPage - 1 ? (
               <View
                 style={{
-                  flexDirection: "row",
-                }}
-              >
+                  flexDirection: 'row',
+                }}>
                 {page !== 0 && (
                   <TouchableOpacity
                     onPress={handlePrev}
                     disabled={isSubmitting}
-                    style={{ marginRight: 20 }}
-                  >
+                    style={{marginRight: 20}}>
                     <Text
                       style={{
                         fontSize: 16,
-                        fontWeight: "600",
-                        justifyContent: "center",
-                      }}
-                    >
+                        fontWeight: '600',
+                        justifyContent: 'center',
+                      }}>
                       <Ionicons
                         name="chevron-back-outline"
                         size={25}
                         color={Colors.primary}
-                      />{" "}
+                      />{' '}
                       Prev
                     </Text>
                   </TouchableOpacity>
@@ -793,10 +773,9 @@ const RecentQuiz = ({ navigation }) => {
                   <Text
                     style={{
                       fontSize: 16,
-                      fontWeight: "600",
-                      justifyContent: "center",
-                    }}
-                  >
+                      fontWeight: '600',
+                      justifyContent: 'center',
+                    }}>
                     Next
                     <Ionicons
                       name="chevron-forward-outline"
@@ -809,10 +788,9 @@ const RecentQuiz = ({ navigation }) => {
             ) : (
               <View
                 style={{
-                  flexDirection: "row",
+                  flexDirection: 'row',
                   marginBottom: 6,
-                }}
-              >
+                }}>
                 <TouchableOpacity
                   onPress={handlePrev}
                   disabled={isSubmitting}
@@ -821,16 +799,15 @@ const RecentQuiz = ({ navigation }) => {
                   <Text
                     style={{
                       fontSize: 16,
-                      fontWeight: "600",
-                      justifyContent: "center",
+                      fontWeight: '600',
+                      justifyContent: 'center',
                       marginRight: 20,
-                    }}
-                  >
+                    }}>
                     <Ionicons
                       name="chevron-back-outline"
                       size={25}
                       color={Colors.primary}
-                    />{" "}
+                    />{' '}
                     Prev
                   </Text>
                 </TouchableOpacity>
@@ -838,10 +815,9 @@ const RecentQuiz = ({ navigation }) => {
                   <Text
                     style={{
                       fontSize: 16,
-                      fontWeight: "600",
-                      justifyContent: "center",
-                    }}
-                  >
+                      fontWeight: '600',
+                      justifyContent: 'center',
+                    }}>
                     Next
                     <Ionicons
                       name="chevron-forward-outline"
@@ -855,34 +831,31 @@ const RecentQuiz = ({ navigation }) => {
           </View>
         </View>
       ) : (
-        <View style={{ flex: 0.9 }}>
+        <View style={{flex: 0.9}}>
           {viewAll ? (
             <View
               style={{
-                flexDirection: "row",
+                flexDirection: 'row',
                 // justifyContent: "space-between",
                 paddingVertical: 4,
                 paddingHorizontal: 6,
-              }}
-            >
+              }}>
               <TouchableOpacity
                 onPress={() => {
                   setViewAll(false);
-                  scrollRef.current.scrollTo({ y: 0, animated: false });
-                }}
-              >
+                  scrollRef.current.scrollTo({y: 0, animated: false});
+                }}>
                 <Ionicons name="arrow-back" size={25} />
               </TouchableOpacity>
-              <Text style={[styles.title, { marginLeft: 20 }]}>
+              <Text style={[styles.title, {marginLeft: 20}]}>
                 {title} Tests
               </Text>
             </View>
           ) : (
             <ScrollView
               horizontal
-              style={{ maxHeight: 60, minHeight: 60, paddingHorizontal: 12 }}
-              contentContainerStyle={{ alignItems: "center" }}
-            >
+              style={{maxHeight: 60, minHeight: 60, paddingHorizontal: 12}}
+              contentContainerStyle={{alignItems: 'center'}}>
               {/* <TouchableOpacity
                 onPress={() => {
                   setActiveTag("all");
@@ -910,23 +883,21 @@ const RecentQuiz = ({ navigation }) => {
                       styles.tag,
                       {
                         backgroundColor:
-                          activeTag == item.tag ? "#90AAD5" : "white",
+                          activeTag == item.tag ? '#90AAD5' : 'white',
                       },
                     ]}
                     onPress={() => {
                       setActiveTag(item.tag);
                       setTagDetails(item.categories);
-                      scrollRef.current.scrollTo({ y: 0, animated: false });
+                      scrollRef.current.scrollTo({y: 0, animated: false});
                     }}
-                    key={index}
-                  >
+                    key={index}>
                     <Text
                       style={{
                         fontSize: 16,
-                        alignSelf: "center",
-                        verticalAlign: "middle",
-                      }}
-                    >
+                        alignSelf: 'center',
+                        verticalAlign: 'middle',
+                      }}>
                       {item.tag}
                     </Text>
                   </TouchableOpacity>
@@ -934,61 +905,56 @@ const RecentQuiz = ({ navigation }) => {
               })}
             </ScrollView>
           )}
-          <ScrollView style={{ paddingTop: 8 }} ref={scrollRef}>
+          <ScrollView style={{paddingTop: 8}} ref={scrollRef}>
             {viewAll ? (
               <View
                 style={{
                   flex: 1,
-                  flexDirection: "row",
-                  flexWrap: "wrap",
-                  alignItems: "flex-start",
-                }}
-              >
+                  flexDirection: 'row',
+                  flexWrap: 'wrap',
+                  alignItems: 'flex-start',
+                }}>
                 {allQuiz.map((item, index) => {
                   return <Card item={item} key={index} />;
                 })}
                 {allQuiz.length == 0 && (
                   <View
                     style={{
-                      flexDirection: "row",
+                      flexDirection: 'row',
                       marginBottom: 20,
-                      justifyContent: "center",
-                    }}
-                  >
+                      justifyContent: 'center',
+                    }}>
                     <View
                       style={{
                         ...styles.card,
-                        width: "90%",
-                        alignItems: "center",
+                        width: '90%',
+                        alignItems: 'center',
                         // marginRight: 15,
                         marginHorizontal: 20,
                         // marginTop: -10,
-                      }}
-                    >
+                      }}>
                       <Text
                         style={{
-                          textAlign: "center",
+                          textAlign: 'center',
                           fontSize: 18,
-                          fontWeight: "bold",
+                          fontWeight: 'bold',
                           color: Colors.text,
-                        }}
-                      >
+                        }}>
                         {title}
                       </Text>
 
                       <Ionicons
                         name="checkmark-circle-outline"
                         size={50}
-                        color={"#26b1bf"}
+                        color={'#26b1bf'}
                       />
                       <Text
                         style={{
-                          textAlign: "center",
+                          textAlign: 'center',
                           fontSize: 20,
-                          fontWeight: "bold",
+                          fontWeight: 'bold',
                           color: Colors.text,
-                        }}
-                      >
+                        }}>
                         All Submitted
                       </Text>
                     </View>
@@ -1023,44 +989,40 @@ const RecentQuiz = ({ navigation }) => {
                 {tagDetails?.length == 0 && (
                   <View
                     style={{
-                      flexDirection: "row",
+                      flexDirection: 'row',
                       marginBottom: 20,
-                      justifyContent: "center",
-                    }}
-                  >
+                      justifyContent: 'center',
+                    }}>
                     <View
                       style={{
                         ...styles.card,
-                        width: "80%",
-                        alignItems: "center",
+                        width: '80%',
+                        alignItems: 'center',
                         // marginRight: 15,
                         // marginTop: -10,
-                      }}
-                    >
+                      }}>
                       <Text
                         style={{
-                          textAlign: "center",
+                          textAlign: 'center',
                           fontSize: 18,
-                          fontWeight: "bold",
+                          fontWeight: 'bold',
                           color: Colors.text,
-                        }}
-                      >
+                        }}>
                         {title}
                       </Text>
 
                       <Ionicons
                         name="checkmark-circle-outline"
                         size={50}
-                        color={"#26b1bf"}
+                        color={'#26b1bf'}
                       />
                       <Text
                         style={{
-                          textAlign: "center",
+                          textAlign: 'center',
                           fontSize: 20,
-                          fontWeight: "bold",
+                          fontWeight: 'bold',
                           color: Colors.text,
-                        }}
-                      >
+                        }}>
                         Submitted All Quizzes
                       </Text>
                     </View>
@@ -1362,19 +1324,19 @@ const RecentQuiz = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
   },
   cardContainer: {
     // flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     paddingVertical: 20,
     marginBottom: 20,
   },
   button: {
     height: 35,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     borderRadius: 5,
     backgroundColor: Colors.primary,
     elevation: 5,
@@ -1384,12 +1346,12 @@ const styles = StyleSheet.create({
     padding: 15,
     paddingVertical: 25,
     elevation: 5,
-    backgroundColor: "#fff",
-    justifyContent: "space-evenly",
+    backgroundColor: '#fff',
+    justifyContent: 'space-evenly',
   },
   quesContainer: {
     borderColor: Colors.primary,
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
     elevation: 5,
     marginBottom: 10,
     marginHorizontal: 10,
@@ -1406,7 +1368,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     padding: 5,
     paddingHorizontal: 10,
-    backgroundColor: "rgba(23, 207, 227, 0.3)",
+    backgroundColor: 'rgba(23, 207, 227, 0.3)',
     marginTop: 10,
   },
   filledCircle: {
@@ -1423,32 +1385,32 @@ const styles = StyleSheet.create({
     height: 20,
     width: 20,
     borderRadius: 20,
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
     marginRight: 10,
     borderWidth: 1,
     borderColor: Colors.primary,
   },
   optionContainer: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     marginBottom: 10,
   },
   triangleCorner: {
     width: 0,
     height: 0,
-    backgroundColor: "transparent",
-    borderStyle: "solid",
+    backgroundColor: 'transparent',
+    borderStyle: 'solid',
     borderRightWidth: 90,
     borderTopWidth: 60,
-    borderRightColor: "transparent",
-    borderTopColor: "#FCF6F5FF",
+    borderRightColor: 'transparent',
+    borderTopColor: '#FCF6F5FF',
     zIndex: 20,
-    position: "absolute",
+    position: 'absolute',
     left: 0,
   },
   title: {
     fontSize: 18,
-    fontWeight: "500",
+    fontWeight: '500',
     marginBottom: 4,
   },
   listContainer: {

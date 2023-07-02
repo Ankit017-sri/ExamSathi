@@ -14,7 +14,7 @@
 // import React, { useContext, useEffect, useState } from "react";
 // import CustomHeader from "../components/CustomHeader";
 // import * as Contacts from "expo-contacts";
-// import { Ionicons } from "@expo/vector-icons";
+// import { Ionicons } from "react-native-vector-icons";
 // import ChatContext from "../chat/context";
 // import AuthContext from "../auth/context";
 // import axios from "axios";

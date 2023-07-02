@@ -1,30 +1,27 @@
-import React, { useContext, useState, useEffect, useRef } from "react";
-import { Text, View, Animated, Dimensions, Image } from "react-native";
-import axios from "axios";
-import baseUrl from "../baseUrl";
-import { Keyboard } from "react-native";
-import {
-  TransitionPresets,
-  createStackNavigator,
-} from "@react-navigation/stack";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { Ionicons } from "@expo/vector-icons";
-import * as Notifications from "expo-notifications";
+import React, {useContext, useState, useEffect, useRef} from 'react';
+import {Text, View, Animated, Dimensions, Image} from 'react-native';
+import axios from 'axios';
+import baseUrl from '../baseUrl';
+import {Keyboard} from 'react-native';
+import {TransitionPresets, createStackNavigator} from '@react-navigation/stack';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {Ionicons} from 'react-native-vector-icons';
+import * as Notifications from 'react-native-push-notification';
 
-import AccountScreen from "../screens/Account";
-import PastQuizScreen from "../screens/PastQuiz";
-import RecentQuizScreen from "../screens/RecentQuiz";
-import ChatsScreen from "../screens/Chats";
-import Colors from "../constants/Colors";
-import QuizDetails from "../screens/QuizDetails";
-import Solution from "../screens/Solution";
-import AuthContext from "../auth/context";
-import ChatContext from "../chat/context";
-import ChatGroups from "../screens/ChatGroups";
-import cache from "../utilities/cache";
-import FeedbackScreen from "../screens/Feedback";
-import { registerForPushNotificationsAsync } from "../utilities/notifications";
-import RevisionQuizScreen from "../screens/RevisionQuizScreen";
+import AccountScreen from '../screens/Account';
+import PastQuizScreen from '../screens/PastQuiz';
+import RecentQuizScreen from '../screens/RecentQuiz';
+import ChatsScreen from '../screens/Chats';
+import Colors from '../constants/Colors';
+import QuizDetails from '../screens/QuizDetails';
+import Solution from '../screens/Solution';
+import AuthContext from '../auth/context';
+import ChatContext from '../chat/context';
+import ChatGroups from '../screens/ChatGroups';
+import cache from '../utilities/cache';
+import FeedbackScreen from '../screens/Feedback';
+import {registerForPushNotificationsAsync} from '../utilities/notifications';
+import RevisionQuizScreen from '../screens/RevisionQuizScreen';
 
 let defaultNavOptions = {
   ...TransitionPresets.SlideFromRightIOS,
@@ -32,9 +29,9 @@ let defaultNavOptions = {
     backgroundColor: Colors.primary,
     elevation: 0,
   },
-  headerTitleAlign: "center",
+  headerTitleAlign: 'center',
   headerTitleStyle: {
-    fontFamily: "product-sans-regular",
+    fontFamily: 'product-sans-regular',
     fontSize: 22,
   },
   headerTintColor: Colors.text,
@@ -155,46 +152,44 @@ Notifications.setNotificationHandler({
   }),
 });
 
-export const AppNavigator = ({ onLayout }) => {
-  const { width } = Dimensions.get("screen");
+export const AppNavigator = ({onLayout}) => {
+  const {width} = Dimensions.get('screen');
   const [position] = useState(new Animated.ValueXY());
-  const [expoPushToken, setExpoPushToken] = useState("");
+  const [expoPushToken, setExpoPushToken] = useState('');
   const [notification, setNotification] = useState(false);
   const notificationListener = useRef();
   const responseListener = useRef();
 
-  const { tabBarVisible } = useContext(AuthContext);
+  const {tabBarVisible} = useContext(AuthContext);
   const [keyboardIsVisible, setKeyboardIsVisible] = useState(false);
 
-  const { token } = useContext(AuthContext);
+  const {token} = useContext(AuthContext);
 
   useEffect(() => {
-    Keyboard.addListener("keyboardDidShow", () => {
+    Keyboard.addListener('keyboardDidShow', () => {
       setKeyboardIsVisible(true);
     });
-    Keyboard.addListener("keyboardDidHide", () => {
+    Keyboard.addListener('keyboardDidHide', () => {
       setKeyboardIsVisible(false);
     });
   }, []);
 
   useEffect(() => {
-    registerForPushNotificationsAsync().then((token) =>
-      setExpoPushToken(token)
-    );
+    registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
 
     notificationListener.current =
-      Notifications.addNotificationReceivedListener((notification) => {
+      Notifications.addNotificationReceivedListener(notification => {
         setNotification(notification);
       });
 
     responseListener.current =
-      Notifications.addNotificationResponseReceivedListener((response) => {
+      Notifications.addNotificationResponseReceivedListener(response => {
         console.log(response);
       });
 
     return () => {
       Notifications.removeNotificationSubscription(
-        notificationListener.current
+        notificationListener.current,
       );
       Notifications.removeNotificationSubscription(responseListener.current);
     };
@@ -205,13 +200,13 @@ export const AppNavigator = ({ onLayout }) => {
       await axios
         .put(
           `${baseUrl}/notifications/subscribe`,
-          { expoPushToken },
+          {expoPushToken},
           {
-            headers: { Authorization: `Bearer ${token}` },
-          }
+            headers: {Authorization: `Bearer ${token}`},
+          },
         )
-        .then((res) => null)
-        .catch((err) => console.log(err));
+        .then(res => null)
+        .catch(err => console.log(err));
     };
 
     if (expoPushToken && token) {
@@ -229,7 +224,7 @@ export const AppNavigator = ({ onLayout }) => {
   // }, [notification, expoPushToken]);
 
   const animStyles = {
-    position: "absolute",
+    position: 'absolute',
     left: 20,
     borderRadius: 20,
     elevation: 35,
@@ -238,12 +233,12 @@ export const AppNavigator = ({ onLayout }) => {
     width: width / 7,
     backgroundColor: Colors.tabSlider,
     transform: position.getTranslateTransform(),
-    display: tabBarVisible && !keyboardIsVisible ? "flex" : "none",
+    display: tabBarVisible && !keyboardIsVisible ? 'flex' : 'none',
   };
 
-  const animate = (value) => {
+  const animate = value => {
     Animated.timing(position, {
-      toValue: { x: value, y: 0 },
+      toValue: {x: value, y: 0},
       duration: 160,
       useNativeDriver: true,
     }).start();
@@ -254,26 +249,26 @@ export const AppNavigator = ({ onLayout }) => {
       {<Animated.View style={animStyles} onLayout={onLayout} />}
       <Tab.Navigator
         initialRouteName="Chats"
-        screenOptions={({ route }) => ({
-          tabBarIcon: ({ focused, color, size }) => {
+        screenOptions={({route}) => ({
+          tabBarIcon: ({focused, color, size}) => {
             let iconName;
-            color = focused ? Colors.text : "black";
+            color = focused ? Colors.text : 'black';
             size = focused ? 26 : 24;
 
-            if (route.name === "RevisionQuiz")
-              iconName = focused ? "home" : "home-outline";
-            else if (route.name === "New Quiz")
+            if (route.name === 'RevisionQuiz')
+              iconName = focused ? 'home' : 'home-outline';
+            else if (route.name === 'New Quiz')
               return (
                 <Image
-                  source={require("../assets/quiz.jpg")}
-                  style={{ height: 30, width: 70 }}
+                  source={require('../assets/quiz.jpg')}
+                  style={{height: 30, width: 70}}
                 />
               );
-            else if (route.name === "AccountNFeedback") {
-              iconName = focused ? "person" : "person-outline";
+            else if (route.name === 'AccountNFeedback') {
+              iconName = focused ? 'person' : 'person-outline';
               size = focused ? 23 : 21;
-            } else if (route.name === "Past Quiz") {
-              iconName = focused ? "newspaper" : "newspaper-outline";
+            } else if (route.name === 'Past Quiz') {
+              iconName = focused ? 'newspaper' : 'newspaper-outline';
               size = focused ? 23 : 21;
             }
 
@@ -283,24 +278,23 @@ export const AppNavigator = ({ onLayout }) => {
           headerShown: false,
           tabBarHideOnKeyboard: true,
           tabBarStyle: {
-            position: "absolute",
-            backgroundColor: "#fff",
+            position: 'absolute',
+            backgroundColor: '#fff',
             // borderTopColor: Colors.primary,
             height: 50,
-            display: tabBarVisible ? "flex" : "none",
+            display: tabBarVisible ? 'flex' : 'none',
           },
           tabBarActiveTintColor: Colors.text,
           tabBarInactiveTintColor: Colors.primary,
           tabBarShowLabel: false,
           lazy: false,
-        })}
-      >
+        })}>
         {/* <Animated.View style={animStyles} /> */}
         <Tab.Screen
           name="RevisionQuiz"
           component={RevisionScreenNavigator}
           listeners={{
-            tabPress: (e) => {
+            tabPress: e => {
               // e.preventDefault();
               animate(0);
             },
@@ -312,7 +306,7 @@ export const AppNavigator = ({ onLayout }) => {
           name="New Quiz"
           component={RecentQuizScreen}
           listeners={{
-            tabPress: (e) => {
+            tabPress: e => {
               // e.preventDefault();
               animate(width / 4);
             },
@@ -323,7 +317,7 @@ export const AppNavigator = ({ onLayout }) => {
           name="Past Quiz"
           component={QuizNavigator}
           listeners={{
-            tabPress: (e) => {
+            tabPress: e => {
               // e.preventDefault();
               animate(width / 2);
             },
@@ -335,7 +329,7 @@ export const AppNavigator = ({ onLayout }) => {
           name="AccountNFeedback"
           component={AccountScreen}
           listeners={{
-            tabPress: (e) => {
+            tabPress: e => {
               // e.preventDefault();
               animate(width / 2 + width / 4);
             },

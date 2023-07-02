@@ -4,7 +4,7 @@ import React, {
   useEffect,
   useRef,
   useState,
-} from "react";
+} from 'react';
 import {
   Alert,
   Animated,
@@ -18,46 +18,48 @@ import {
   TouchableNativeFeedbackBase,
   TouchableOpacity,
   View,
-} from "react-native";
+} from 'react-native';
 import {
   FlatList,
   ScrollView,
   TextInput,
   TouchableWithoutFeedback,
-} from "react-native-gesture-handler";
-import Constants from "expo-constants";
-import axios from "axios";
-import { useFocusEffect } from "@react-navigation/native";
-import { io } from "socket.io-client";
+} from 'react-native-gesture-handler';
+// import Constants from "expo-constants";
+import {Constants} from '../constants';
 
-import CustomHeader from "../components/CustomHeader";
-import QuesCard from "../components/QuesCard";
-import CompletedQuesCard from "../components/CompletedQuesCard";
-import Colors from "../constants/Colors";
-import baseUrl from "../baseUrl";
-import AuthContext from "../auth/context";
-import cache from "../utilities/cache";
+import axios from 'axios';
+import {useFocusEffect} from '@react-navigation/native';
+import {io} from 'socket.io-client';
 
-const RevisionQuizScreen = ({ navigation }) => {
+import CustomHeader from '../components/CustomHeader';
+import QuesCard from '../components/QuesCard';
+import CompletedQuesCard from '../components/CompletedQuesCard';
+import Colors from '../constants/Colors';
+import baseUrl from '../baseUrl';
+import AuthContext from '../auth/context';
+import cache from '../utilities/cache';
+
+const RevisionQuizScreen = ({navigation}) => {
   const [questions, setQuestions] = useState([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedOptions, setSelectedOptions] = useState(
-    Array(questions.length).fill(null)
+    Array(questions.length).fill(null),
   );
   const [quizFinished, setQuizFinished] = useState(false);
-  const [timerMinutes, setTimerMinutes] = useState("00");
-  const [timerSeconds, setTimerSeconds] = useState("00");
+  const [timerMinutes, setTimerMinutes] = useState('00');
+  const [timerSeconds, setTimerSeconds] = useState('00');
   const [isQuizStarted, setIsQuizStarted] = useState(false);
-  const [nextTime, setNextTime] = useState("");
-  const [feedback, setFeedback] = useState("");
+  const [nextTime, setNextTime] = useState('');
+  const [feedback, setFeedback] = useState('');
   const [feedbacks, setFeedbacks] = useState([]);
   const [isFeedbackSent, setIsFeedbackSent] = useState(false);
   const [isDiscuss, setIsDiscuss] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [randomNums, setRandomNums] = useState({ attempting: 0, online: 0 });
+  const [randomNums, setRandomNums] = useState({attempting: 0, online: 0});
   const [score, setScore] = useState(0);
 
-  const { token, Id } = useContext(AuthContext);
+  const {token, Id} = useContext(AuthContext);
 
   const socket = useRef();
   const scrollViewRef = useRef(null);
@@ -72,10 +74,10 @@ https://bit.ly/exam-sathi-app-playstore`;
     try {
       axios.put(
         `${baseUrl}/auth/app/share`,
-        { screen: 1 },
+        {screen: 1},
         {
-          headers: { Authorization: `Bearer ${token}` },
-        }
+          headers: {Authorization: `Bearer ${token}`},
+        },
       );
       // console.log(res.data);
     } catch (error) {
@@ -100,7 +102,7 @@ https://bit.ly/exam-sathi-app-playstore`;
   const getNumbers = async () => {
     const nums = await axios.get(`${baseUrl}/revision/numbers`, {
       headers: {
-        Authorization: "Bearer " + token,
+        Authorization: 'Bearer ' + token,
       },
     });
 
@@ -110,9 +112,9 @@ https://bit.ly/exam-sathi-app-playstore`;
   const getCurrQueIndex = async () => {
     const res = await axios
       .get(`${baseUrl}/revision/liveQue`, {
-        headers: { Authorization: "Bearer " + token },
+        headers: {Authorization: 'Bearer ' + token},
       })
-      .catch((e) => console.log(e));
+      .catch(e => console.log(e));
     // console.log(res.data);
     if (res?.data.indexOfQue) {
       setCurrentQuestionIndex(res.data.indexOfQue);
@@ -128,25 +130,25 @@ https://bit.ly/exam-sathi-app-playstore`;
   const fetchQues = async () => {
     await axios
       .get(`${baseUrl}/revision/ques`, {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: {Authorization: `Bearer ${token}`},
       })
-      .then((res) => {
+      .then(res => {
         // console.log(res.data.length);
         setSelectedOptions(Array(res.data.length).fill(null));
         setQuestions(res.data);
       })
-      .catch((e) => console.log(e));
+      .catch(e => console.log(e));
   };
 
   const joinWpGrp = async () => {
     try {
-      const supported = await Linking.canOpenURL("https://bit.ly/wa-group-app");
+      const supported = await Linking.canOpenURL('https://bit.ly/wa-group-app');
 
       if (supported) {
-        await Linking.openURL("https://bit.ly/wa-group-app");
+        await Linking.openURL('https://bit.ly/wa-group-app');
       } else {
         console.log(
-          `Unable to open WhatsApp URL: ${"https://bit.ly/wa-group-app"}`
+          `Unable to open WhatsApp URL: ${'https://bit.ly/wa-group-app'}`,
         );
       }
     } catch (error) {
@@ -158,7 +160,7 @@ https://bit.ly/exam-sathi-app-playstore`;
     useCallback(() => {
       fetchQues();
       getCurrQueIndex();
-    }, [])
+    }, []),
   );
 
   useEffect(() => {
@@ -174,42 +176,41 @@ https://bit.ly/exam-sathi-app-playstore`;
   }, [currentQuestionIndex, isQuizStarted]);
 
   useEffect(() => {
-    const timesOfDay = ["18:00:00", "19:00:00", "20:00:00", "21:00:00"];
+    const timesOfDay = ['18:00:00', '19:00:00', '20:00:00', '21:00:00'];
     const timesForRemovingDiscuss = [
-      "18:35:00",
-      "19:35:00",
-      "20:35:00",
-      "21:35:00",
+      '18:35:00',
+      '19:35:00',
+      '20:35:00',
+      '21:35:00',
     ];
 
     const interval = setInterval(() => {
       const currentTime = new Date().toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
       });
 
       const nextNearestTime =
-        timesOfDay.find((time) => time > currentTime) ||
-        timesOfDay[0] + " उद्या";
+        timesOfDay.find(time => time > currentTime) || timesOfDay[0] + ' उद्या';
 
       setNextTime(
-        nextNearestTime.split(":")[0] -
+        nextNearestTime.split(':')[0] -
           12 +
-          " " +
-          nextNearestTime.split(":")[2].split(" ")[1]
+          ' ' +
+          nextNearestTime.split(':')[2].split(' ')[1],
       );
 
       if (timesOfDay.includes(currentTime)) {
         setIsQuizStarted(true);
         setQuizFinished(false);
         setIsSubmitted(false);
-        console.log("Performing action at", currentTime);
+        console.log('Performing action at', currentTime);
       }
 
       if (timesForRemovingDiscuss.includes(currentTime)) {
         setIsDiscuss(false);
-        console.log("Removing button at", currentTime);
+        console.log('Removing button at', currentTime);
       }
     }, 1000);
 
@@ -225,7 +226,7 @@ https://bit.ly/exam-sathi-app-playstore`;
     showCorrectAnswerAndMoveToNextQuestion();
   };
 
-  const showCorrectAnswerAndMoveToNextQuestion = (shouldMove) => {
+  const showCorrectAnswerAndMoveToNextQuestion = shouldMove => {
     setTimeout(() => {
       if (shouldMove) {
         moveToNextQuestion();
@@ -239,8 +240,8 @@ https://bit.ly/exam-sathi-app-playstore`;
       setCurrentQuestionIndex(0);
       setIsSubmitted(true);
       setIsDiscuss(true);
-      await cache.store("questions", questions);
-      await cache.store("selectedOptions", selectedOptions);
+      await cache.store('questions', questions);
+      await cache.store('selectedOptions', selectedOptions);
       return setQuizFinished(true);
     }
     setCurrentQuestionIndex(currentQuestionIndex + 1);
@@ -269,43 +270,43 @@ https://bit.ly/exam-sathi-app-playstore`;
 
   const sendFeedBack = async () => {
     const message = feedback.trimStart();
-    const arr = message.split(" ");
+    const arr = message.split(' ');
 
     setFeedbacks([...feedbacks, message]);
-    if (arr[0] === "") {
+    if (arr[0] === '') {
       return Alert.alert(
-        "Feedback is Empty!",
-        "please enter your feedback message!"
+        'Feedback is Empty!',
+        'please enter your feedback message!',
       );
     }
     Keyboard.dismiss();
     await axios
       .post(
         `${baseUrl}/feedback`,
-        { feedback: message },
+        {feedback: message},
         {
-          headers: { Authorization: `Bearer ${token}` },
-        }
+          headers: {Authorization: `Bearer ${token}`},
+        },
       )
-      .catch((e) => console.log(e));
-    console.log("message");
-    socket.current.emit("send-feedback", { feedback: message });
-    setFeedback("");
+      .catch(e => console.log(e));
+    console.log('message');
+    socket.current.emit('send-feedback', {feedback: message});
+    setFeedback('');
     setIsFeedbackSent(true);
   };
 
   useEffect(() => {
     socket.current = io(baseUrl);
-    socket.current.emit("new-user-add", { Id });
+    socket.current.emit('new-user-add', {Id});
     // socket.current.on("get-active-users", (data) => {
     //   setLen(data);
     // });
-    socket.current.on("receive-feedback", (data) => {
+    socket.current.on('receive-feedback', data => {
       setFeedbacks([...feedbacks, data]);
     });
   }, []);
 
-  const handleScroll = (event) => {
+  const handleScroll = event => {
     const offsetY = event.nativeEvent.contentOffset.y;
     scrollY.setValue(offsetY);
   };
@@ -315,40 +316,38 @@ https://bit.ly/exam-sathi-app-playstore`;
   return (
     <View
       style={{
-        backgroundColor: "#fff",
+        backgroundColor: '#fff',
         borderWidth: 2,
         flex: 1,
         // alignItems: "center",
         // alignSelf: "center",
-      }}
-    >
+      }}>
       <CustomHeader
         title="Revision"
         share
         // sub={`${memCount} members, ${len} online`}
       />
       {!isQuizStarted && isDiscuss && (
-        <View style={{ padding: 4, backgroundColor: "#fff" }}>
+        <View style={{padding: 4, backgroundColor: '#fff'}}>
           <TouchableOpacity
             style={{
               borderRadius: 4,
               padding: 10,
-              backgroundColor: "#acfabf",
+              backgroundColor: '#acfabf',
               elevation: 5,
-              borderColor: "#51f577",
-              justifyContent: "space-evenly",
-              alignItems: "center",
-              flexDirection: "row",
+              borderColor: '#51f577',
+              justifyContent: 'space-evenly',
+              alignItems: 'center',
+              flexDirection: 'row',
             }}
             activeOpacity={0.6}
-            onPress={joinWpGrp}
-          >
-            <Text style={{ textAlign: "center", fontWeight: "bold" }}>
+            onPress={joinWpGrp}>
+            <Text style={{textAlign: 'center', fontWeight: 'bold'}}>
               Discussion साठी जॉईन करा Whatsapp Group
             </Text>
             <Image
-              source={require("../assets/WhatsApp.svg.png")}
-              style={{ width: 30, height: 30 }}
+              source={require('../assets/WhatsApp.svg.png')}
+              style={{width: 30, height: 30}}
             />
           </TouchableOpacity>
         </View>
@@ -359,26 +358,24 @@ https://bit.ly/exam-sathi-app-playstore`;
             padding: 12,
             flex: 4,
             top: 250,
-          }}
-        >
+          }}>
           <View
             style={{
               borderRadius: 4,
               padding: 10,
-              backgroundColor: "#a2ebfa",
+              backgroundColor: '#a2ebfa',
               elevation: 5,
-              borderColor: "#51f577",
-              justifyContent: "space-evenly",
-              alignItems: "center",
-              flexDirection: "row",
-            }}
-          >
-            <Text style={{ textAlign: "center", fontWeight: "bold" }}>
-              पुढची revision{" "}
-              {nextTime.split(" ")[1] !== "undefined"
-                ? nextTime.split(" ")[1]
-                : ""}{" "}
-              संध्याकाळी {nextTime.split(" ")[0]} वाजता आहे.
+              borderColor: '#51f577',
+              justifyContent: 'space-evenly',
+              alignItems: 'center',
+              flexDirection: 'row',
+            }}>
+            <Text style={{textAlign: 'center', fontWeight: 'bold'}}>
+              पुढची revision{' '}
+              {nextTime.split(' ')[1] !== 'undefined'
+                ? nextTime.split(' ')[1]
+                : ''}{' '}
+              संध्याकाळी {nextTime.split(' ')[0]} वाजता आहे.
             </Text>
           </View>
           <TouchableOpacity
@@ -386,22 +383,21 @@ https://bit.ly/exam-sathi-app-playstore`;
               borderRadius: 4,
               padding: 10,
               marginTop: 10,
-              backgroundColor: "#acfabf",
+              backgroundColor: '#acfabf',
               elevation: 10,
-              borderColor: "#51f577",
-              justifyContent: "center",
-              alignItems: "center",
-              flexDirection: "row",
+              borderColor: '#51f577',
+              justifyContent: 'center',
+              alignItems: 'center',
+              flexDirection: 'row',
             }}
             activeOpacity={0.6}
-            onPress={Share}
-          >
+            onPress={Share}>
             <Image
-              source={require("../assets/WhatsApp.svg.png")}
-              style={{ width: 40, height: 40, marginRight: 5 }}
+              source={require('../assets/WhatsApp.svg.png')}
+              style={{width: 40, height: 40, marginRight: 5}}
             />
-            <Text style={{ textAlign: "center", fontWeight: "bold" }}>
-              आता revision तुमच्या मित्रांबरोबर द्या.{"\n"} मित्रांसोबत
+            <Text style={{textAlign: 'center', fontWeight: 'bold'}}>
+              आता revision तुमच्या मित्रांबरोबर द्या.{'\n'} मित्रांसोबत
               देण्यासाठी Share करा
             </Text>
           </TouchableOpacity>
@@ -409,25 +405,23 @@ https://bit.ly/exam-sathi-app-playstore`;
             style={{
               borderRadius: 40,
               padding: 12,
-              backgroundColor: "#1F6E8C",
+              backgroundColor: '#1F6E8C',
               elevation: 5,
               marginTop: 20,
-              justifyContent: "space-evenly",
-              alignItems: "center",
-              flexDirection: "row",
+              justifyContent: 'space-evenly',
+              alignItems: 'center',
+              flexDirection: 'row',
             }}
             onPress={() => {
-              navigation.navigate("Feedback");
-            }}
-          >
+              navigation.navigate('Feedback');
+            }}>
             <Text
               style={{
-                textAlign: "center",
-                fontWeight: "bold",
-                color: "white",
+                textAlign: 'center',
+                fontWeight: 'bold',
+                color: 'white',
                 paddingHorizontal: 25,
-              }}
-            >
+              }}>
               आता तुमचे प्रश्न पण revision मध्ये येईल 😃 तुमचे प्रश्न, 4 options
               आणि बरोबर उत्तर पाठवा
             </Text>
@@ -435,31 +429,29 @@ https://bit.ly/exam-sathi-app-playstore`;
         </View>
       )}
       {!quizFinished && isQuizStarted && (
-        <View style={{ backgroundColor: "#fff" }}>
+        <View style={{backgroundColor: '#fff'}}>
           <View
             style={{
-              flexDirection: "row",
-              justifyContent: "center",
+              flexDirection: 'row',
+              justifyContent: 'center',
               padding: 10,
-              backgroundColor: "#a2ebfa",
+              backgroundColor: '#a2ebfa',
               borderBottomLeftRadius: 12,
               borderBottomRightRadius: 12,
-            }}
-          >
+            }}>
             {timerMinutes === 0 && timerSeconds === 0 ? (
               <Text
-                style={{ color: "#fc6d6d", fontSize: 15, fontWeight: "bold" }}
-              >
+                style={{color: '#fc6d6d', fontSize: 15, fontWeight: 'bold'}}>
                 Next Question in 2 seconds
               </Text>
             ) : (
               <Text style={{}}>
                 {questions[0]?.testName}
-                {"\n"}
-                तुमच्यासोबत{" "}
-                <Text style={{ color: "red", fontWeight: "bold" }}>
+                {'\n'}
+                तुमच्यासोबत{' '}
+                <Text style={{color: 'red', fontWeight: 'bold'}}>
                   {randomNums?.online}
-                </Text>{" "}
+                </Text>{' '}
                 लोकं सोडवत आहेत
               </Text>
             )}
@@ -469,15 +461,14 @@ https://bit.ly/exam-sathi-app-playstore`;
       <ScrollView
         style={{
           marginBottom: 50,
-          backgroundColor: "#fff",
+          backgroundColor: '#fff',
         }}
         ref={scrollViewRef}
         onContentSizeChange={() =>
-          scrollViewRef.current.scrollToEnd({ animated: true })
+          scrollViewRef.current.scrollToEnd({animated: true})
         }
         scrollEventThrottle={16}
-        onScroll={handleScroll}
-      >
+        onScroll={handleScroll}>
         {!quizFinished &&
           isQuizStarted &&
           questions.map(
@@ -495,7 +486,7 @@ https://bit.ly/exam-sathi-app-playstore`;
                       isRevision
                       timeRemaining={
                         timerMinutes +
-                        ":" +
+                        ':' +
                         (timerSeconds < 10 ? `0${timerSeconds}` : timerSeconds)
                       }
                     />
@@ -509,7 +500,7 @@ https://bit.ly/exam-sathi-app-playstore`;
                     />
                   )}
                 </View>
-              )
+              ),
           )}
         {quizFinished && isSubmitted && (
           <View>
@@ -532,15 +523,14 @@ https://bit.ly/exam-sathi-app-playstore`;
               }}
               data={feedbacks}
               // ref={ref}
-              keyExtractor={(item) => item}
-              renderItem={({ item, index }) => (
+              keyExtractor={item => item}
+              renderItem={({item, index}) => (
                 <View
                   style={{
                     ...styles.card,
                     marginBottom: 10,
                     paddingHorizontal: 6,
-                  }}
-                >
+                  }}>
                   <Text
                     style={{
                       marginLeft: 6,
@@ -549,8 +539,7 @@ https://bit.ly/exam-sathi-app-playstore`;
                       // paddingVertical: 1,
 
                       fontSize: 16,
-                    }}
-                  >
+                    }}>
                     {item}
                   </Text>
                 </View>
@@ -561,10 +550,9 @@ https://bit.ly/exam-sathi-app-playstore`;
               <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
                 <View>
                   <KeyboardAvoidingView
-                    behavior={Platform.OS === "ios" ? "padding" : "height"}
-                  >
+                    behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
                     <View>
-                      <Text style={{ marginHorizontal: 20 }}>
+                      <Text style={{marginHorizontal: 20}}>
                         Send us your feedback
                       </Text>
                       <View style={styles.inputContainer}>
@@ -573,32 +561,30 @@ https://bit.ly/exam-sathi-app-playstore`;
                           value={feedback}
                           multiline={true}
                           numberOfLines={3}
-                          onChangeText={(text) => setFeedback(text)}
+                          onChangeText={text => setFeedback(text)}
                           placeholder=" Type your feedback here..."
                         />
                         <TouchableOpacity
                           style={{
-                            flexDirection: "row",
-                            justifyContent: "center",
-                            alignItems: "center",
+                            flexDirection: 'row',
+                            justifyContent: 'center',
+                            alignItems: 'center',
                             borderWidth: 1,
                             borderColor: Colors.primary,
                             borderRadius: 5,
                             height: 40,
-                            width: "100%",
-                            backgroundColor: "#90AAD5",
+                            width: '100%',
+                            backgroundColor: '#90AAD5',
                             marginTop: 10,
                             marginBottom: 20,
                           }}
                           activeOpacity={0.6}
-                          onPress={() => sendFeedBack()}
-                        >
+                          onPress={() => sendFeedBack()}>
                           <Text
                             style={{
                               fontSize: 17,
                               color: Colors.primary,
-                            }}
-                          >
+                            }}>
                             Send
                           </Text>
                         </TouchableOpacity>
@@ -620,36 +606,36 @@ const styles = StyleSheet.create({
     flex: 0.93,
   },
   headerContainer: {
-    width: "100%",
+    width: '100%',
     height: 45 + Constants.statusBarHeight,
     backgroundColor: Colors.primary,
-    justifyContent: "center",
-    alignItems: "flex-end",
+    justifyContent: 'center',
+    alignItems: 'flex-end',
     elevation: 5,
     marginBottom: 5,
     paddingBottom: 10,
-    flexDirection: "row",
+    flexDirection: 'row',
   },
   title: {
     fontSize: 20,
-    fontWeight: "bold",
-    color: "#fff",
-    alignSelf: "center",
+    fontWeight: 'bold',
+    color: '#fff',
+    alignSelf: 'center',
   },
   inputContainer: {
-    alignItems: "center",
+    alignItems: 'center',
     paddingHorizontal: 16,
   },
   input: {
-    width: "100%",
+    width: '100%',
     borderWidth: 1,
-    borderColor: "#ccc",
+    borderColor: '#ccc',
     borderRadius: 5,
     padding: 8,
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
   },
   button: {
-    backgroundColor: "#17cfe3",
+    backgroundColor: '#17cfe3',
     borderRadius: 5,
     paddingHorizontal: 10,
     paddingVertical: 8,
@@ -659,8 +645,8 @@ const styles = StyleSheet.create({
     padding: 15,
     // paddingVertical: 25,
     elevation: 5,
-    backgroundColor: "#BCCCE5",
-    justifyContent: "space-evenly",
+    backgroundColor: '#BCCCE5',
+    justifyContent: 'space-evenly',
   },
 });
 
