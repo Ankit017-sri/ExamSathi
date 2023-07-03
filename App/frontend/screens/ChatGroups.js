@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import React, {useContext, useState, useEffect, useCallback} from 'react';
 import CustomHeader from '../components/CustomHeader';
-import {Ionicons} from 'react-native-vector-icons';
+import Icon from 'react-native-vector-icons/Ionicons';
 // import ChatContext from "../chat/context";
 import axios from 'axios';
 import baseUrl from '../baseUrl';
@@ -355,7 +355,7 @@ const ChatGroups = ({navigation}) => {
           {imgUri !== undefined ? (
             <Image source={imgUri} style={styles.avatar} />
           ) : (
-            <Ionicons name="people" size={30} />
+            <Icon name="people" size={30} />
           )}
           <View
             style={{
@@ -425,7 +425,7 @@ const ChatGroups = ({navigation}) => {
             </View>
           </View>
         </View>
-        {/* <Ionicons name="chevron-forward-outline" size={30} /> */}
+        {/* <Icon name="chevron-forward-outline" size={30} /> */}
       </TouchableOpacity>
     );
   };
@@ -490,10 +490,10 @@ const ChatGroups = ({navigation}) => {
                     onPress={() => chats(item)}
                   >
                     <View style={{ flexDirection: "row" }}>
-                      <Ionicons name="people" size={30} />
+                      <Icon name="people" size={30} />
                       <Text style={styles.groupName}>{item.name}</Text>
                     </View>
-                    <Ionicons name="chevron-forward-outline" size={30} />
+                    <Icon name="chevron-forward-outline" size={30} />
                   </TouchableOpacity>
                 );
               })} */}
@@ -520,7 +520,7 @@ const ChatGroups = ({navigation}) => {
           elevation: 5,
         }}
       >
-        <Ionicons name="person-add" size={25} />
+        <Icon name="person-add" size={25} />
         <Text
           style={{
             textAlignVertical: "center",

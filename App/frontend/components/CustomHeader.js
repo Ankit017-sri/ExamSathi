@@ -9,11 +9,10 @@ import {
   Button,
   Linking,
 } from 'react-native';
-// import Constants from 'expo-constants';
-import {Constants} from '../constants';
+import Constants from '../constants/index';
 
 import Colors from '../constants/Colors';
-import {Ionicons} from 'react-native-vector-icons';
+import Icon from 'react-native-vector-icons/Ionicons';
 import axios from 'axios';
 import baseUrl from '../baseUrl';
 import AuthContext from '../auth/context';
@@ -129,7 +128,7 @@ const CustomHeader = ({
             navigation.goBack();
             setTabBarVisible && setTabBarVisible(true);
           }}>
-          <Ionicons name="arrow-back-circle-outline" size={32} color="#fff" />
+          <Icon name="arrow-back-circle-outline" size={32} color="#fff" />
         </TouchableOpacity>
       )}
       {imgUri && <Image source={imgUri} style={styles.avatar} />}
@@ -164,7 +163,7 @@ const CustomHeader = ({
             }}
             onPress={handleToggleMute}>
             <Text style={{color: 'white'}}>{isMuted ? 'Unmute' : 'Mute'}</Text>
-            <Ionicons
+            <Icon
               name={isMuted ? 'volume-high' : 'volume-mute'}
               size={20}
               color={'white'}
@@ -183,7 +182,7 @@ const CustomHeader = ({
               backgroundColor: '#fff',
             }}
             onPress={Share}>
-            {/* <Ionicons name="logo-whatsapp" color="#25D366" size={25} /> */}
+            {/* <Icon name="logo-whatsapp" color="#25D366" size={25} /> */}
             <Image
               source={require('../assets/WhatsApp.svg.png')}
               style={{width: 30, height: 30}}

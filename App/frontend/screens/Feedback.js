@@ -12,9 +12,7 @@ import {
 } from 'react-native';
 import React, {useContext, useEffect, useRef, useState} from 'react';
 import Colors from '../constants/Colors';
-// import Constants from "expo-constants";
-import {Constants} from '../constants';
-
+import Constants from '../constants/index';
 import axios from 'axios';
 import baseUrl from '../baseUrl';
 import AuthContext from '../auth/context';

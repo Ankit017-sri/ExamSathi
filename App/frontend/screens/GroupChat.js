@@ -14,14 +14,14 @@
 // import React, { useState, useEffect, useRef, useContext } from "react";
 // import AuthContext from "../auth/context";
 // import { format } from "timeago.js";
-// import { Ionicons } from "react-native-vector-icons";
+// import { Ionicons } from "@expo/vector-icons";
 // import CustomHeader from "../components/CustomHeader";
 // import CloudURL from "../CloudURL";
 // import axios from "axios";
 // import FullscreenImage from "../components/ImageView";
 // import { BottomSheet } from "react-native-btr";
-// import * as ImagePicker from "react-native-image-picker";
-// import * as DocumentPicker from "react-native-document-picker";
+// import * as ImagePicker from "expo-image-picker";
+// import * as DocumentPicker from "expo-document-picker";
 // import * as FileSystem from "expo-file-system";
 // import * as Linking from "expo-linking";
 
@@ -319,7 +319,7 @@
 //                         }}
 //                       >
 //                         <View>
-//                           <Ionicons
+//                           <Icon
 //                             name="document-outline"
 //                             size={25}
 //                             color={"red"}
@@ -377,7 +377,7 @@
 //                     }}
 //                   >
 //                     <View>
-//                       <Ionicons
+//                       <Icon
 //                         name="document-outline"
 //                         size={25}
 //                         color={"red"}
@@ -479,7 +479,7 @@
 //                         }}
 //                       >
 //                         <View>
-//                           <Ionicons
+//                           <Icon
 //                             name="document-outline"
 //                             size={25}
 //                             color={"red"}
@@ -534,7 +534,7 @@
 //                     }}
 //                   >
 //                     <View>
-//                       <Ionicons
+//                       <Icon
 //                         name="document-outline"
 //                         size={25}
 //                         color={"red"}
@@ -647,7 +647,7 @@
 //               zIndex: 30,
 //             }}
 //           >
-//             <Ionicons name="arrow-down" size={25} />
+//             <Icon name="arrow-down" size={25} />
 //           </TouchableOpacity>
 //         </View>
 //         <View style={styles.inputContainer}>
@@ -687,7 +687,7 @@
 //                 >
 //                   <Text style={{ color: "#5837D0" }}>{replyMessage.name}</Text>
 //                   <TouchableOpacity onPress={() => setReplyMessage({})}>
-//                     <Ionicons name="close" size={20} />
+//                     <Icon name="close" size={20} />
 //                   </TouchableOpacity>
 //                 </View>
 //                 {replyMessage.uri && (
@@ -702,7 +702,7 @@
 //                         }}
 //                       >
 //                         <View>
-//                           <Ionicons
+//                           <Icon
 //                             name="document-outline"
 //                             size={16}
 //                             color={"red"}
@@ -753,7 +753,7 @@
 //           {message ? (
 //             <TouchableOpacity style={styles.button} onPress={sendMessage}>
 //               {/* <Text style={styles.buttonText}>Send</Text> */}
-//               <Ionicons name="send-sharp" color="#fff" size={20} />
+//               <Icon name="send-sharp" color="#fff" size={20} />
 //             </TouchableOpacity>
 //           ) : (
 //             <TouchableOpacity
@@ -761,7 +761,7 @@
 //               onPress={toggleBottomNavigationView}
 //             >
 //               {/* <Text style={styles.buttonText}>Send</Text> */}
-//               <Ionicons name="images-outline" color="#fff" size={20} />
+//               <Icon name="images-outline" color="#fff" size={20} />
 //             </TouchableOpacity>
 //           )}
 //         </View>
@@ -779,7 +779,7 @@
 //             style={{ alignItems: "center" }}
 //           >
 //             <View style={styles.button}>
-//               <Ionicons name="camera-outline" color="#fff" size={20} />
+//               <Icon name="camera-outline" color="#fff" size={20} />
 //             </View>
 //             <Text style={{ color: "black" }}>Camera</Text>
 //           </TouchableOpacity>
@@ -788,7 +788,7 @@
 //             style={{ alignItems: "center" }}
 //           >
 //             <View style={styles.button}>
-//               <Ionicons name="images-outline" color="#fff" size={20} />
+//               <Icon name="images-outline" color="#fff" size={20} />
 //             </View>
 //             <Text style={{ color: "black" }}>Gallery</Text>
 //           </TouchableOpacity>
@@ -797,7 +797,7 @@
 //             style={{ alignItems: "center" }}
 //           >
 //             <View style={styles.button}>
-//               <Ionicons name="document-attach-outline" color="#fff" size={20} />
+//               <Icon name="document-attach-outline" color="#fff" size={20} />
 //             </View>
 //             <Text style={{ color: "black" }}>Document</Text>
 //           </TouchableOpacity>

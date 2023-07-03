@@ -1,46 +1,110 @@
 [
     {
-        "merged": "com.examsathi.app-merged_res-33:/mipmap-mdpi_ic_launcher.png.flat",
-        "source": "com.examsathi.app-main-35:/mipmap-mdpi/ic_launcher.png"
+        "merged": "com.examsathi.app-merged_res-39:/mipmap-xhdpi_ic_launcher_round_adaptive_back.png.flat",
+        "source": "com.examsathi.app-main-41:/mipmap-xhdpi/ic_launcher_round_adaptive_back.png"
     },
     {
-        "merged": "com.examsathi.app-merged_res-33:/mipmap-hdpi_ic_launcher_round.png.flat",
-        "source": "com.examsathi.app-main-35:/mipmap-hdpi/ic_launcher_round.png"
+        "merged": "com.examsathi.app-merged_res-39:/mipmap-hdpi_ic_launcher_round_adaptive_fore.png.flat",
+        "source": "com.examsathi.app-main-41:/mipmap-hdpi/ic_launcher_round_adaptive_fore.png"
     },
     {
-        "merged": "com.examsathi.app-merged_res-33:/mipmap-hdpi_ic_launcher.png.flat",
-        "source": "com.examsathi.app-main-35:/mipmap-hdpi/ic_launcher.png"
+        "merged": "com.examsathi.app-merged_res-39:/mipmap-xhdpi_ic_launcher_foreground.png.flat",
+        "source": "com.examsathi.app-main-41:/mipmap-xhdpi/ic_launcher_foreground.png"
     },
     {
-        "merged": "com.examsathi.app-merged_res-33:/mipmap-xxhdpi_ic_launcher_round.png.flat",
-        "source": "com.examsathi.app-main-35:/mipmap-xxhdpi/ic_launcher_round.png"
+        "merged": "com.examsathi.app-merged_res-39:/mipmap-xxxhdpi_ic_launcher_round_adaptive_fore.png.flat",
+        "source": "com.examsathi.app-main-41:/mipmap-xxxhdpi/ic_launcher_round_adaptive_fore.png"
     },
     {
-        "merged": "com.examsathi.app-merged_res-33:/mipmap-xxhdpi_ic_launcher.png.flat",
-        "source": "com.examsathi.app-main-35:/mipmap-xxhdpi/ic_launcher.png"
+        "merged": "com.examsathi.app-merged_res-39:/mipmap-mdpi_ic_launcher_round_adaptive_fore.png.flat",
+        "source": "com.examsathi.app-main-41:/mipmap-mdpi/ic_launcher_round_adaptive_fore.png"
     },
     {
-        "merged": "com.examsathi.app-merged_res-33:/mipmap-xxxhdpi_ic_launcher.png.flat",
-        "source": "com.examsathi.app-main-35:/mipmap-xxxhdpi/ic_launcher.png"
+        "merged": "com.examsathi.app-merged_res-39:/drawable_rn_edit_text_material.xml.flat",
+        "source": "com.examsathi.app-main-41:/drawable/rn_edit_text_material.xml"
     },
     {
-        "merged": "com.examsathi.app-merged_res-33:/mipmap-mdpi_ic_launcher_round.png.flat",
-        "source": "com.examsathi.app-main-35:/mipmap-mdpi/ic_launcher_round.png"
+        "merged": "com.examsathi.app-merged_res-39:/mipmap-xxxhdpi_ic_launcher.png.flat",
+        "source": "com.examsathi.app-main-41:/mipmap-xxxhdpi/ic_launcher.png"
     },
     {
-        "merged": "com.examsathi.app-merged_res-33:/mipmap-xhdpi_ic_launcher.png.flat",
-        "source": "com.examsathi.app-main-35:/mipmap-xhdpi/ic_launcher.png"
+        "merged": "com.examsathi.app-merged_res-39:/mipmap-xxhdpi_ic_launcher_round_adaptive_back.png.flat",
+        "source": "com.examsathi.app-main-41:/mipmap-xxhdpi/ic_launcher_round_adaptive_back.png"
     },
     {
-        "merged": "com.examsathi.app-merged_res-33:/mipmap-xhdpi_ic_launcher_round.png.flat",
-        "source": "com.examsathi.app-main-35:/mipmap-xhdpi/ic_launcher_round.png"
+        "merged": "com.examsathi.app-merged_res-39:/mipmap-mdpi_ic_launcher.png.flat",
+        "source": "com.examsathi.app-main-41:/mipmap-mdpi/ic_launcher.png"
     },
     {
-        "merged": "com.examsathi.app-merged_res-33:/drawable_rn_edit_text_material.xml.flat",
-        "source": "com.examsathi.app-main-35:/drawable/rn_edit_text_material.xml"
+        "merged": "com.examsathi.app-merged_res-39:/mipmap-hdpi_ic_launcher_round.png.flat",
+        "source": "com.examsathi.app-main-41:/mipmap-hdpi/ic_launcher_round.png"
     },
     {
-        "merged": "com.examsathi.app-merged_res-33:/mipmap-xxxhdpi_ic_launcher_round.png.flat",
-        "source": "com.examsathi.app-main-35:/mipmap-xxxhdpi/ic_launcher_round.png"
+        "merged": "com.examsathi.app-merged_res-39:/mipmap-xxxhdpi_ic_launcher_round_adaptive_back.png.flat",
+        "source": "com.examsathi.app-main-41:/mipmap-xxxhdpi/ic_launcher_round_adaptive_back.png"
+    },
+    {
+        "merged": "com.examsathi.app-merged_res-39:/mipmap-xxhdpi_ic_launcher.png.flat",
+        "source": "com.examsathi.app-main-41:/mipmap-xxhdpi/ic_launcher.png"
+    },
+    {
+        "merged": "com.examsathi.app-merged_res-39:/mipmap-anydpi-v26_ic_launcher_round.xml.flat",
+        "source": "com.examsathi.app-main-41:/mipmap-anydpi-v26/ic_launcher_round.xml"
+    },
+    {
+        "merged": "com.examsathi.app-merged_res-39:/mipmap-xhdpi_ic_launcher_round.png.flat",
+        "source": "com.examsathi.app-main-41:/mipmap-xhdpi/ic_launcher_round.png"
+    },
+    {
+        "merged": "com.examsathi.app-merged_res-39:/mipmap-hdpi_ic_launcher_round_adaptive_back.png.flat",
+        "source": "com.examsathi.app-main-41:/mipmap-hdpi/ic_launcher_round_adaptive_back.png"
+    },
+    {
+        "merged": "com.examsathi.app-merged_res-39:/mipmap-mdpi_ic_launcher_round_adaptive_back.png.flat",
+        "source": "com.examsathi.app-main-41:/mipmap-mdpi/ic_launcher_round_adaptive_back.png"
+    },
+    {
+        "merged": "com.examsathi.app-merged_res-39:/mipmap-xxxhdpi_ic_launcher_round.png.flat",
+        "source": "com.examsathi.app-main-41:/mipmap-xxxhdpi/ic_launcher_round.png"
+    },
+    {
+        "merged": "com.examsathi.app-merged_res-39:/mipmap-xxhdpi_ic_launcher_round_adaptive_fore.png.flat",
+        "source": "com.examsathi.app-main-41:/mipmap-xxhdpi/ic_launcher_round_adaptive_fore.png"
+    },
+    {
+        "merged": "com.examsathi.app-merged_res-39:/mipmap-mdpi_ic_launcher_foreground.png.flat",
+        "source": "com.examsathi.app-main-41:/mipmap-mdpi/ic_launcher_foreground.png"
+    },
+    {
+        "merged": "com.examsathi.app-merged_res-39:/mipmap-mdpi_ic_launcher_round.png.flat",
+        "source": "com.examsathi.app-main-41:/mipmap-mdpi/ic_launcher_round.png"
+    },
+    {
+        "merged": "com.examsathi.app-merged_res-39:/mipmap-xxhdpi_ic_launcher_round.png.flat",
+        "source": "com.examsathi.app-main-41:/mipmap-xxhdpi/ic_launcher_round.png"
+    },
+    {
+        "merged": "com.examsathi.app-merged_res-39:/mipmap-xhdpi_ic_launcher.png.flat",
+        "source": "com.examsathi.app-main-41:/mipmap-xhdpi/ic_launcher.png"
+    },
+    {
+        "merged": "com.examsathi.app-merged_res-39:/mipmap-xxxhdpi_ic_launcher_foreground.png.flat",
+        "source": "com.examsathi.app-main-41:/mipmap-xxxhdpi/ic_launcher_foreground.png"
+    },
+    {
+        "merged": "com.examsathi.app-merged_res-39:/mipmap-xhdpi_ic_launcher_round_adaptive_fore.png.flat",
+        "source": "com.examsathi.app-main-41:/mipmap-xhdpi/ic_launcher_round_adaptive_fore.png"
+    },
+    {
+        "merged": "com.examsathi.app-merged_res-39:/mipmap-xxhdpi_ic_launcher_foreground.png.flat",
+        "source": "com.examsathi.app-main-41:/mipmap-xxhdpi/ic_launcher_foreground.png"
+    },
+    {
+        "merged": "com.examsathi.app-merged_res-39:/mipmap-hdpi_ic_launcher.png.flat",
+        "source": "com.examsathi.app-main-41:/mipmap-hdpi/ic_launcher.png"
+    },
+    {
+        "merged": "com.examsathi.app-merged_res-39:/mipmap-hdpi_ic_launcher_foreground.png.flat",
+        "source": "com.examsathi.app-main-41:/mipmap-hdpi/ic_launcher_foreground.png"
     }
 ]

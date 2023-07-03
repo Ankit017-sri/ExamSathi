@@ -1,5 +1,5 @@
 import {View, Text, TouchableOpacity, Linking} from 'react-native';
-import {Ionicons} from 'react-native-vector-icons';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 const PDFViewer = ({url, name}) => {
   // const [pdfUri, setPdfUri] = useState(null);
@@ -64,7 +64,7 @@ const PDFViewer = ({url, name}) => {
             borderRadius: 4,
           }}>
           <View>
-            <Ionicons name="document-outline" size={25} color={'red'} />
+            <Icon name="document-outline" size={25} color={'red'} />
             <Text
               style={{
                 fontSize: 10,

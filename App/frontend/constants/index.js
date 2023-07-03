@@ -1,3 +1,7 @@
-export const Constants = {
-  statusBarHeight: 60,
+import {StatusBar} from 'react-native';
+
+const Constants = {
+  statusBarHeight: StatusBar.currentHeight,
 };
+
+export default Constants;

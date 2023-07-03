@@ -1,14 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, {useEffect, useState} from 'react';
 import {
   StyleSheet,
   Text,
   TouchableOpacity,
   Vibration,
   View,
-} from "react-native";
+} from 'react-native';
 
-import Colors from "../constants/Colors";
-import OptionCircle from "./OptionCircle";
+import Colors from '../constants/Colors';
+import OptionCircle from './OptionCircle';
 
 const QuesCard = React.memo(
   ({
@@ -29,7 +29,7 @@ const QuesCard = React.memo(
       // console.log(isShownTime);
     }, []);
 
-    const handleChange = (i) => {
+    const handleChange = i => {
       Vibration.vibrate(70);
       let arr = selected;
       arr[(data.qNo ? data.qNo : quesNo) - 1] = i;
@@ -41,15 +41,14 @@ const QuesCard = React.memo(
       <View style={styles.quesContainer}>
         {isRevision && (
           <Text
-            style={{ alignSelf: "flex-end", color: "red", fontWeight: "bold" }}
-          >
+            style={{alignSelf: 'flex-end', color: 'red', fontWeight: 'bold'}}>
             {timeRemaining}
           </Text>
         )}
         <Text style={styles.quesText}>
-          <Text style={{ fontWeight: "bold" }}>
+          <Text style={{fontWeight: 'bold'}}>
             {data.qNo ? data.qNo : quesNo})
-          </Text>{" "}
+          </Text>{' '}
           {data.ques}
         </Text>
         <Text style={styles.quesText}>{data.hindiQues}</Text>
@@ -60,8 +59,7 @@ const QuesCard = React.memo(
               selected[(data.qNo ? data.qNo : quesNo) - 1] == 1 &&
                 styles.selectedOption,
             ]}
-            onPress={() => handleChange(1)}
-          >
+            onPress={() => handleChange(1)}>
             <OptionCircle
               selectedOption={selected[(data.qNo ? data.qNo : quesNo) - 1]}
               num={1}
@@ -74,8 +72,7 @@ const QuesCard = React.memo(
               selected[(data.qNo ? data.qNo : quesNo) - 1] === 2 &&
                 styles.selectedOption,
             ]}
-            onPress={() => handleChange(2)}
-          >
+            onPress={() => handleChange(2)}>
             <OptionCircle
               selectedOption={selected[(data.qNo ? data.qNo : quesNo) - 1]}
               num={2}
@@ -90,8 +87,7 @@ const QuesCard = React.memo(
               selected[(data.qNo ? data.qNo : quesNo) - 1] === 3 &&
                 styles.selectedOption,
             ]}
-            onPress={() => handleChange(3)}
-          >
+            onPress={() => handleChange(3)}>
             <OptionCircle
               selectedOption={selected[(data.qNo ? data.qNo : quesNo) - 1]}
               num={3}
@@ -105,8 +101,7 @@ const QuesCard = React.memo(
               selected[(data.qNo ? data.qNo : quesNo) - 1] === 4 &&
                 styles.selectedOption,
             ]}
-            onPress={() => handleChange(4)}
-          >
+            onPress={() => handleChange(4)}>
             <OptionCircle
               selectedOption={selected[(data.qNo ? data.qNo : quesNo) - 1]}
               num={4}
@@ -115,23 +110,23 @@ const QuesCard = React.memo(
           </TouchableOpacity>
         </View>
         {isRevision && isShown && (
-          <Text style={{ marginTop: 10, fontWeight: "bold" }}>
+          <Text style={{marginTop: 10, fontWeight: 'bold'}}>
             {attempting} answers
           </Text>
         )}
       </View>
     );
-  }
+  },
 );
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
   },
   quesContainer: {
     borderColor: Colors.primary,
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
     elevation: 5,
     marginBottom: 10,
     marginHorizontal: 10,
@@ -141,15 +136,17 @@ const styles = StyleSheet.create({
   quesText: {
     fontSize: 16,
     marginBottom: 10,
+    color: '#000',
   },
   optionsContainer: {
-    width: "100%",
+    width: '100%',
     borderRadius: 5,
-    alignSelf: "center",
+    alignSelf: 'center',
     marginTop: 10,
   },
   optionText: {
-    width: "90%",
+    width: '90%',
+    color: '#000',
   },
   filledCircle: {
     height: 15,
@@ -162,25 +159,25 @@ const styles = StyleSheet.create({
     height: 20,
     width: 20,
     borderRadius: 20,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     borderColor: Colors.primary,
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
     marginRight: 10,
   },
   optionContainer: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     marginBottom: 10,
     elevation: 5,
     padding: 11,
     borderRadius: 5,
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
   },
   selectedOption: {
     borderWidth: 1,
-    backgroundColor: "#a2ebfa",
-    borderColor: "#61e0fa",
+    backgroundColor: '#a2ebfa',
+    borderColor: '#61e0fa',
   },
 });
 

@@ -1,12 +1,12 @@
 import React, {useContext, useState, useEffect, useRef} from 'react';
-import {Text, View, Animated, Dimensions, Image} from 'react-native';
+import {Text, View, Animated, Dimensions, Image, Platform} from 'react-native';
 import axios from 'axios';
 import baseUrl from '../baseUrl';
 import {Keyboard} from 'react-native';
 import {TransitionPresets, createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {Ionicons} from 'react-native-vector-icons';
-import * as Notifications from 'react-native-push-notification';
+import Icon from 'react-native-vector-icons/Ionicons';
+import PushNotification from 'react-native-push-notification';
 
 import AccountScreen from '../screens/Account';
 import PastQuizScreen from '../screens/PastQuiz';
@@ -144,12 +144,15 @@ const RevisionScreenNavigator = () => {
 
 const Tab = createBottomTabNavigator();
 
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: true,
-    shouldSetBadge: true,
-  }),
+// Notifications.setNotificationHandler({
+//   handleNotification: async () => ({
+//     shouldShowAlert: true,
+//     shouldPlaySound: true,
+//     shouldSetBadge: true,
+//   }),
+// });
+PushNotification.configure({
+  requestPermissions: Platform.OS === 'ios',
 });
 
 export const AppNavigator = ({onLayout}) => {
@@ -177,21 +180,18 @@ export const AppNavigator = ({onLayout}) => {
   useEffect(() => {
     registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
 
-    notificationListener.current =
-      Notifications.addNotificationReceivedListener(notification => {
-        setNotification(notification);
-      });
+    // notificationListener.current =
+    //   Notifications.addNotificationReceivedListener(notification => {
+    //     setNotification(notification);
+    //   });
 
-    responseListener.current =
-      Notifications.addNotificationResponseReceivedListener(response => {
-        console.log(response);
-      });
+    // responseListener.current =
+    //   Notifications.addNotificationResponseReceivedListener(response => {
+    //     console.log(response);
+    //   });
 
     return () => {
-      Notifications.removeNotificationSubscription(
-        notificationListener.current,
-      );
-      Notifications.removeNotificationSubscription(responseListener.current);
+      PushNotification.unregister();
     };
   }, []);
 
@@ -255,16 +255,16 @@ export const AppNavigator = ({onLayout}) => {
             color = focused ? Colors.text : 'black';
             size = focused ? 26 : 24;
 
-            if (route.name === 'RevisionQuiz')
+            if (route.name === 'RevisionQuiz') {
               iconName = focused ? 'home' : 'home-outline';
-            else if (route.name === 'New Quiz')
+            } else if (route.name === 'New Quiz') {
               return (
                 <Image
                   source={require('../assets/quiz.jpg')}
                   style={{height: 30, width: 70}}
                 />
               );
-            else if (route.name === 'AccountNFeedback') {
+            } else if (route.name === 'AccountNFeedback') {
               iconName = focused ? 'person' : 'person-outline';
               size = focused ? 23 : 21;
             } else if (route.name === 'Past Quiz') {
@@ -273,7 +273,7 @@ export const AppNavigator = ({onLayout}) => {
             }
 
             // You can return any component that you like here!
-            return <Ionicons name={iconName} size={size} color={color} />;
+            return <Icon name={iconName} size={size} color={color} />;
           },
           headerShown: false,
           tabBarHideOnKeyboard: true,

@@ -1,4 +1,4 @@
-import {Ionicons} from 'react-native-vector-icons';
+import Icon from 'react-native-vector-icons/Ionicons';
 import {useFocusEffect} from '@react-navigation/native';
 // import { FlashList } from "@shopify/flash-list";
 import axios from 'axios';
@@ -537,6 +537,7 @@ const RecentQuiz = ({navigation}) => {
                 color: Colors.text,
                 marginBottom: 20,
                 marginTop: 10,
+                color: '#000',
                 // transform: [{ rotateZ: "45deg" }]
               }}>
               {/* नवीन मागील वर्षाची टेस्ट! */}
@@ -548,8 +549,10 @@ const RecentQuiz = ({navigation}) => {
                 justifyContent: 'space-between',
                 marginBottom: 10,
               }}>
-              <Text style={{fontSize: 12}}>Time: {item.maxTime} min</Text>
-              <Text style={{marginLeft: 16, fontSize: 12}}>
+              <Text style={{fontSize: 12, color: '#000'}}>
+                Time: {item.maxTime} min
+              </Text>
+              <Text style={{marginLeft: 16, fontSize: 12, color: '#000'}}>
                 Marks: {item.maxMarks}
               </Text>
             </View>
@@ -591,7 +594,7 @@ const RecentQuiz = ({navigation}) => {
               }}
               style={{flexDirection: 'row'}}>
               <Text style={{marginRight: 4}}>View All</Text>
-              <Ionicons
+              <Icon
                 name="chevron-forward-circle-outline"
                 size={20}
                 color={Colors.primary}
@@ -632,7 +635,7 @@ const RecentQuiz = ({navigation}) => {
                 {title}
               </Text>
 
-              <Ionicons
+              <Icon
                 name="checkmark-circle-outline"
                 size={50}
                 color={'#26b1bf'}
@@ -759,7 +762,7 @@ const RecentQuiz = ({navigation}) => {
                         fontWeight: '600',
                         justifyContent: 'center',
                       }}>
-                      <Ionicons
+                      <Icon
                         name="chevron-back-outline"
                         size={25}
                         color={Colors.primary}
@@ -777,7 +780,7 @@ const RecentQuiz = ({navigation}) => {
                       justifyContent: 'center',
                     }}>
                     Next
-                    <Ionicons
+                    <Icon
                       name="chevron-forward-outline"
                       size={25}
                       color={Colors.primary}
@@ -803,7 +806,7 @@ const RecentQuiz = ({navigation}) => {
                       justifyContent: 'center',
                       marginRight: 20,
                     }}>
-                    <Ionicons
+                    <Icon
                       name="chevron-back-outline"
                       size={25}
                       color={Colors.primary}
@@ -819,7 +822,7 @@ const RecentQuiz = ({navigation}) => {
                       justifyContent: 'center',
                     }}>
                     Next
-                    <Ionicons
+                    <Icon
                       name="chevron-forward-outline"
                       size={25}
                       color="grey"
@@ -845,7 +848,7 @@ const RecentQuiz = ({navigation}) => {
                   setViewAll(false);
                   scrollRef.current.scrollTo({y: 0, animated: false});
                 }}>
-                <Ionicons name="arrow-back" size={25} />
+                <Icon name="arrow-back" size={25} />
               </TouchableOpacity>
               <Text style={[styles.title, {marginLeft: 20}]}>
                 {title} Tests
@@ -897,6 +900,7 @@ const RecentQuiz = ({navigation}) => {
                         fontSize: 16,
                         alignSelf: 'center',
                         verticalAlign: 'middle',
+                        color: '#000',
                       }}>
                       {item.tag}
                     </Text>
@@ -943,7 +947,7 @@ const RecentQuiz = ({navigation}) => {
                         {title}
                       </Text>
 
-                      <Ionicons
+                      <Icon
                         name="checkmark-circle-outline"
                         size={50}
                         color={'#26b1bf'}
@@ -1011,7 +1015,7 @@ const RecentQuiz = ({navigation}) => {
                         {title}
                       </Text>
 
-                      <Ionicons
+                      <Icon
                         name="checkmark-circle-outline"
                         size={50}
                         color={'#26b1bf'}
@@ -1055,7 +1059,7 @@ const RecentQuiz = ({navigation}) => {
                       नवीन मागील वर्षाची टेस्ट!
                     </Text>
 
-                    <Ionicons
+                    <Icon
                       name="checkmark-circle-outline"
                       size={50}
                       color={"#26b1bf"}
@@ -1149,7 +1153,7 @@ const RecentQuiz = ({navigation}) => {
                       >
                         नवीन १०० मार्क्स टेस्ट!
                       </Text>
-                      <Ionicons
+                      <Icon
                         name="checkmark-circle-outline"
                         size={50}
                         color={"#26b1bf"}
@@ -1211,7 +1215,7 @@ const RecentQuiz = ({navigation}) => {
                       >
                         Latest चालू घडामोडी टेस्ट!
                       </Text>
-                      <Ionicons
+                      <Icon
                         name="checkmark-circle-outline"
                         size={50}
                         color={"#26b1bf"}
@@ -1270,7 +1274,7 @@ const RecentQuiz = ({navigation}) => {
                     >
                       नवीन १५ मार्क्स टेस्ट!
                     </Text>
-                    <Ionicons
+                    <Icon
                       name="checkmark-circle-outline"
                       size={50}
                       color={"#26b1bf"}
@@ -1412,6 +1416,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '500',
     marginBottom: 4,
+    color: '#000',
   },
   listContainer: {
     elevation: 10,

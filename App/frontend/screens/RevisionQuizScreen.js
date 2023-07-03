@@ -25,9 +25,7 @@ import {
   TextInput,
   TouchableWithoutFeedback,
 } from 'react-native-gesture-handler';
-// import Constants from "expo-constants";
-import {Constants} from '../constants';
-
+import Constants from '../constants/index';
 import axios from 'axios';
 import {useFocusEffect} from '@react-navigation/native';
 import {io} from 'socket.io-client';
@@ -370,7 +368,8 @@ https://bit.ly/exam-sathi-app-playstore`;
               alignItems: 'center',
               flexDirection: 'row',
             }}>
-            <Text style={{textAlign: 'center', fontWeight: 'bold'}}>
+            <Text
+              style={{textAlign: 'center', fontWeight: 'bold', color: '#000'}}>
               पुढची revision{' '}
               {nextTime.split(' ')[1] !== 'undefined'
                 ? nextTime.split(' ')[1]
@@ -396,7 +395,8 @@ https://bit.ly/exam-sathi-app-playstore`;
               source={require('../assets/WhatsApp.svg.png')}
               style={{width: 40, height: 40, marginRight: 5}}
             />
-            <Text style={{textAlign: 'center', fontWeight: 'bold'}}>
+            <Text
+              style={{textAlign: 'center', fontWeight: 'bold', color: '#000'}}>
               आता revision तुमच्या मित्रांबरोबर द्या.{'\n'} मित्रांसोबत
               देण्यासाठी Share करा
             </Text>
@@ -421,6 +421,7 @@ https://bit.ly/exam-sathi-app-playstore`;
                 fontWeight: 'bold',
                 color: 'white',
                 paddingHorizontal: 25,
+                color: '#fff',
               }}>
               आता तुमचे प्रश्न पण revision मध्ये येईल 😃 तुमचे प्रश्न, 4 options
               आणि बरोबर उत्तर पाठवा
@@ -445,7 +446,7 @@ https://bit.ly/exam-sathi-app-playstore`;
                 Next Question in 2 seconds
               </Text>
             ) : (
-              <Text style={{}}>
+              <Text style={{color: '#000'}}>
                 {questions[0]?.testName}
                 {'\n'}
                 तुमच्यासोबत{' '}
@@ -460,7 +461,7 @@ https://bit.ly/exam-sathi-app-playstore`;
       )}
       <ScrollView
         style={{
-          marginBottom: 50,
+          // marginBottom: 50,
           backgroundColor: '#fff',
         }}
         ref={scrollViewRef}

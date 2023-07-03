@@ -1,6 +1,6 @@
 import {StyleSheet, Text, View, Animated, TouchableOpacity} from 'react-native';
 import React, {useContext, useRef} from 'react';
-import {Ionicons} from 'react-native-vector-icons';
+import Icon from 'react-native-vector-icons/Ionicons';
 import {Swipeable} from 'react-native-gesture-handler';
 import ChatContext from '../chat/context';
 // import MessageSent from "./MessageSent";
@@ -49,7 +49,7 @@ const SwipeableMessage = ({
         }}>
         <Animated.View
           style={[styles.buttonText, {transform: [{translateX: trans}]}]}>
-          <Ionicons name="arrow-undo" size={20} color={'cyan'} />
+          <Icon name="arrow-undo" size={20} color={'cyan'} />
         </Animated.View>
       </TouchableOpacity>
     );

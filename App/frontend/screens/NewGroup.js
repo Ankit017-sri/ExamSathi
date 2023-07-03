@@ -14,7 +14,7 @@
 // import React, { useContext, useEffect, useState } from "react";
 // import CustomHeader from "../components/CustomHeader";
 // import * as Contacts from "expo-contacts";
-// import { Ionicons } from "react-native-vector-icons";
+// import { Ionicons } from "@expo/vector-icons";
 // import ChatContext from "../chat/context";
 // import AuthContext from "../auth/context";
 // import axios from "axios";
@@ -121,7 +121,7 @@
 //             <Image source={{ uri: contact.image }} style={styles.avatar} />
 //           ) : (
 //             <View style={styles.avatar}>
-//               <Ionicons name="person" size={25} />
+//               <Icon name="person" size={25} />
 //             </View>
 //           )}
 //           <Pressable
@@ -135,7 +135,7 @@
 //             }}
 //             onPress={() => removeFromGroup({ id: contact.id })}
 //           >
-//             <Ionicons name="close-circle" size={20} />
+//             <Icon name="close-circle" size={20} />
 //           </Pressable>
 //         </View>
 //         <Text style={{ color: "black" }}>
@@ -159,7 +159,7 @@
 //         <View style={styles.modalContainer}>
 //           <View style={styles.content}>
 //             <Pressable onPress={hideModal} style={{ alignSelf: "flex-end" }}>
-//               <Ionicons name="close" size={30} />
+//               <Icon name="close" size={30} />
 //             </Pressable>
 //             <Text style={styles.modalText}>Group name</Text>
 //             <TextInput
@@ -237,7 +237,7 @@
 //                   />
 //                 ) : (
 //                   <View style={styles.avatar}>
-//                     <Ionicons name="person" size={25} />
+//                     <Icon name="person" size={25} />
 //                   </View>
 //                 )}
 //                 {(contact.firstName || contact.lastName) && (
@@ -253,7 +253,7 @@
 //               </View>
 //               {refArray[contact.id] == contact.id && (
 //                 <View style={{ position: "absolute", right: 10, top: 5 }}>
-//                   <Ionicons name="checkmark" size={30} color={"#17cfe3"} />
+//                   <Icon name="checkmark" size={30} color={"#17cfe3"} />
 //                 </View>
 //               )}
 //             </Pressable>
@@ -275,7 +275,7 @@
 //         }}
 //         onPress={showModal}
 //       >
-//         <Ionicons name="arrow-forward-outline" size={30} />
+//         <Icon name="arrow-forward-outline" size={30} />
 //       </TouchableOpacity>
 //     </View>
 //   );

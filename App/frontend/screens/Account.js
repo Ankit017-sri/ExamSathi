@@ -1,4 +1,4 @@
-import {Ionicons} from 'react-native-vector-icons';
+import Icon from 'react-native-vector-icons/Ionicons';
 import React, {useContext} from 'react';
 import {
   View,
@@ -67,7 +67,7 @@ const AccountScreen = ({navigation}) => {
           }}>
           Delete Account
         </Text>
-        <Ionicons name={'trash-outline'} size={18} color={Colors.danger} />
+        <Icon name={'trash-outline'} size={18} color={Colors.danger} />
       </TouchableOpacity>
     );
   };
@@ -120,7 +120,7 @@ const AccountScreen = ({navigation}) => {
               }}>
               Logout
             </Text>
-            <Ionicons name={'log-out-outline'} size={27} color="white" />
+            <Icon name={'log-out-outline'} size={27} color="white" />
           </TouchableOpacity>
         </View>
         {/* <View
@@ -194,7 +194,7 @@ const AccountScreen = ({navigation}) => {
                 >
                   Join
                 </Text>
-                <Ionicons
+                <Icon
                   name={"logo-whatsapp"}
                   size={23}
                   color={Colors.primary}
@@ -231,7 +231,7 @@ const AccountScreen = ({navigation}) => {
             }}>
             Share App
           </Text>
-          <Ionicons name="share-social-outline" size={20} color={'white'} />
+          <Icon name="share-social-outline" size={20} color={'white'} />
         </TouchableOpacity>
         {/* <TouchableOpacity
           style={{

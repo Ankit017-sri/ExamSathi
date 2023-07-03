@@ -1,30 +1,30 @@
-import axios from "axios";
-import React, { useContext, useEffect, useState } from "react";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import axios from 'axios';
+import React, {useContext, useEffect, useState} from 'react';
+import {ScrollView, StyleSheet, Text, View} from 'react-native';
 
-import AuthContext from "../auth/context";
-import baseUrl from "../baseUrl";
-import CompletedQuesCard from "../components/CompletedQuesCard";
-import CustomHeader from "../components/CustomHeader";
-import Loader from "../components/Loader";
-import Colors from "../constants/Colors";
+import AuthContext from '../auth/context';
+import baseUrl from '../baseUrl';
+import CompletedQuesCard from '../components/CompletedQuesCard';
+import CustomHeader from '../components/CustomHeader';
+import Loader from '../components/Loader';
+import Colors from '../constants/Colors';
 
-const QuizDetails = ({ navigation }) => {
-  const data = navigation.getState().routes[1].params.quiz;
+const QuizDetails = ({navigation}) => {
+  const data = navigation.getState().routes[1]?.params.quiz;
 
-  console.log(navigation.getState().routes[1].params.quiz._id);
+  console.log(navigation.getState().routes[1]?.params.quiz._id);
 
   const [loading, setLoading] = useState(false);
   const [submittedQuizData, setSubmittedQuizData] = useState([]);
   const [questions, setQuestions] = useState([]);
 
-  const { token } = useContext(AuthContext);
+  const {token} = useContext(AuthContext);
 
   const getData = async () => {
     setLoading(true);
 
     const res = await axios.get(`${baseUrl}/submitQuiz/get/${data._id}`, {
-      headers: { Authorization: `Bearer ${token}` },
+      headers: {Authorization: `Bearer ${token}`},
     });
     // console.log("res..", res.data);
 
@@ -36,12 +36,12 @@ const QuizDetails = ({ navigation }) => {
   const getQuiz = async () => {
     try {
       const res = await axios.get(`${baseUrl}/quizData/${data._id}`, {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: {Authorization: `Bearer ${token}`},
       });
       console.log(res.data);
       setQuestions(res.data);
     } catch (error) {
-      console.log("error 1", error);
+      console.log('error 1', error);
     }
   };
   useEffect(() => {
@@ -52,17 +52,17 @@ const QuizDetails = ({ navigation }) => {
   const getScore = () => {
     let score = 0;
     if (data.quizDetails) {
-      data.quizDetails.map((data) => {
+      data.quizDetails.map(data => {
         const foundObject = submittedQuizData.find(
-          (e) => e.quesIndex == data.qNo - 1
+          e => e.quesIndex == data.qNo - 1,
         );
 
         if (foundObject?.value == data.correctOp) score++;
       });
     } else {
-      questions.quizDetails?.map((data) => {
+      questions.quizDetails?.map(data => {
         const foundObject = submittedQuizData.find(
-          (e) => e.quesIndex == data.qNo - 1
+          e => e.quesIndex == data.qNo - 1,
         );
 
         if (foundObject?.value == data.correctOp) score++;
@@ -78,16 +78,15 @@ const QuizDetails = ({ navigation }) => {
       {loading || (!data.quizDetails && !questions.quizDetails) ? (
         <Loader />
       ) : (
-        <ScrollView style={{ marginBottom: 35 }}>
-          <View style={{ paddingHorizontal: 10, marginVertical: 5 }}>
+        <ScrollView style={{marginBottom: 35}}>
+          <View style={{paddingHorizontal: 10, marginVertical: 5}}>
             <Text
               style={{
-                fontWeight: "bold",
+                fontWeight: 'bold',
                 fontSize: 16,
-                color: "#26b1bf",
-              }}
-            >
-              Score: {getScore()} /{" "}
+                color: '#26b1bf',
+              }}>
+              Score: {getScore()} /{' '}
               {data.quizDetails
                 ? data.quizDetails.length
                 : questions.quizDetails?.length}
@@ -123,13 +122,13 @@ const QuizDetails = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
     paddingBottom: 20,
   },
   quesContainer: {
     // borderWidth: 1,
     borderColor: Colors.primary,
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
     elevation: 5,
     marginVertical: 5,
     marginHorizontal: 10,
@@ -146,7 +145,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     padding: 5,
     paddingHorizontal: 10,
-    backgroundColor: "rgba(23, 207, 227, 0.3)",
+    backgroundColor: 'rgba(23, 207, 227, 0.3)',
     marginTop: 10,
   },
 });

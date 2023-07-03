@@ -3,6 +3,8 @@ import {NavigationContainer} from '@react-navigation/native';
 // import {StatusBar} from 'expo-status-bar';
 import {useCallback, useEffect, useState} from 'react';
 import {enableScreens} from 'react-native-screens';
+// import {initializeApp} from '@react-native-firebase/app';
+
 // import * as SplashScreen from 'expo-splash-screen';
 // import * as Updates from 'expo-updates';
 import {Linking, Platform, StatusBar} from 'react-native';
@@ -42,6 +44,11 @@ import AuthContext from './auth/context';
 // };
 
 enableScreens();
+// const firebaseConfig = {
+//   apiKey: 'AIzaSyD_xKWXwUUEkQyYqPKNTbqOrieC6AvUVy0',
+// };
+
+// initializeApp(firebaseConfig);
 
 export default function App() {
   const [isReady, setIsReady] = useState(false);
@@ -54,7 +61,7 @@ export default function App() {
 
   const restoreToken = async () => {
     const storedTokens = await authStorage.getToken();
-    setToken(storedTokens.accessToken);
+    setToken(storedTokens?.accessToken);
   };
 
   const restoreUser = async () => {
@@ -70,8 +77,8 @@ export default function App() {
   //     //console.log(currentVersion);
   //     const storeUrl =
   //       Platform.OS === 'android'
-  //         ? `https://play.google.com/store/apps/details?id=com.examSathi.examSathi`
-  //         : `https://itunes.apple.com/lookup?bundleId=com.examSathi.examSathi`;
+  //         ? 'https://play.google.com/store/apps/details?id=com.examSathi.examSathi'
+  //         : 'https://itunes.apple.com/lookup?bundleId=com.examSathi.examSathi';
 
   //     try {
   //       const check = await checkVersion({
@@ -109,10 +116,10 @@ export default function App() {
   //   }
   // };
 
-  useEffect(() => {
-    // checkForUpdates();
-    // checkForOTAUpdates();
-  });
+  // useEffect(() => {
+  //   checkForUpdates();
+  //   checkForOTAUpdates();
+  // });
   useEffect(() => {
     async function prepare() {
       try {
@@ -130,16 +137,16 @@ export default function App() {
     }
   }, []);
 
-  // const onLayoutRootView = useCallback(async () => {
-  //   if (isReady) {
-  //     // This tells the splash screen to hide immediately! If we call this after
-  //     // `isReady`, then we may see a blank screen while the app is
-  //     // loading its initial state and rendering its first pixels. So instead,
-  //     // we hide the splash screen once we know the root view has already
-  //     // performed layout.
-  //     await SplashScreen.hideAsync();
-  //   }
-  // }, [isReady]);
+  const onLayoutRootView = useCallback(async () => {
+    if (isReady) {
+      // This tells the splash screen to hide immediately! If we call this after
+      // `isReady`, then we may see a blank screen while the app is
+      // loading its initial state and rendering its first pixels. So instead,
+      // we hide the splash screen once we know the root view has already
+      // performed layout.
+      // await SplashScreen.hideAsync();
+    }
+  }, [isReady]);
 
   if (!isReady) {
     return null;
@@ -162,7 +169,7 @@ export default function App() {
       <NavigationContainer>
         {token ? <AppNavigator onLayout={onLayoutRootView} /> : <Login />}
       </NavigationContainer>
-      <StatusBar animated style="light" />
+      <StatusBar animated barStyle="light-content" />
     </AuthContext.Provider>
   );
 }

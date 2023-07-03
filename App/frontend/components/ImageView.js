@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {View, Modal, Image, TouchableOpacity} from 'react-native';
-import {Ionicons} from 'react-native-vector-icons';
+import Icon from 'react-native-vector-icons/Ionicons';
 import ImageViewer from 'react-native-image-zoom-viewer';
 
 const FullscreenImage = ({imageSource}) => {
@@ -33,7 +33,7 @@ const FullscreenImage = ({imageSource}) => {
             alignSelf: 'center',
             zIndex: 40,
           }}>
-          <Ionicons name="close" color="black" size={40} />
+          <Icon name="close" color="black" size={40} />
         </TouchableOpacity>
         {/* <Image
           source={{ uri: imageSource }}

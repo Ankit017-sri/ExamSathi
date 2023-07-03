@@ -1,6 +1,3 @@
-module.exports = function (api) {
-  api.cache(true);
-  return {
-    presets: ['@babel/preset-react', '@babel/preset-flow'],
-  };
+module.exports = {
+  presets: ['module:metro-react-native-babel-preset'],
 };

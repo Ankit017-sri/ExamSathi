@@ -21,7 +21,7 @@ import CustomHeader from '../components/CustomHeader';
 import Loader from '../components/Loader';
 import baseUrl from '../baseUrl';
 import {useFocusEffect} from '@react-navigation/native';
-import {Ionicons} from 'react-native-vector-icons';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 const PastQuiz = ({navigation}) => {
   // const [data, setData] = useState([]);
@@ -103,6 +103,7 @@ const PastQuiz = ({navigation}) => {
                 color: Colors.text,
                 marginBottom: 20,
                 marginTop: 10,
+                color: '#000',
               }}>
               {item.quizTitle}
             </Text>
@@ -112,10 +113,10 @@ const PastQuiz = ({navigation}) => {
                 justifyContent: 'space-between',
                 marginBottom: 10,
               }}>
-              <Text style={{fontSize: 12}}>
+              <Text style={{fontSize: 12, color: '#000'}}>
                 Time: {item.maxMarks == 100 ? 90 : item.maxMarks} min
               </Text>
-              <Text style={{marginLeft: 16, fontSize: 12}}>
+              <Text style={{marginLeft: 16, fontSize: 12, color: '#000'}}>
                 Marks: {item.maxMarks}
               </Text>
             </View>
@@ -155,8 +156,8 @@ const PastQuiz = ({navigation}) => {
                 setViewAll(true);
               }}
               style={{flexDirection: 'row'}}>
-              <Text style={{marginRight: 4}}>View All</Text>
-              <Ionicons
+              <Text style={{marginRight: 4, color: '#000'}}>View All</Text>
+              <Icon
                 name="chevron-forward-circle-outline"
                 size={20}
                 color={Colors.primary}
@@ -220,9 +221,9 @@ const PastQuiz = ({navigation}) => {
                     setViewAll(false);
                     scrollRef.current.scrollTo({y: 0, animated: false});
                   }}>
-                  <Ionicons name="arrow-back" size={25} />
+                  <Icon name="arrow-back" size={25} />
                 </TouchableOpacity>
-                <Text style={[styles.title, {marginLeft: 20}]}>
+                <Text style={[styles.title, {marginLeft: 20, color: '#000'}]}>
                   {title} Tests
                 </Text>
               </View>
@@ -247,6 +248,7 @@ const PastQuiz = ({navigation}) => {
                       fontSize: 16,
                       alignSelf: 'center',
                       verticalAlign: 'middle',
+                      color: '#000',
                     }}>
                     All
                   </Text>
@@ -271,6 +273,7 @@ const PastQuiz = ({navigation}) => {
                           fontSize: 16,
                           alignSelf: 'center',
                           verticalAlign: 'middle',
+                          color: '#000',
                         }}>
                         {item.tag}
                       </Text>
@@ -317,7 +320,7 @@ const PastQuiz = ({navigation}) => {
                           {title}
                         </Text>
 
-                        <Ionicons
+                        <Icon
                           name="checkmark-circle-outline"
                           size={50}
                           color={'#26b1bf'}
@@ -371,7 +374,7 @@ const PastQuiz = ({navigation}) => {
                           {title}
                         </Text>
 
-                        <Ionicons
+                        <Icon
                           name="search-circle-outline"
                           size={50}
                           color={'#26b1bf'}
@@ -443,6 +446,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '500',
     marginBottom: 4,
+    color: '#000',
   },
   listContainer: {
     elevation: 10,

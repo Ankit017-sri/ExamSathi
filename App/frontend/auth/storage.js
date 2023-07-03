@@ -1,42 +1,41 @@
-import * as SecureStore from '@react-native-async-storage/async-storage';
+import * as Keychain from 'react-native-keychain';
 
 const accessKey = 'accessToken';
-// const refreshKey = "refreshToken";
 
 const storeToken = async token => {
   try {
-    await SecureStore.setItemAsync(accessKey, token);
+    await Keychain.setGenericPassword(accessKey, token);
   } catch (error) {
-    // console.log("Error storing the auth token.", error);
+    console.log('Error storing the auth token.', error);
   }
 };
 
 const getToken = async () => {
   try {
-    // const now = moment(Date.now());
-    // const storedTime = moment(item.timestamp);
-    // const isExpired = now.diff(storedTime, "days") >= 200;
-
-    // if (isExpired) {
-    //   removeToken();
-    //   return null;
-    // }
-
-    return {
-      accessToken: await SecureStore.getItemAsync(accessKey),
-    };
+    const credentials = await Keychain.getGenericPassword();
+    if (credentials) {
+      return {
+        accessToken: credentials.password,
+      };
+    } else {
+      return null;
+    }
   } catch (error) {
-    // console.log("Error getting the auth token", error);
+    console.log('Error getting the auth token', error);
   }
 };
 
 const removeToken = async () => {
   try {
-    await SecureStore.deleteItemAsync(accessKey);
-    // console.log("deleted");
+    await Keychain.resetGenericPassword();
+    console.log('Token removed successfully.');
   } catch (error) {
-    // console.log("Error removing the auth token.", error);
+    console.log('Error removing the auth token.', error);
   }
 };
 
-export default {storeToken, getToken, removeToken};
+export default {
+  storeToken,
+  getToken,
+  removeToken,
+};

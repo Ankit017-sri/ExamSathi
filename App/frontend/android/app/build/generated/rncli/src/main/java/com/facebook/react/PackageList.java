@@ -15,16 +15,22 @@ import java.util.ArrayList;
 import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
 // @react-native-community/masked-view
 import org.reactnative.maskedview.RNCMaskedViewPackage;
+// @react-native-firebase/app
+import io.invertase.firebase.app.ReactNativeFirebaseAppPackage;
 // @shopify/flash-list
 import com.shopify.reactnative.flash_list.ReactNativeFlashListPackage;
 // mixpanel-react-native
 import com.mixpanel.reactnative.MixpanelReactNativePackage;
 // react-native-document-picker
 import com.reactnativedocumentpicker.RNDocumentPickerPackage;
+// react-native-fs
+import com.rnfs.RNFSPackage;
 // react-native-gesture-handler
 import com.swmansion.gesturehandler.RNGestureHandlerPackage;
-// react-native-image-picker
-import com.imagepicker.ImagePickerPackage;
+// react-native-image-crop-picker
+import com.reactnative.ivpusic.imagepicker.PickerPackage;
+// react-native-keychain
+import com.oblador.keychain.KeychainPackage;
 // react-native-push-notification
 import com.dieam.reactnativepushnotification.ReactNativePushNotificationPackage;
 // react-native-reanimated
@@ -82,11 +88,14 @@ public class PackageList {
       new MainReactPackage(mConfig),
       new AsyncStoragePackage(),
       new RNCMaskedViewPackage(),
+      new ReactNativeFirebaseAppPackage(),
       new ReactNativeFlashListPackage(),
       new MixpanelReactNativePackage(),
       new RNDocumentPickerPackage(),
+      new RNFSPackage(),
       new RNGestureHandlerPackage(),
-      new ImagePickerPackage(),
+      new PickerPackage(),
+      new KeychainPackage(),
       new ReactNativePushNotificationPackage(),
       new ReanimatedPackage(),
       new SafeAreaContextPackage(),
