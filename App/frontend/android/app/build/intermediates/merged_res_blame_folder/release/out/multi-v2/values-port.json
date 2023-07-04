@@ -1,0 +1,19 @@
+{
+    "logs": [
+        {
+            "outputFile": "com.examsathi.app-mergeReleaseResources-34:/values-port/values-port.xml",
+            "map": [
+                {
+                    "source": "/home/suraj/.gradle/caches/transforms-3/01068459576cc083fd10f2519b887fdc/transformed/appcompat-1.4.2/res/values-port/values-port.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "55",
+                        "endOffsets": "106"
+                    }
+                }
+            ]
+        }
+    ]
+}
