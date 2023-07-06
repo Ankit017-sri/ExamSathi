@@ -179,7 +179,7 @@ const PastQuiz = ({navigation}) => {
   return (
     <>
       <View style={styles.container}>
-        <CustomHeader title="Past Quiz" />
+        {/* <CustomHeader title="Past Quiz" /> */}
         {isLoading ? (
           <Loader />
         ) : (
@@ -228,7 +228,7 @@ const PastQuiz = ({navigation}) => {
                 </Text>
               </View>
             ) : (
-              <ScrollView
+              false && <ScrollView
                 horizontal
                 style={{maxHeight: 60, minHeight: 60, paddingHorizontal: 12}}
                 contentContainerStyle={{alignItems: 'center'}}>
@@ -253,7 +253,7 @@ const PastQuiz = ({navigation}) => {
                     All
                   </Text>
                 </TouchableOpacity>
-                {allQuizData.map((item, index) => {
+                {  allQuizData.map((item, index) => {
                   return (
                     <TouchableOpacity
                       style={[
