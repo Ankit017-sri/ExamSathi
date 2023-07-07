@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   Image,
+  Alert,
 } from "react-native";
 
 import AuthContext from "../auth/context";
@@ -14,6 +15,9 @@ import authStorage from "../auth/storage";
 import baseUrl from "../baseUrl";
 import cache from "../utilities/cache";
 import { Mixpanel } from "mixpanel-react-native";
+import { CometChat } from "@cometchat-pro/react-native-chat";
+import { COMETCHAT_CONSTANTS } from "../support/privateKey";
+import { useNavigation } from "@react-navigation/native";
 
 const trackAutomaticEvents = true;
 const mixpanel = new Mixpanel(
@@ -28,6 +32,25 @@ const Login = () => {
   const [mobileError, setMobileError] = useState("");
   const [nameError, setNameError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const navigation = useNavigation();
+
+  let appID = COMETCHAT_CONSTANTS.APP_ID;
+  let region = COMETCHAT_CONSTANTS.REGION;
+  let appSetting = new CometChat.AppSettingsBuilder()
+    .subscribePresenceForAllUsers()
+    .setRegion(region)
+    .autoEstablishSocketConnection(true)
+    .build();
+  CometChat.init(appID, appSetting).then(
+    () => {
+      console.log("Initialization completed successfully");
+    },
+    (error) => {
+      Alert.alert(error.message);
+      console.log("Initialization failed with error:", error);
+    }
+  );
 
   const authContext = useContext(AuthContext);
 
@@ -56,14 +79,66 @@ const Login = () => {
         setLoading(false);
         alert("Please enter details.");
       }
-      authStorage.storeToken(result?.data.token);
-      authContext.setToken(result?.data.token);
-      authContext.setPhone(result.data.user.phoneNumber);
-      authContext.setName(result.data.user.fullName);
-      authContext.setId(result.data.user._id);
       await cache.store("user", result?.data.user);
-      setLoading(false);
 
+      //cometchat code
+
+      let authKey = COMETCHAT_CONSTANTS.AUTH_KEY;
+      let uid = name;
+      // let name = name;
+
+      let user = new CometChat.User(name);
+
+      user.setName(name);
+
+      CometChat.createUser(user, authKey)
+        .then(
+          (user) => {
+            console.log("user created", user);
+
+            // navigation.navigate("Login");
+          },
+          (error) => {
+            console.log("error", error);
+          }
+        )
+        .then(() => {
+          CometChat.getLoggedinUser().then(
+            (user) => {
+              console.log("user---", user);
+              if (!user) {
+                CometChat.login(name, authKey)
+                  .then(
+                    (user) => {
+                      console.log("Login Successful:", { user });
+                      authStorage.storeToken(result?.data.token);
+                      authContext.setToken(result?.data.token);
+                      authContext.setPhone(result.data.user.phoneNumber);
+                      authContext.setName(result.data.user.fullName);
+                      authContext.setId(result.data.user._id);
+                      setLoading(false);
+                      console.log(result?.data.token);
+                      setIsLoggedIn(true);
+                    }
+                    // (error) => {
+                    //   Alert.alert(error.message);
+                    //   console.log("Login failed with exception:", { error });
+                    // }
+                  )
+                  .catch((error) => {
+                    Alert.alert(error.message);
+                    console.log("Login failed with exception:", { error });
+                  });
+              } else {
+                console.log("Already logged in.", { user });
+                setIsLoggedIn(true);
+              }
+            },
+            (error) => {
+              console.log("Something went wrong", error);
+            }
+          );
+        });
       mixpanel.track("user_logged_in", {
         name: name,
         mobile: mobile,
@@ -73,22 +148,24 @@ const Login = () => {
   };
 
   useEffect(() => {
+    var authKey = COMETCHAT_CONSTANTS.AUTH_KEY;
+
+    console.log(authKey);
+
     mixpanel.track("login_page_visited");
     mixpanel.timeEvent("time_spent_on_login_screen");
 
-    return () => {
-      mixpanel
-        .eventElapsedTime("time_spent_on_login_screen")
-        .then((duration) => {
-          mixpanel.track("login_screen_time", {
-            duration: `${duration + " second"}`,
-          });
-          mixpanel.clearSuperProperties('time_spent_on_login_screen');
-        })
-        .catch((error) => {
-          console.error("Error calculating screen time:", error);
+    mixpanel
+      .eventElapsedTime("time_spent_on_login_screen")
+      .then((duration) => {
+        mixpanel.track("login_screen_time", {
+          duration: `${duration + " second"}`,
         });
-    };
+        mixpanel.clearSuperProperties("time_spent_on_login_screen");
+      })
+      .catch((error) => {
+        console.error("Error calculating screen time:", error);
+      });
   }, []);
 
   return (

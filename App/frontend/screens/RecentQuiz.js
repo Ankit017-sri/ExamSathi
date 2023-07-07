@@ -670,11 +670,11 @@ const RecentQuiz = ({ navigation }) => {
   };
   return (
     <View style={styles.container}>
-      <CustomHeader
-        title="New Quiz"
+      {/* <CustomHeader
+        title="ExamSathi"
         share={!quizStarted}
         appShareCount={appShareCount}
-      />
+      /> */}
       {loading || isloading ? (
         <Loader />
       ) : quizStarted ? (
