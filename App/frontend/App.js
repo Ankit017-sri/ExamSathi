@@ -1,23 +1,26 @@
-import 'react-native-gesture-handler';
-import {NavigationContainer} from '@react-navigation/native';
+import "react-native-gesture-handler";
+import { NavigationContainer } from "@react-navigation/native";
 // import {StatusBar} from 'expo-status-bar';
-import {useCallback, useEffect, useState} from 'react';
-import {enableScreens} from 'react-native-screens';
+import { useCallback, useEffect, useState } from "react";
+import { enableScreens } from "react-native-screens";
 // import {initializeApp} from '@react-native-firebase/app';
 
 // import * as SplashScreen from 'expo-splash-screen';
 // import * as Updates from 'expo-updates';
-import {Linking, Platform, StatusBar} from 'react-native';
+import { Linking, Platform, StatusBar } from "react-native";
 // import * as Application from 'expo-application';
-import checkVersion from 'react-native-store-version';
+import checkVersion from "react-native-store-version";
 
-import {Alert} from 'react-native';
+import { Alert } from "react-native";
 
-import {AppNavigator} from './navigation/AppNavigator';
-import Login from './screens/Login';
-import authStorage from './auth/storage';
-import cache from './utilities/cache';
-import AuthContext from './auth/context';
+import { AppNavigator } from "./navigation/AppNavigator";
+import Login from "./screens/Login";
+import authStorage from "./auth/storage";
+import cache from "./utilities/cache";
+import AuthContext from "./auth/context";
+import Auth from "./navigation/newAuthNavigation/authNavigation";
+import TabBar from "./navigation/newBottomTabBar/tabBar";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 // import React from "react";
 // import { Button, SafeAreaView } from "react-native";
@@ -54,8 +57,8 @@ export default function App() {
   const [isReady, setIsReady] = useState(false);
   const [token, setToken] = useState();
   const [Id, setId] = useState();
-  const [name, setName] = useState('');
-  const [phone, setPhone] = useState('');
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
   const [tabBarVisible, setTabBarVisible] = useState(true);
   const [updateAvailable, setUpdateAvailable] = useState(false);
 
@@ -65,7 +68,7 @@ export default function App() {
   };
 
   const restoreUser = async () => {
-    const data = await cache.get('user');
+    const data = await cache.get("user");
     setId(data?._id);
     setName(data?.fullName);
     setPhone(data?.phoneNumber);
@@ -135,6 +138,7 @@ export default function App() {
     if (!updateAvailable) {
       prepare();
     }
+    console.log("name===>", name);
   }, []);
 
   const onLayoutRootView = useCallback(async () => {
@@ -151,6 +155,8 @@ export default function App() {
   if (!isReady) {
     return null;
   }
+  console.log(token);
+  const Stack = createNativeStackNavigator();
 
   return (
     <AuthContext.Provider
@@ -165,10 +171,21 @@ export default function App() {
         setName,
         tabBarVisible,
         setTabBarVisible,
-      }}>
-      <NavigationContainer>
-        {token ? <AppNavigator onLayout={onLayoutRootView} /> : <Login />}
-      </NavigationContainer>
+      }}
+    >
+      {token ? (
+        <Auth />
+      ) : (
+        <NavigationContainer>
+          <Stack.Navigator>
+            <Stack.Screen
+              name="Login"
+              options={{ headerShown: false }}
+              component={Login}
+            />
+          </Stack.Navigator>
+        </NavigationContainer>
+      )}
       <StatusBar animated barStyle="light-content" />
     </AuthContext.Provider>
   );

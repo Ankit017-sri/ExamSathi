@@ -325,7 +325,7 @@ export const AppNavigator = ({onLayout}) => {
           }}
         />
 
-        <Tab.Screen
+        {/* <Tab.Screen
           name="AccountNFeedback"
           component={AccountScreen}
           listeners={{
@@ -335,7 +335,7 @@ export const AppNavigator = ({onLayout}) => {
             },
             focus: () => animate(width / 2 + width / 4),
           }}
-        />
+        /> */}
       </Tab.Navigator>
     </>
   );
