@@ -1,5 +1,5 @@
 import { CometChat } from "@cometchat-pro/react-native-chat";
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState, useContext } from "react";
 import {
   Text,
   View,
@@ -8,12 +8,14 @@ import {
   ScrollView,
   TouchableOpacity,
   FlatList,
+  BackHandler,
 } from "react-native";
-import GroupDetails from "../GroupDetails";
-import CustomHeader from "../../components/CustomHeader";
-import cache from "../../utilities/cache";
-import { useNavigation } from "@react-navigation/native";
 import { Mixpanel } from "mixpanel-react-native";
+
+import GroupDetails from "../GroupDetails";
+import MediaViewer from "../../components/MediaViewer";
+import AuthContext from "../../auth/context";
+import CustomHeader from "../../components/CustomHeader";
 
 const trackAutomaticEvents = true;
 const mixpanel = new Mixpanel(
@@ -22,8 +24,8 @@ const mixpanel = new Mixpanel(
 );
 
 mixpanel.init();
+
 const Group = () => {
-  const navigation = useNavigation();
   const [groups, setGroups] = useState([
     { name: "yash" },
     { name: "yash" },
@@ -32,29 +34,21 @@ const Group = () => {
     { name: "yash" },
     { name: "yash" },
   ]);
-  const [selectedGroup, setselectedGroup] = useState("discussion");
-  const [userData, setUserData] = useState({});
-  const listViewRef = useRef(null);
+  const [selectedGroup, setselectedGroup] = useState("daily_revision");
   const [index, setIndex] = useState(0);
+  const [isShowingMedia, setIsShowingMedia] = useState(false);
+  const [mediaDetails, setMediaDetails] = useState({ url: "", type: "" });
   const [currTab, setCurrTab] = useState("सराव अड्डा");
+
+  const listViewRef = useRef(null);
+
+  const { setTabBarVisible } = useContext(AuthContext);
+
   let limit = 5;
   let groupsRequest = new CometChat.GroupsRequestBuilder()
     .setLimit(limit)
     .build();
 
-  const restoreUser = async () => {
-    const data = await cache.get("user");
-    // console.log("aaaa", data);
-    setUserData({
-      userId: data?._id,
-      userName: data?.fullName,
-      userMobile: data?.phoneNumber,
-    });
-  };
-
-  useEffect(() => {
-    restoreUser();
-  }, []);
   useEffect(() => {
     groupsRequest.fetchNext().then(
       (groupList) => {
@@ -65,7 +59,7 @@ const Group = () => {
         console.log("Groups list fetching failed with error", error);
       }
     );
-  }, [userData]);
+  }, []);
 
   useEffect(() => {
     listViewRef.current.scrollToIndex({
@@ -90,7 +84,7 @@ const Group = () => {
     );
   };
   const unReadMsg = (uid) => {
-    let UID = "uuu";
+    let UID = uid;
 
     CometChat.getUnreadMessageCountForUser(UID).then(
       (array) => {
@@ -101,6 +95,23 @@ const Group = () => {
       }
     );
   };
+
+  useEffect(() => {
+    const backAction = () => {
+      if (isShowingMedia) {
+        setIsShowingMedia(false);
+        setTabBarVisible(true);
+        return true;
+      } else return false;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+
+    return () => backHandler.remove();
+  }, [isShowingMedia]);
 
   useEffect(() => {
     mixpanel.timeEvent(`time_spent_on_${currTab}_tab`);
@@ -121,15 +132,15 @@ const Group = () => {
   }, [currTab]);
 
   const GroupList = ({ item, index: findex }) => {
-    joingroup(userData?.userId);
-    // unReadMsg(item.guid)
+    joingroup(item.guid);
+    // unReadMsg(item.guid);
     return (
       <View style={{ justifyContent: "center", alignItems: "center" }}>
         <TouchableOpacity
           onPress={() => {
-            setCurrTab(item?.name),
-              setselectedGroup(item.guid),
-              setIndex(findex);
+            setCurrTab(item?.name);
+            setselectedGroup(item.guid);
+            setIndex(findex);
           }}
           style={{
             width: 95,
@@ -144,7 +155,7 @@ const Group = () => {
             style={{ width: 35, height: 35, resizeMode: "contain" }}
             source={{ uri: item?.icon }}
           />
-          {/* <Image style={{ width: 30, height: 30, resizeMode: 'contain', marginTop: 2 }} source={require('../assets/images/books.png')} /> */}
+          {/* <Image style={{ width: 30, height: 30, resizeMode: 'contain', marginTop: 2 }} source={require('../../assets/images/books.png')} /> */}
           <Text
             style={{
               fontWeight: "600",
@@ -162,6 +173,7 @@ const Group = () => {
       </View>
     );
   };
+
   return (
     <View
       style={{
@@ -177,31 +189,15 @@ const Group = () => {
         backgroundColor="transparent"
         translucent
       />
-
       <View
         style={{
-          // padding: 15,
+          padding: 15,
           width: "100%",
-          backgroundColor: "#084347",
+          backgroundColor: "#242F40",
           height: 155,
         }}
       >
-        <CustomHeader
-          title="ExamSathi"
-          share
-          navigation={navigation}
-          // sub={`${memCount} members, ${len} online`}
-        />
-        {/* <View style={{ justifyContent: 'space-between', flexDirection: 'row', marginTop: 10, alignItems: 'center', marginTop: 18 }}>
-          <Text style={{ fontSize: 18, color: '#fff', fontWeight: 'bold' }}>Exam Sathi</Text>
-          <View style={{ backgroundColor: '#2AC503', borderRadius: 10, flexDirection: 'row', alignItems: 'center', pending: 5 }}>
-            <Text style={{ fontSize: 12 }}> मित्र आमंत्रित करा </Text>
-            <Image style={{ width: 15, height: 15, resizeMode: 'contain', marginHorizontal: 5 }} source={require('../../assets/images/whatsapp.png')} />
-          </View>
-          <View style={{ alignItems: 'center', width: 20, height: 20, borderRadius: 10, borderColor: '#fff', borderWidth: 1 }}>
-            <Image style={{ width: 15, height: 15, resizeMode: 'contain', marginHorizontal: 5 }} source={require('../../assets/images/person.png')} />
-          </View>
-        </View> */}
+        <CustomHeader title="Exam Sathi" share />
         <FlatList
           ref={listViewRef}
           initialScrollIndex={index}
@@ -209,24 +205,15 @@ const Group = () => {
           horizontal={true}
           data={groups}
           renderItem={GroupList}
-          // scrollToIndex={({
-          //   index,animated:true,viewPosition:0.5
-          // })}
           showsHorizontalScrollIndicator={false}
         />
       </View>
-      {console.log("print select", selectedGroup)}
-      {selectedGroup === "daily_revision" ? (
-        <GroupDetails guid={selectedGroup} />
-      ) : selectedGroup === "discussion" ? (
-        <GroupDetails guid={selectedGroup} />
-      ) : selectedGroup === "doubt_group" ? (
-        <GroupDetails guid={"doubt_group"} />
-      ) : selectedGroup === "motivation" ? (
-        <GroupDetails guid={selectedGroup} />
-      ) : (
-        <GroupDetails guid={selectedGroup} />
-      )}
+      <GroupDetails
+        guid={selectedGroup}
+        setIsShowingMedia={setIsShowingMedia}
+        setMediaDetails={setMediaDetails}
+      />
+      {isShowingMedia && <MediaViewer mediaDetails={mediaDetails} />}
     </View>
   );
 };

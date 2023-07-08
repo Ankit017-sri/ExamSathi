@@ -15,7 +15,7 @@ import {
 } from "react-native";
 import { CometChat } from "@cometchat-pro/react-native-chat";
 
-import { COMETCHAT_CONSTANTS } from "../../support/privateKey";
+import { COMETCHAT_CONSTANTS } from "../../utilities/privateKey";
 // import Home from './src/Home';
 
 const SignupScreen = ({ navigation }) => {

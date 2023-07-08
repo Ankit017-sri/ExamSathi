@@ -16,7 +16,7 @@ import baseUrl from "../baseUrl";
 import cache from "../utilities/cache";
 import { Mixpanel } from "mixpanel-react-native";
 import { CometChat } from "@cometchat-pro/react-native-chat";
-import { COMETCHAT_CONSTANTS } from "../support/privateKey";
+import { COMETCHAT_CONSTANTS } from "../utilities/privateKey";
 import { useNavigation } from "@react-navigation/native";
 
 const trackAutomaticEvents = true;

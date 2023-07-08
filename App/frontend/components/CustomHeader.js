@@ -27,7 +27,6 @@ const CustomHeader = ({
   imgUri,
   setTabBarVisible,
   share,
-  // appShareCount,
   mute,
   group,
 }) => {
@@ -200,7 +199,6 @@ const CustomHeader = ({
               }}
               onPress={Share}
             >
-              {/* <Icon name="logo-whatsapp" color="#25D366" size={25} /> */}
               <Image
                 source={require("../assets/WhatsApp.svg.png")}
                 style={{ width: 30, height: 30 }}
@@ -236,12 +234,12 @@ const styles = StyleSheet.create({
     width: "100%",
     height: 45 + Constants.statusBarHeight,
     // backgroundColor: Colors.primary,
-    backgroundColor: "#084347",
+    // backgroundColor: "#084347",
     justifyContent: "center",
     alignItems: "flex-end",
     // elevation: 5,
     // marginBottom: 5,
-    paddingBottom: 10,
+    // paddingBottom: 10,
     flexDirection: "row",
   },
   title: {
