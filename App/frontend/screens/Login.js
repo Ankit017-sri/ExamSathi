@@ -155,17 +155,19 @@ const Login = () => {
     mixpanel.track("login_page_visited");
     mixpanel.timeEvent("time_spent_on_login_screen");
 
-    mixpanel
-      .eventElapsedTime("time_spent_on_login_screen")
-      .then((duration) => {
-        mixpanel.track("login_screen_time", {
-          duration: `${duration + " second"}`,
+    return () => {
+      mixpanel
+        .eventElapsedTime("time_spent_on_login_screen")
+        .then((duration) => {
+          mixpanel.track("login_screen_time", {
+            duration: `${duration + " second"}`,
+          });
+          mixpanel.clearSuperProperties("time_spent_on_login_screen");
+        })
+        .catch((error) => {
+          console.error("Error calculating screen time:", error);
         });
-        mixpanel.clearSuperProperties("time_spent_on_login_screen");
-      })
-      .catch((error) => {
-        console.error("Error calculating screen time:", error);
-      });
+    };
   }, []);
 
   return (

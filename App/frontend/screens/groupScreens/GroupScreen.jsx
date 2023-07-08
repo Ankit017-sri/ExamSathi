@@ -13,7 +13,15 @@ import GroupDetails from "../GroupDetails";
 import CustomHeader from "../../components/CustomHeader";
 import cache from "../../utilities/cache";
 import { useNavigation } from "@react-navigation/native";
+import { Mixpanel } from "mixpanel-react-native";
 
+const trackAutomaticEvents = true;
+const mixpanel = new Mixpanel(
+  "fcab386593bfcae67eaafb8136754929",
+  trackAutomaticEvents
+);
+
+mixpanel.init();
 const Group = () => {
   const navigation = useNavigation();
   const [groups, setGroups] = useState([
@@ -28,6 +36,7 @@ const Group = () => {
   const [userData, setUserData] = useState({});
   const listViewRef = useRef(null);
   const [index, setIndex] = useState(0);
+  const [currTab, setCurrTab] = useState("सराव अड्डा");
   let limit = 5;
   let groupsRequest = new CometChat.GroupsRequestBuilder()
     .setLimit(limit)
@@ -35,7 +44,7 @@ const Group = () => {
 
   const restoreUser = async () => {
     const data = await cache.get("user");
-    console.log("aaaa", data);
+    // console.log("aaaa", data);
     setUserData({
       userId: data?._id,
       userName: data?.fullName,
@@ -93,15 +102,34 @@ const Group = () => {
     );
   };
 
+  useEffect(() => {
+    mixpanel.timeEvent(`time_spent_on_${currTab}_tab`);
+
+    return () => {
+      mixpanel
+        .eventElapsedTime(`time_spent_on_${currTab}_tab`)
+        .then((duration) => {
+          mixpanel.track(`time_spent_on_${currTab}_tab`, {
+            duration: `${duration + " second"}`,
+          });
+          mixpanel.clearSuperProperties(`time_spent_on_${currTab}_tab`);
+        })
+        .catch((error) => {
+          console.error("Error calculating screen time:", error);
+        });
+    };
+  }, [currTab]);
+
   const GroupList = ({ item, index: findex }) => {
     joingroup(userData?.userId);
-    console.log("object", userData?.userId);
     // unReadMsg(item.guid)
     return (
       <View style={{ justifyContent: "center", alignItems: "center" }}>
         <TouchableOpacity
           onPress={() => {
-            setselectedGroup(item.guid), setIndex(findex);
+            setCurrTab(item?.name),
+              setselectedGroup(item.guid),
+              setIndex(findex);
           }}
           style={{
             width: 95,
