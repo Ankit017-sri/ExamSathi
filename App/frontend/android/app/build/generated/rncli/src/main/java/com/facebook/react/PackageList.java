@@ -31,6 +31,8 @@ import com.swmansion.gesturehandler.RNGestureHandlerPackage;
 import com.reactnative.ivpusic.imagepicker.PickerPackage;
 // react-native-keychain
 import com.oblador.keychain.KeychainPackage;
+// react-native-pager-view
+import com.reactnativepagerview.PagerViewPackage;
 // react-native-push-notification
 import com.dieam.reactnativepushnotification.ReactNativePushNotificationPackage;
 // react-native-reanimated
@@ -96,6 +98,7 @@ public class PackageList {
       new RNGestureHandlerPackage(),
       new PickerPackage(),
       new KeychainPackage(),
+      new PagerViewPackage(),
       new ReactNativePushNotificationPackage(),
       new ReanimatedPackage(),
       new SafeAreaContextPackage(),
