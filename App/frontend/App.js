@@ -21,6 +21,8 @@ import AuthContext from "./auth/context";
 import Auth from "./navigation/newAuthNavigation/authNavigation";
 import TabBar from "./navigation/newBottomTabBar/tabBar";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { COMETCHAT_CONSTANTS } from "./utilities/privateKey";
+import { CometChat } from "@cometchat-pro/react-native-chat";
 
 // import React from "react";
 // import { Button, SafeAreaView } from "react-native";
@@ -74,55 +76,23 @@ export default function App() {
     setPhone(data?.phoneNumber);
   };
 
-  // const checkForUpdates = async () => {
-  //   if (!__DEV__) {
-  //     const currentVersion = Application.nativeApplicationVersion;
-  //     //console.log(currentVersion);
-  //     const storeUrl =
-  //       Platform.OS === 'android'
-  //         ? 'https://play.google.com/store/apps/details?id=com.examSathi.examSathi'
-  //         : 'https://itunes.apple.com/lookup?bundleId=com.examSathi.examSathi';
+  let appID = COMETCHAT_CONSTANTS.APP_ID;
+  let region = COMETCHAT_CONSTANTS.REGION;
+  let appSetting = new CometChat.AppSettingsBuilder()
+    .subscribePresenceForAllUsers()
+    .setRegion(region)
+    .autoEstablishSocketConnection(true)
+    .build();
+  CometChat.init(appID, appSetting).then(
+    () => {
+      console.log("Initialization completed successfully");
+    },
+    (error) => {
+      Alert.alert(error.message);
+      console.log("Initialization failed with error:", error);
+    }
+  );
 
-  //     try {
-  //       const check = await checkVersion({
-  //         version: currentVersion, // app local version
-  //         iosStoreURL: storeUrl,
-  //         androidStoreURL: storeUrl,
-  //         country: 'in', // default value is 'jp'
-  //       });
-
-  //       if (check.result === 'new') {
-  //         Alert.alert('Update Available', 'please update to latest version ', [
-  //           {
-  //             text: 'update',
-  //             onPress: () => {
-  //               Linking.openURL(storeUrl);
-  //             },
-  //           },
-  //         ]);
-  //       }
-  //       // console.log(check);
-  //     } catch (e) {
-  //       console.log(e);
-  //     }
-  //   }
-  // };
-
-  // const checkForOTAUpdates = async () => {
-  //   if (!__DEV__) {
-  //     const update = await Updates.checkForUpdateAsync();
-  //     if (update.isAvailable) {
-  //       await Updates.fetchUpdateAsync();
-  //       // Wait for the new update to be downloaded and applied
-  //       await Updates.reloadAsync();
-  //     }
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   checkForUpdates();
-  //   checkForOTAUpdates();
-  // });
   useEffect(() => {
     async function prepare() {
       try {
