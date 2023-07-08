@@ -47,11 +47,9 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 // };
 
 enableScreens();
-// const firebaseConfig = {
-//   apiKey: 'AIzaSyD_xKWXwUUEkQyYqPKNTbqOrieC6AvUVy0',
-// };
-
-// initializeApp(firebaseConfig);
+import messaging from "@react-native-firebase/messaging";
+import PushNotification from "react-native-push-notification";
+import InputComponent from "./components/InputComponent";
 
 export default function App() {
   const [isReady, setIsReady] = useState(false);
@@ -61,6 +59,50 @@ export default function App() {
   const [phone, setPhone] = useState("");
   const [tabBarVisible, setTabBarVisible] = useState(true);
   const [updateAvailable, setUpdateAvailable] = useState(false);
+
+  useEffect(() => {
+    const requestUserPermission = async () => {
+      const authStatus = await messaging().requestPermission();
+
+      if (authStatus === messaging.AuthorizationStatus.AUTHORIZED) {
+        console.log("User has authorized notification permissions");
+      } else if (authStatus === messaging.AuthorizationStatus.PROVISIONAL) {
+        console.log("User has provisional notification permissions");
+      }
+    };
+
+    requestUserPermission();
+
+    const getToken = async () => {
+      const token = await messaging().getToken();
+      console.log("Device Token:", token);
+    };
+
+    getToken();
+  }, []);
+
+  useEffect(() => {
+    messaging().setBackgroundMessageHandler(async (remoteMessage) => {
+      console.log("Message handled in the background!", remoteMessage);
+    });
+    messaging().onMessage(async (remoteMessage) => {
+      PushNotification.createChannel(
+        {
+          channelId: "123456", // Choose any channel ID
+          channelName: "My Channel", // Choose any channel name
+        },
+        () => {}
+      );
+      let notificationObj = {
+        channelId: "123456",
+        title: remoteMessage?.notification?.title,
+        message: remoteMessage?.notification?.body,
+      };
+      console.log("object", notificationObj);
+      PushNotification.localNotification(notificationObj);
+      console.log("Message handled now!", remoteMessage);
+    });
+  }, []);
 
   const restoreToken = async () => {
     const storedTokens = await authStorage.getToken();
@@ -155,6 +197,7 @@ export default function App() {
   if (!isReady) {
     return null;
   }
+
   console.log(token);
   const Stack = createNativeStackNavigator();
 
@@ -173,6 +216,7 @@ export default function App() {
         setTabBarVisible,
       }}
     >
+      <InputComponent />
       {token ? (
         <Auth />
       ) : (
