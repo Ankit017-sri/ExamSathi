@@ -30,7 +30,7 @@ const InputComponent = () => {
         margin: 2,
         //you can change position option!
         position: "absolute",
-        bottom: 0,
+        bottom: 80,
       }}
     >
       <TextInput

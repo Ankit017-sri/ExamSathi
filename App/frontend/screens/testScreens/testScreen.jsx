@@ -46,9 +46,10 @@ function Test({ navigation }) {
         translucent
       />
       <CustomHeader
-        title="ExamSathi"
+        title="Exam Sathi"
         share
         navigation={navigation}
+        bgColor={"#084347"}
         // sub={`${memCount} members, ${len} online`}
       />
       {/* top tabbar */}

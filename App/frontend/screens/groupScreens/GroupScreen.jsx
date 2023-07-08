@@ -191,7 +191,6 @@ const Group = () => {
       />
       <View
         style={{
-          padding: 15,
           width: "100%",
           backgroundColor: "#242F40",
           height: 155,

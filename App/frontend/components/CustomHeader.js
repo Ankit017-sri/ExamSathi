@@ -29,6 +29,7 @@ const CustomHeader = ({
   share,
   mute,
   group,
+  bgColor,
 }) => {
   const [isMuted, setIsMuted] = useState(false);
   const { token } = useContext(AuthContext);
@@ -114,6 +115,7 @@ const CustomHeader = ({
           height: sub
             ? 60 + Constants.statusBarHeight
             : 45 + Constants.statusBarHeight,
+          backgroundColor: bgColor,
         },
       ]}
     >
@@ -233,13 +235,8 @@ const styles = StyleSheet.create({
   headerContainer: {
     width: "100%",
     height: 45 + Constants.statusBarHeight,
-    // backgroundColor: Colors.primary,
-    // backgroundColor: "#084347",
     justifyContent: "center",
     alignItems: "flex-end",
-    // elevation: 5,
-    // marginBottom: 5,
-    // paddingBottom: 10,
     flexDirection: "row",
   },
   title: {
