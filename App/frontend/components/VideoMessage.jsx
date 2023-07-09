@@ -49,6 +49,7 @@ const VideoMessage = ({
             width: "100%",
             alignItems: "center",
             justifyContent: "center",
+            borderRadius: 10,
           }}
         >
           <Icon name="play-circle" size={44} color={"white"} />
@@ -63,6 +64,8 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    borderRadius: 10,
+    padding: 6,
   },
   //   backgroundImage: {
   //     flex: 1,

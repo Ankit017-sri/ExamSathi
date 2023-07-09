@@ -26,14 +26,7 @@ const mixpanel = new Mixpanel(
 mixpanel.init();
 
 const Group = () => {
-  const [groups, setGroups] = useState([
-    { name: "yash" },
-    { name: "yash" },
-    { name: "yash" },
-    { name: "yash" },
-    { name: "yash" },
-    { name: "yash" },
-  ]);
+  const [groups, setGroups] = useState([""]);
   const [selectedGroup, setselectedGroup] = useState("daily_revision");
   const [index, setIndex] = useState(0);
   const [isShowingMedia, setIsShowingMedia] = useState(false);
@@ -60,6 +53,10 @@ const Group = () => {
       }
     );
   }, []);
+
+  useEffect(() => {
+    if (groups.length > 1) setselectedGroup("daily_revision");
+  }, [groups]);
 
   useEffect(() => {
     listViewRef.current.scrollToIndex({

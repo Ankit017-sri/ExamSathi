@@ -16,7 +16,6 @@ import { createMaterialTopTabNavigator } from "@react-navigation/material-top-ta
 import RevisionQuizScreen from "../RevisionQuizScreen";
 import CustomHeader from "../../components/CustomHeader";
 
-const Tab = createMaterialTopTabNavigator();
 function Test({ navigation }) {
   const [isRivisionOpen, setIsRivisionOpen] = useState(true);
   const logout = (navigation) => {

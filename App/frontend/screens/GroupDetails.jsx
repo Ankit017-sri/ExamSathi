@@ -33,6 +33,7 @@ import InputComponent from "../components/InputComponent";
 import { openCamera } from "react-native-image-crop-picker";
 import { createThumbnail } from "react-native-create-thumbnail";
 import VideoMessage from "../components/VideoMessage";
+import PdfMessage from "../components/PdfMessage";
 
 const GroupDetails = ({ guid, setIsShowingMedia, setMediaDetails }) => {
   const [messages, setMessages] = useState([]);
@@ -64,7 +65,9 @@ const GroupDetails = ({ guid, setIsShowingMedia, setMediaDetails }) => {
           }
         },
         onMediaMessageReceived: (mediaMessage) => {
-          setMessages((messages) => [...messages, mediaMessage]);
+          if (mediaMessage.conversationId === "group_" + guid) {
+            setMessages((messages) => [...messages, mediaMessage]);
+          }
         },
         onCustomMessageReceived: (customMessage) => {
           console.log("Custom message received successfully", customMessage);
@@ -100,7 +103,7 @@ const GroupDetails = ({ guid, setIsShowingMedia, setMediaDetails }) => {
     let receiverType = "group";
     let textMessage = new CometChat.TextMessage(
       guid,
-      messageText,
+      messageText.trim(),
       receiverType
     );
 
@@ -332,7 +335,7 @@ const GroupDetails = ({ guid, setIsShowingMedia, setMediaDetails }) => {
   };
 
   const urlRegex =
-    /^(?:(?:https?|ftp):\/\/)?(?:www\.)?([a-zA-Z0-9-]+(?:\.[a-zA-Z]+)+)$/;
+    /^(?:(?:https?:\/\/)?(?:www\.)?|(?:www\.))([a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*\.[a-zA-Z]{2,})(?:\/.*)?$/;
 
   return (
     <View style={{ flex: 1 }}>
@@ -353,7 +356,7 @@ const GroupDetails = ({ guid, setIsShowingMedia, setMediaDetails }) => {
                   backgroundColor:
                     userDetail?.name == m?.sender.name ? "#3696FF" : "#fff",
                   marginVertical: 5,
-                  maxWidth: "72%",
+                  maxWidth: "80%",
                   minWidth: 80,
                   marginLeft: 10,
                   borderRadius: 10,
@@ -398,24 +401,33 @@ const GroupDetails = ({ guid, setIsShowingMedia, setMediaDetails }) => {
                   >
                     {m.data.entities.sender.entity.name.split(" ")[0]}
                   </Text>
-                  <Text
-                    style={{
-                      fontSize: 15,
-                      color:
-                        userDetail?.name == m?.sender.name ? "#fff" : "#000",
-                      marginTop: 5,
-                    }}
-                  >
-                    {urlRegex.test(m.data.text) ? (
-                      <TouchableOpacity
-                        onPress={() => openUrl({ url: m.data.text })}
+
+                  {urlRegex.test(m.data.text.trim()) ? (
+                    <TouchableOpacity
+                      onPress={() => openUrl({ url: m.data.text })}
+                    >
+                      <Text
+                        style={{
+                          color: "blue",
+                          fontSize: 15,
+                          marginTop: 5,
+                        }}
                       >
-                        <Text style={{ color: "blue" }}>{m.data.text}</Text>
-                      </TouchableOpacity>
-                    ) : (
-                      <Text>{m.data.text}</Text>
-                    )}
-                  </Text>
+                        {m.data.text}
+                      </Text>
+                    </TouchableOpacity>
+                  ) : (
+                    <Text
+                      style={{
+                        fontSize: 15,
+                        color:
+                          userDetail?.name == m?.sender.name ? "#fff" : "#000",
+                        marginTop: 5,
+                      }}
+                    >
+                      {m.data.text}
+                    </Text>
+                  )}
                 </TouchableOpacity>
               </View>
               <Text
@@ -458,34 +470,10 @@ const GroupDetails = ({ guid, setIsShowingMedia, setMediaDetails }) => {
                 </Text>
                 <View>
                   {m.data?.attachments[0].url.indexOf(".pdf") != -1 ? (
-                    <TouchableOpacity
-                      style={{
-                        width: 200,
-                        height: 90,
-                        backgroundColor:
-                          userDetail?.name == m?.sender.name
-                            ? "#3696FF"
-                            : "#fff",
-                        borderRadius: 10,
-                        alignItems: "center",
-                      }}
-                      onPress={() => {
-                        Linking.openURL(m.data?.attachments[0].url);
-                      }}
-                    >
-                      <Image
-                        style={{ width: 35, height: 35 }}
-                        source={require("../assets/images/download-pdf.png")}
-                      />
-                      <Text style={{ fontSize: 13, fontWeight: "bold" }}>
-                        {m.data?.attachments[0]?.name}{" "}
-                      </Text>
-
-                      <Text style={{ fontSize: 13, fontWeight: "bold" }}>
-                        {" "}
-                        CLICK TO OPEN AND DOWNLOAD PDF FILE
-                      </Text>
-                    </TouchableOpacity>
+                    <PdfMessage
+                      pdfDetails={m.data.attachments[0]}
+                      isSent={userDetail?.name == m?.sender.name}
+                    />
                   ) : m.data.type === "image" ? (
                     <View
                       style={{
@@ -530,8 +518,6 @@ const GroupDetails = ({ guid, setIsShowingMedia, setMediaDetails }) => {
                       <View
                         style={{
                           flex: 1,
-                          // justifyContent: "center",
-                          // alignItems: "center",
                         }}
                       >
                         {loading ? (
