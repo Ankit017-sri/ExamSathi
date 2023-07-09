@@ -37,6 +37,7 @@ const InputComponent = ({
         backgroundColor: "#084347",
         borderRadius: 20,
         padding: 3,
+        width: "100%",
       }}
     >
       <TextInput
@@ -49,10 +50,13 @@ const InputComponent = ({
         onContentSizeChange={handleContentSizeChange}
         style={[
           { height: Math.max(40, textInputHeight) },
-          { fontSize: 14, color: "white", paddingLeft: 16, width: "70%" },
+          {
+            fontSize: 14,
+            color: "white",
+            width: "63%",
+            marginLeft: 10,
+          },
         ]}
-        // onFocus={() => setTabBarVisible(false)}
-        // onBlur={() => setTabBarVisible(true)}
       />
       <View
         style={{
@@ -63,12 +67,13 @@ const InputComponent = ({
           backgroundColor: "#084347",
           borderRadius: 12,
           padding: 3,
+          // width: "30%",
         }}
       >
         <IconCamera
           name="camera"
           size={20}
-          style={{ paddingRight: 12 }}
+          style={{ marginRight: 12 }}
           color={"white"}
           onPress={onPressCamera}
         />

@@ -346,22 +346,19 @@ const GroupDetails = ({
     return parts.map((part, index) => {
       if (urlRegex.test(part)) {
         return (
-          <TouchableOpacity
-            onPress={() => openUrl({ url: part })}
-            style={{ marginVertical: -22 }}
-          >
+          <TouchableOpacity onPress={() => openUrl({ url: part })}>
             <Text key={index} style={{ color: "blue" }}>
               {part}
             </Text>
           </TouchableOpacity>
         );
-      }
-      return <Text style={{ marginTop: 5, color: "black" }}>{part}</Text>;
+      } else if (part !== "")
+        return <Text style={{ color: "black" }}>{part}</Text>;
     });
   };
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1, paddingHorizontal: 10 }}>
       <ScrollView ref={scrollViewRef} onContentSizeChange={scrollToBottom}>
         {messages.map((m) =>
           m.data.text ? (
