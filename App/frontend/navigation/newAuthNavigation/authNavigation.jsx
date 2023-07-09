@@ -8,6 +8,7 @@ import SignupScreen from "../../screens/loginScreens/SignupScreen";
 import TabBar from "../newBottomTabBar/tabBar";
 import Login from "../../screens/Login";
 import AccountScreen from "../../screens/Account";
+import Feedback from "../../screens/Feedback";
 
 const Stack = createNativeStackNavigator();
 
@@ -24,6 +25,11 @@ const Auth = () => {
           name="AccountScreen"
           options={{ headerShown: false }}
           component={AccountScreen}
+        />
+        <Stack.Screen
+          name="Feedback"
+          options={{ headerShown: false }}
+          component={Feedback}
         />
       </Stack.Navigator>
     </NavigationContainer>

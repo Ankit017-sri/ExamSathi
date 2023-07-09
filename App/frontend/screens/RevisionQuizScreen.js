@@ -28,7 +28,7 @@ import {
 } from "react-native-gesture-handler";
 import Constants from "../constants/index";
 import axios from "axios";
-import { useFocusEffect } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { io } from "socket.io-client";
 
 import CustomHeader from "../components/CustomHeader";
@@ -57,6 +57,7 @@ const RevisionQuizScreen = ({ navigation }) => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [randomNums, setRandomNums] = useState({ attempting: 0, online: 0 });
   const [score, setScore] = useState(0);
+  const customNavigation=useNavigation();
 
   const { token, Id } = useContext(AuthContext);
 
@@ -84,18 +85,26 @@ https://bit.ly/exam-sathi-app-playstore`;
     }
   };
 
-  const Share = async () => {
-    try {
-      const supported = await Linking.canOpenURL(whatsappUrl);
-      appShareCount();
-      if (supported) {
-        await Linking.openURL(whatsappUrl);
-      } else {
-        console.log(`Unable to open WhatsApp URL: ${whatsappUrl}`);
-      }
-    } catch (error) {
-      console.log(error);
-    }
+  const Share = () => {
+    let url = `whatsapp://send?text=" + ${shareMessage}`;
+    Linking.openURL(url)
+      .then((data) => {
+        console.log("WhatsApp Opened successfully " + data); //<---Success
+      })
+      .catch(() => {
+        alert("Make sure WhatsApp installed on your device"); //<---Error
+      });
+    // try {
+    //   Linking.openURL(whatsappUrl)
+    //     .then((data) => {
+    //       console.log("WhatsApp Opened successfully " + data); //<---Success
+    //     })
+    //     .catch(() => {
+    //       alert("Make sure WhatsApp installed on your device"); //<---Error
+    //     });
+    // } catch (error) {
+    //   console.log(error);
+    // }
   };
 
   const getNumbers = async () => {
@@ -424,7 +433,7 @@ https://bit.ly/exam-sathi-app-playstore`;
               flexDirection: "row",
             }}
             onPress={() => {
-              navigation.navigate("Feedback");
+              customNavigation.navigate("Feedback");
             }}
           >
             <Text

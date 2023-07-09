@@ -192,11 +192,11 @@ const Group = () => {
       <View
         style={{
           width: "100%",
-          backgroundColor: "#242F40",
-          height: 155,
+          backgroundColor: "#084347",
+          // height: 155,
         }}
       >
-        <CustomHeader title="Exam Sathi" share />
+        <CustomHeader title="ExamSathi" share />
         <FlatList
           ref={listViewRef}
           initialScrollIndex={index}
