@@ -46,7 +46,7 @@ const CustomHeader = ({
 
   const shareMessage = `मित्रा, हे app डाउनलोड कर आणि ग्रुप मध्ये जॉईन हो! भरतीच्या तयारी साठी खूप उपयुक्त आहे. ह्यात भरपूर free टेस्ट, fast updates आणि discussion ग्रुप आहेत. 
   Exam Sathi app
-  https://play.google.com/store/apps/details?id=com.examSathi.examSathi`;
+  https://bit.ly/ExamSathiApp`;
   const whatsappUrl = `whatsapp://send?text=${shareMessage}`;
 
   const appShareCount = async () => {
