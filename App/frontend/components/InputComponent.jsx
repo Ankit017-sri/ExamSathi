@@ -3,8 +3,15 @@ import React, { useState } from "react";
 import IconCamera from "react-native-vector-icons/Feather";
 import Icon from "react-native-vector-icons/Ionicons";
 import { TextInput } from "react-native-gesture-handler";
-const InputComponent = () => {
-  const [textInput, setTextInput] = useState("");
+
+const InputComponent = ({
+  onPressAttach,
+  onPressCamera,
+  onPressSend,
+  setTextInput,
+  textInput,
+}) => {
+  // const [textInput, setTextInput] = useState("");
   const [textInputHeight, setTextInputHeight] = useState(40);
   const MAX_NUMBER_OF_LINES = 3;
 
@@ -27,16 +34,13 @@ const InputComponent = () => {
         backgroundColor: "#084347",
         borderRadius: 20,
         padding: 3,
-        margin: 2,
-        //you can change position option!
-        position: "absolute",
-        bottom: 80,
       }}
     >
       <TextInput
         placeholder="  send message"
         placeholderTextColor={"gray"}
         onChangeText={setTextInput}
+        value={textInput}
         multiline={true}
         numberOfLines={100}
         onContentSizeChange={handleContentSizeChange}
@@ -45,7 +49,6 @@ const InputComponent = () => {
           { fontSize: 14, color: "white", paddingLeft: 16, width: "70%" },
         ]}
       />
-
       <View
         style={{
           display: "flex",
@@ -62,12 +65,14 @@ const InputComponent = () => {
           size={20}
           style={{ paddingRight: 9 }}
           color={"white"}
+          onPress={onPressCamera}
         />
         <Icon
           name="attach"
           size={24}
           style={{ paddingRight: 9 }}
           color={"white"}
+          onPress={onPressAttach}
         />
         <Icon
           name="send"
@@ -79,6 +84,7 @@ const InputComponent = () => {
               : { paddingRight: 9, opacity: 0.4, color: "white" }
           }
           color={"white"}
+          onPress={onPressSend}
         />
       </View>
     </View>

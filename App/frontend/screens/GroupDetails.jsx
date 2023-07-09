@@ -29,7 +29,10 @@ import { BottomSheet } from "react-native-btr";
 import moment from "moment";
 
 import AuthContext from "../auth/context";
-// import createThumbnail from "react-native-video-thumbnail"
+import InputComponent from "../components/InputComponent";
+import { openCamera } from "react-native-image-crop-picker";
+import { createThumbnail } from "react-native-create-thumbnail";
+import VideoMessage from "../components/VideoMessage";
 
 const GroupDetails = ({ guid, setIsShowingMedia, setMediaDetails }) => {
   const [messages, setMessages] = useState([]);
@@ -155,6 +158,8 @@ const GroupDetails = ({ guid, setIsShowingMedia, setMediaDetails }) => {
           {
             title: "Camera Permission",
             message: "App needs camera permission",
+            buttonPositive: "OK",
+            buttonNegative: "Cancel",
           }
         );
         // If CAMERA Permission is granted
@@ -210,14 +215,17 @@ const GroupDetails = ({ guid, setIsShowingMedia, setMediaDetails }) => {
   };
 
   const openGallery = async () => {
-    let result = await launchImageLibrary({
-      //   mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      base64: true,
-      // aspect: [4, 3],
-      quality: 1,
-    });
-    if (result.canceled) {
+    let result = await launchImageLibrary(
+      {
+        //   mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        base64: true,
+        // aspect: [4, 3],
+        quality: 1,
+      },
+      (res) => console.log(res)
+    );
+    if (result?.canceled) {
       // Handle cancellation...
       setVisible(false);
       return;
@@ -289,24 +297,24 @@ const GroupDetails = ({ guid, setIsShowingMedia, setMediaDetails }) => {
     let isCameraPermitted = await requestCameraPermission();
     let isStoragePermitted = await requestExternalWritePermission();
 
+    // console.log(isCameraPermitted);
+
     if (isCameraPermitted && isStoragePermitted) {
-      console.log("callper");
       launchCamera(options, (response) => {
-        console.log("Response = ", response);
         setVisible(false);
         if (response.didCancel) {
-          Alert("User cancelled camera picker");
           return;
         } else if (response.errorCode == "camera_unavailable") {
-          Alert("Camera not available on device");
+          alert("Camera not available on device");
           return;
         } else if (response.errorCode == "permission") {
-          Alert("Permission not satisfied");
+          alert("Permission not satisfied");
           return;
         } else if (response.errorCode == "others") {
-          Alert(response.errorMessage);
+          alert(response.errorMessage);
           return;
         }
+
         const file = {
           name: response?.assets[0]?.fileName,
           type: response?.assets[0]?.type,
@@ -314,8 +322,6 @@ const GroupDetails = ({ guid, setIsShowingMedia, setMediaDetails }) => {
         };
         setVisible(false);
         sendMediaMsg(file);
-        console.log("width ->image ", response);
-        console.log("width ->image ", response?.assets[0]?.uri);
       });
     }
   };
@@ -524,25 +530,19 @@ const GroupDetails = ({ guid, setIsShowingMedia, setMediaDetails }) => {
                       <View
                         style={{
                           flex: 1,
-                          justifyContent: "center",
-                          alignItems: "center",
+                          // justifyContent: "center",
+                          // alignItems: "center",
                         }}
                       >
                         {loading ? (
                           <ActivityIndicator size="large" color="#0000ff" />
                         ) : (
-                          <TouchableOpacity
-                            onPress={() => {
-                              setIsShowingMedia(true);
-                              setMediaDetails({
-                                url: m.data.attachments[0].url,
-                                type: "video",
-                              });
-                              setTabBarVisible(false);
-                            }}
-                          >
-                            <Text>Video</Text>
-                          </TouchableOpacity>
+                          <VideoMessage
+                            setIsShowingMedia={setIsShowingMedia}
+                            setMediaDetails={setMediaDetails}
+                            setTabBarVisible={setTabBarVisible}
+                            url={m.data.attachments[0].url}
+                          />
                         )}
                       </View>
                     )
@@ -572,54 +572,13 @@ const GroupDetails = ({ guid, setIsShowingMedia, setMediaDetails }) => {
           marginTop: 10,
         }}
       >
-        <TouchableOpacity
-          onPress={toggleBottomNavigationView}
-          style={{
-            height: 35,
-            width: 35,
-            alignItems: "center",
-            justifyContent: "center",
-            marginHorizontal: 5,
-            backgroundColor: "#ADD8E6",
-            elevation: 5,
-            borderRadius: 20,
-          }}
-        >
-          <Image
-            style={{ width: 20, height: 20 }}
-            source={require("../assets/images/+.png")}
-          />
-        </TouchableOpacity>
-        <TextInput
-          style={{
-            height: 40,
-            marginHorizontal: 5,
-            backgroundColor: "#ADD8E6",
-            elevation: 5,
-            borderRadius: 25,
-            padding: 10,
-            width: "68%",
-          }}
-          placeholder="Type a Message..."
-          value={messageText}
-          onChangeText={(text) => setMessageText(text)}
+        <InputComponent
+          setTextInput={setMessageText}
+          textInput={messageText}
+          onPressAttach={toggleBottomNavigationView}
+          onPressCamera={() => captureImage("photo")}
+          onPressSend={sendMessage}
         />
-        {messageText ? (
-          <Button title="Send" onPress={sendMessage} />
-        ) : (
-          <View
-            style={{
-              backgroundColor: "#ccc",
-              width: 48,
-              height: 38,
-              borderRadius: 4,
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <Text style={{ color: "#FFF" }}>SEND</Text>
-          </View>
-        )}
       </View>
       <BottomSheet
         visible={visible}
@@ -627,18 +586,6 @@ const GroupDetails = ({ guid, setIsShowingMedia, setMediaDetails }) => {
         onBackdropPress={toggleBottomNavigationView}
       >
         <View style={styles.bottomNavigationView}>
-          <TouchableOpacity
-            onPress={() => captureImage("photo")}
-            style={{ alignItems: "center" }}
-          >
-            <View style={styles.button}>
-              <Image
-                style={{ width: 20, height: 20, color: "blue" }}
-                source={require("../assets/images/image-gallery.png")}
-              />
-            </View>
-            <Text style={{ color: "#fff" }}>Camera</Text>
-          </TouchableOpacity>
           <TouchableOpacity
             onPress={openGallery}
             style={{ alignItems: "center" }}
@@ -670,7 +617,7 @@ const GroupDetails = ({ guid, setIsShowingMedia, setMediaDetails }) => {
             <View style={styles.button}>
               <Image
                 style={{ width: 20, height: 20, color: "blue" }}
-                source={require("../assets/images/image-gallery.png")}
+                source={require("../assets/images/video.png")}
               />
             </View>
             <Text style={{ color: "#fff" }}>Video</Text>

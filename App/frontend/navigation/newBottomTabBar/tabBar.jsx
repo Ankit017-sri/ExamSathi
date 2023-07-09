@@ -1,16 +1,19 @@
 /* eslint-disable */
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Image, View, Text, ImageBackground } from "react-native";
 import Group from "../../screens/groupScreens/GroupScreen";
 import Test from "../../screens/testScreens/testScreen";
+import AuthContext from "../../auth/context";
+
 const Tab = createBottomTabNavigator();
+
 export default function TabBar() {
+  const { tabBarVisible } = useContext(AuthContext);
+
   return (
     <Tab.Navigator
       initialRouteName="Group"
-      // tabBarOptions={{ showLabel: true }}
-
       screenOptions={{
         tabBarActiveTintColor: "blue",
         tabBarStyle: {
@@ -19,6 +22,7 @@ export default function TabBar() {
           height: 75,
           paddingBottom: 10,
           marginTop: 10,
+          display: tabBarVisible ? "flex" : "none",
         },
       }}
     >

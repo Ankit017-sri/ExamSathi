@@ -173,7 +173,6 @@ export const AppNavigator = ({ onLayout }) => {
   const notificationListener = useRef();
   const responseListener = useRef();
 
-  const { tabBarVisible } = useContext(AuthContext);
   const [keyboardIsVisible, setKeyboardIsVisible] = useState(false);
 
   const { token } = useContext(AuthContext);

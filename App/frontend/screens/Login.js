@@ -42,15 +42,6 @@ const Login = () => {
     .setRegion(region)
     .autoEstablishSocketConnection(true)
     .build();
-  CometChat.init(appID, appSetting).then(
-    () => {
-      console.log("Initialization completed successfully");
-    },
-    (error) => {
-      Alert.alert(error.message);
-      console.log("Initialization failed with error:", error);
-    }
-  );
 
   const authContext = useContext(AuthContext);
 
@@ -84,12 +75,12 @@ const Login = () => {
       //cometchat code
 
       let authKey = COMETCHAT_CONSTANTS.AUTH_KEY;
-      let uid = name;
+      let uid = result?.data.user._id;
       // let name = name;
 
-      let user = new CometChat.User(name);
+      let user = new CometChat.User(uid);
 
-      user.setName(name);
+      user.setName(result?.data.user.fullName);
 
       CometChat.createUser(user, authKey)
         .then(
@@ -107,24 +98,18 @@ const Login = () => {
             (user) => {
               console.log("user---", user);
               if (!user) {
-                CometChat.login(name, authKey)
-                  .then(
-                    (user) => {
-                      console.log("Login Successful:", { user });
-                      authStorage.storeToken(result?.data.token);
-                      authContext.setToken(result?.data.token);
-                      authContext.setPhone(result.data.user.phoneNumber);
-                      authContext.setName(result.data.user.fullName);
-                      authContext.setId(result.data.user._id);
-                      setLoading(false);
-                      console.log(result?.data.token);
-                      setIsLoggedIn(true);
-                    }
-                    // (error) => {
-                    //   Alert.alert(error.message);
-                    //   console.log("Login failed with exception:", { error });
-                    // }
-                  )
+                CometChat.login(uid, authKey)
+                  .then((user) => {
+                    console.log("Login Successful:", { user });
+                    authStorage.storeToken(result?.data.token);
+                    authContext.setToken(result?.data.token);
+                    authContext.setPhone(result.data.user.phoneNumber);
+                    authContext.setName(result.data.user.fullName);
+                    authContext.setId(result.data.user._id);
+                    setLoading(false);
+                    console.log(result?.data.token);
+                    setIsLoggedIn(true);
+                  })
                   .catch((error) => {
                     Alert.alert(error.message);
                     console.log("Login failed with exception:", { error });
@@ -148,9 +133,15 @@ const Login = () => {
   };
 
   useEffect(() => {
-    var authKey = COMETCHAT_CONSTANTS.AUTH_KEY;
-
-    console.log(authKey);
+    CometChat.init(appID, appSetting).then(
+      () => {
+        console.log("Initialization completed successfully");
+      },
+      (error) => {
+        Alert.alert(error.message);
+        console.log("Initialization failed with error:", error);
+      }
+    );
 
     mixpanel.track("login_page_visited");
     mixpanel.timeEvent("time_spent_on_login_screen");

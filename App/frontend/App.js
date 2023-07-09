@@ -186,7 +186,6 @@ export default function App() {
         setTabBarVisible,
       }}
     >
-      <InputComponent />
       {token ? (
         <Auth />
       ) : (
