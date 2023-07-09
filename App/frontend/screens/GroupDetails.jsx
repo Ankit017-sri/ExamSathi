@@ -468,7 +468,7 @@ const GroupDetails = ({
                     marginLeft: 10,
                     marginBottom: 5,
                     fontSize: 14,
-                    fontWeight: "bold",
+                    fontWeight: "400",
                     color: "#f57830",
                   }}
                 >
