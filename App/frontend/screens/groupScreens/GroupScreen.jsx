@@ -19,7 +19,7 @@ import CustomHeader from "../../components/CustomHeader";
 
 const trackAutomaticEvents = true;
 const mixpanel = new Mixpanel(
-  "fcab386593bfcae67eaafb8136754929",
+  "f601299fc807c669258f66d0997f015e",
   trackAutomaticEvents
 );
 
