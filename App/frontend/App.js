@@ -7,7 +7,7 @@ import { enableScreens } from "react-native-screens";
 
 // import * as SplashScreen from 'expo-splash-screen';
 // import * as Updates from 'expo-updates';
-import { Linking, Platform, StatusBar } from "react-native";
+import { Linking, Platform, StatusBar} from "react-native";
 // import * as Application from 'expo-application';
 import checkVersion from "react-native-store-version";
 

@@ -54,18 +54,27 @@ const CustomHeader = ({
     }
   };
 
-  const Share = async () => {
-    try {
-      const supported = await Linking.canOpenURL(whatsappUrl);
-      appShareCount();
-      if (supported) {
-        await Linking.openURL(whatsappUrl);
-      } else {
-        console.log(`Unable to open WhatsApp URL: ${whatsappUrl}`);
-      }
-    } catch (error) {
-      console.log(error);
-    }
+  const Share = () => {
+    let url = `whatsapp://send?text=" + ${shareMessage}`;
+    appShareCount();
+    Linking.openURL(url)
+      .then((data) => {
+        console.log("WhatsApp Opened successfully " + data); //<---Success
+      })
+      .catch(() => {
+        alert("Make sure WhatsApp installed on your device"); //<---Error
+      });
+    // try {
+    //   const supported = await Linking.canOpenURL(whatsappUrl);
+    //   appShareCount();
+    //   if (supported) {
+    //     await Linking.openURL(whatsappUrl);
+    //   } else {
+    //     console.log(`Unable to open WhatsApp URL: ${whatsappUrl}`);
+    //   }
+    // } catch (error) {
+    //   console.log(error);
+    // }
   };
 
   const handleToggleMute = async () => {
@@ -190,28 +199,31 @@ const CustomHeader = ({
             <TouchableOpacity
               style={{
                 flexDirection: "row",
-                borderRadius: 12,
+                borderRadius: 50,
                 borderColor: "#25D366",
                 borderWidth: 1,
-                paddingHorizontal: 8,
+                justifyContent: "space-between",
+                alignItems: "center",
+                paddingHorizontal: 16,
                 paddingVertical: 2,
-                backgroundColor: "#fff",
+                backgroundColor: "#78EA5B",
               }}
               onPress={Share}
             >
               <Image
                 source={require("../assets/WhatsApp.svg.png")}
-                style={{ width: 30, height: 30 }}
+                style={{ width: 28, height: 28 }}
               />
               <Text
                 style={{
                   marginLeft: 4,
+                  fontSize: 14,
                   textAlignVertical: "center",
-                  color: "#25D366",
+                  color: "#1F6F0C",
                   fontWeight: "600",
                 }}
               >
-                Share App
+                मित्र आमंत्रित करा
               </Text>
             </TouchableOpacity>
             <ProfileIcon
@@ -232,14 +244,15 @@ const CustomHeader = ({
 const styles = StyleSheet.create({
   headerContainer: {
     width: "100%",
-    height: 45 + Constants.statusBarHeight,
+    // height: 45 + Constants.statusBarHeight,
     // backgroundColor: Colors.primary,
-    // backgroundColor: "#084347",
+    backgroundColor: "#084347",
+    // backgroundColor:'red',
     justifyContent: "center",
     alignItems: "flex-end",
     // elevation: 5,
-    // marginBottom: 5,
-    // paddingBottom: 10,
+    paddingTop: 10,
+    paddingBottom: 5,
     flexDirection: "row",
   },
   title: {

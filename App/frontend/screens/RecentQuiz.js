@@ -28,7 +28,7 @@ import Loader from "../components/Loader";
 import Pagination from "../components/Pagination";
 // import QuesCard from "../components/QuesCard";
 import Colors from "../constants/Colors";
-import PastQuizScreen from '../screens/PastQuiz';
+import PastQuizScreen from "../screens/PastQuiz";
 
 const RecentQuiz = ({ navigation }) => {
   const [response, setResponse] = useState([]);
@@ -678,12 +678,13 @@ const RecentQuiz = ({ navigation }) => {
       {loading || isloading ? (
         <Loader />
       ) : quizStarted ? (
-        <View style={{ marginBottom: 160 }}>
+        <View style={{ marginBottom: 20}}>
           <View
             style={{
               flexDirection: "row",
               justifyContent: "center",
               marginBottom: 10,
+              marginTop: 10,
             }}
           >
             {timerMinutes === 0 && timerSeconds === 0 && timerHours === 0 ? (
@@ -715,7 +716,7 @@ const RecentQuiz = ({ navigation }) => {
             )}
           </View>
 
-          <View style={{ height: Dimensions.get("window").height - 140 }}>
+          <View style={{ height: Dimensions.get("window").height - 20 }}>
             {/* <FlashList
               data={quizData.quizDetails}
               key={quizData._id}
@@ -744,7 +745,7 @@ const RecentQuiz = ({ navigation }) => {
               flexDirection: "row",
               justifyContent: "space-between",
               paddingHorizontal: 10,
-              width: "100%",
+              width: "100%"
             }}
           >
             <TouchableOpacity
@@ -1018,7 +1019,7 @@ const RecentQuiz = ({ navigation }) => {
                 /> */}
 
                 {activeTag === "history" ? (
-                  <PastQuizScreen/>
+                  <PastQuizScreen />
                 ) : (
                   tagDetails.map((quiz, index) => {
                     return (
@@ -1372,10 +1373,11 @@ const RecentQuiz = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    // backgroundColor: "red",
+    // height: Dimensions.get("window").height,
   },
   cardContainer: {
-    // flex: 1,
+    flex: 1,
     justifyContent: "center",
     alignItems: "center",
     paddingVertical: 20,

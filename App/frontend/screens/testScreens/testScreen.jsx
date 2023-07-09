@@ -142,27 +142,6 @@ function Test({ navigation }) {
       </View>
       <ScrollView style={{ flex: 1, width: "100%", marginBottom: 70 }}>
         {isRivisionOpen ? <RevisionQuizScreen /> : <RecentQuizScreen />}
-        {false && (
-          <View style={{ padding: 25, marginTop: 35, width: "100%" }}>
-            <TouchableOpacity
-              onPress={() => {
-                logout();
-              }}
-              style={{
-                backgroundColor: "blue",
-                alignItems: "center",
-                justifyContent: "center",
-                width: "100%",
-                height: 55,
-                borderRadius: 12,
-                marginTop: 20,
-              }}
-              textStyle={{ color: "white" }}
-            >
-              <Text>LogOut</Text>
-            </TouchableOpacity>
-          </View>
-        )}
       </ScrollView>
     </View>
   );
