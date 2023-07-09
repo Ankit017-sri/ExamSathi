@@ -346,7 +346,10 @@ const GroupDetails = ({
     return parts.map((part, index) => {
       if (urlRegex.test(part)) {
         return (
-          <TouchableOpacity onPress={() => openUrl({ url: part })}>
+          <TouchableOpacity
+            onPress={() => openUrl({ url: part })}
+            style={{ marginVertical: -22 }}
+          >
             <Text key={index} style={{ color: "blue" }}>
               {part}
             </Text>
@@ -421,33 +424,9 @@ const GroupDetails = ({
                   >
                     {m.data.entities.sender.entity.name.split(" ")[0]}
                   </Text>
-                  <Text>{highlightURLs(m.data.text)}</Text>
-                  {/* {urlRegex.test(m.data.text.trim()) ? (
-                    <TouchableOpacity
-                      onPress={() => openUrl({ url: m.data.text })}
-                    >
-                      <Text
-                        style={{
-                          color: "blue",
-                          fontSize: 15,
-                          marginTop: 5,
-                        }}
-                      >
-                        {m.data.text}
-                      </Text>
-                    </TouchableOpacity>
-                  ) : (
-                    <Text
-                      style={{
-                        fontSize: 15,
-                        color:
-                          userDetail?.name == m?.sender.name ? "#fff" : "#000",
-                        marginTop: 5,
-                      }}
-                    >
-                      {m.data.text}
-                    </Text>
-                  )} */}
+                  {/* <View style={{ marginVertical: -25 }}> */}
+                  {highlightURLs(m.data.text)}
+                  {/* </View> */}
                 </TouchableOpacity>
               </View>
               <Text
@@ -456,6 +435,10 @@ const GroupDetails = ({
                   marginLeft: 10,
                   marginRight: 6,
                   color: "#8A8A8A",
+                  alignSelf:
+                    userDetail?.name == m?.sender.name
+                      ? "flex-end"
+                      : "flex-start",
                 }}
               >
                 {moment.unix(m?.sentAt).format("h:mm a")}
