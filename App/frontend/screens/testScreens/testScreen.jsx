@@ -34,6 +34,7 @@ function Test({ navigation }) {
       }
     );
   };
+
   return (
     <View
       style={{

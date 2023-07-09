@@ -24,8 +24,7 @@ import baseUrl from "../baseUrl";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import Icon from "react-native-vector-icons/Ionicons";
 
-const PastQuiz = ({ navigation }) => {
-  // const [data, setData] = useState([]);
+const PastQuiz = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   const [allQuizData, setAllQuizdata] = useState([]);
@@ -39,20 +38,20 @@ const PastQuiz = ({ navigation }) => {
   const { token } = useContext(AuthContext);
   const scrollRef = useRef();
 
-  function handleBackButtonClick() {
-    customNavigation.navigate("MainScreen");
-    return true;
-  }
+  // function handleBackButtonClick() {
+  //   customNavigation.goBack();
+  //   return true;
+  // }
 
-  useEffect(() => {
-    BackHandler.addEventListener("hardwareBackPress", handleBackButtonClick);
-    return () => {
-      BackHandler.removeEventListener(
-        "hardwareBackPress",
-        handleBackButtonClick
-      );
-    };
-  }, []);
+  // useEffect(() => {
+  //   BackHandler.addEventListener("hardwareBackPress", handleBackButtonClick);
+  //   return () => {
+  //     BackHandler.removeEventListener(
+  //       "hardwareBackPress",
+  //       handleBackButtonClick
+  //     );
+  //   };
+  // }, []);
 
   useFocusEffect(
     useCallback(() => {
@@ -141,7 +140,7 @@ const PastQuiz = ({ navigation }) => {
               </Text>
             </View>
             <TouchableOpacity
-              style={{ ...styles.button, width: "100%",elevation:9 }}
+              style={{ ...styles.button, width: "100%", elevation: 9 }}
               activeOpacity={0.6}
               onPress={() => {
                 customNavigation.navigate("QuizDetails", { quiz: item });
@@ -204,7 +203,7 @@ const PastQuiz = ({ navigation }) => {
     <>
       <View style={styles.container}>
         {/* <CustomHeader title="Details" isBack navigation={navigation} /> */}
-        <View
+        {/* <View
           style={{
             width: "100%",
             backgroundColor: "#084347",
@@ -228,7 +227,7 @@ const PastQuiz = ({ navigation }) => {
           >
             Past Quiz
           </Text>
-        </View>
+        </View> */}
         {isLoading ? (
           <Loader />
         ) : (
@@ -479,7 +478,7 @@ const styles = StyleSheet.create({
     // alignItems: "center",
     // justifyContent: "center",
     // paddingBottom: 100,
-    backgroundColor: "#fff",
+    // backgroundColor: "#fff",
   },
 
   // cardContainer: {
