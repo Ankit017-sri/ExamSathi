@@ -32,6 +32,7 @@ const Group = () => {
   const [isShowingMedia, setIsShowingMedia] = useState(false);
   const [mediaDetails, setMediaDetails] = useState({ url: "", type: "" });
   const [currTab, setCurrTab] = useState("सराव अड्डा");
+  const [groupsJoined, setGroupsJoined] = useState(false);
 
   const listViewRef = useRef(null);
 
@@ -54,9 +55,9 @@ const Group = () => {
     );
   }, []);
 
-  useEffect(() => {
-    if (groups.length > 1) setselectedGroup("daily_revision");
-  }, [groups]);
+  // useEffect(() => {
+  //   if (groups.length > 1) setselectedGroup("daily_revision");
+  // }, [groups]);
 
   useEffect(() => {
     listViewRef.current.scrollToIndex({
@@ -74,9 +75,12 @@ const Group = () => {
     CometChat.joinGroup(GUID, groupType, password).then(
       (group) => {
         console.log("Group joined successfully:", group);
+        if (group.conversationId === "group_daily_revision")
+          setGroupsJoined(true);
       },
       (error) => {
-        // console.log("Group joining failed with exception:", error);
+        console.log("Group joining failed with exception:", error);
+        setGroupsJoined(true);
       }
     );
   };
@@ -208,6 +212,7 @@ const Group = () => {
         guid={selectedGroup}
         setIsShowingMedia={setIsShowingMedia}
         setMediaDetails={setMediaDetails}
+        groupsJoined={groupsJoined}
       />
       {isShowingMedia && <MediaViewer mediaDetails={mediaDetails} />}
     </View>

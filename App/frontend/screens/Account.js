@@ -36,6 +36,14 @@ const AccountScreen = ({ navigation }) => {
       authStorage.removeToken();
       authContext.setToken(null);
       authContext.setName(null);
+      CometChat.logout().then(
+        () => {
+          console.log("Logout completed successfully");
+        },
+        (error) => {
+          console.log("Logout failed with exception:", { error });
+        }
+      );
     } else alert("Something went wrong. Please try again.");
   };
 

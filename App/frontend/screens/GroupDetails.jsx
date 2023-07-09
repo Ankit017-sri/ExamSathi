@@ -30,12 +30,15 @@ import moment from "moment";
 
 import AuthContext from "../auth/context";
 import InputComponent from "../components/InputComponent";
-import { openCamera } from "react-native-image-crop-picker";
-import { createThumbnail } from "react-native-create-thumbnail";
 import VideoMessage from "../components/VideoMessage";
 import PdfMessage from "../components/PdfMessage";
 
-const GroupDetails = ({ guid, setIsShowingMedia, setMediaDetails }) => {
+const GroupDetails = ({
+  guid,
+  setIsShowingMedia,
+  setMediaDetails,
+  groupsJoined,
+}) => {
   const [messages, setMessages] = useState([]);
   const [messageText, setMessageText] = useState("");
   const [visible, setVisible] = useState(false);
@@ -176,7 +179,8 @@ const GroupDetails = ({ guid, setIsShowingMedia, setMediaDetails }) => {
 
   useEffect(() => {
     getMessages();
-  }, [guid]);
+    console.log("GROUPS_JOINED " + groupsJoined);
+  }, [guid, groupsJoined]);
 
   useEffect(() => {
     CometChat.getLoggedinUser().then((user) => {
@@ -330,12 +334,28 @@ const GroupDetails = ({ guid, setIsShowingMedia, setMediaDetails }) => {
   };
 
   const openUrl = async ({ url }) => {
+    console.log(url);
     const formattedURL = url.startsWith("http") ? url : `https://${url}`;
     await Linking.openURL(formattedURL);
   };
 
-  const urlRegex =
-    /^(?:(?:https?:\/\/)?(?:www\.)?|(?:www\.))([a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*\.[a-zA-Z]{2,})(?:\/.*)?$/;
+  const highlightURLs = (text) => {
+    const urlRegex =
+      /(?:^|\s)(?:(?:https?:\/\/)?(?:www\.)?|(?:www\.))([a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*\.[a-zA-Z]{2,}(?:\/[^\s]*)?)(?=$|\s)/g;
+    const parts = text.split(urlRegex);
+    return parts.map((part, index) => {
+      if (urlRegex.test(part)) {
+        return (
+          <TouchableOpacity onPress={() => openUrl({ url: part })}>
+            <Text key={index} style={{ color: "blue" }}>
+              {part}
+            </Text>
+          </TouchableOpacity>
+        );
+      }
+      return <Text style={{ marginTop: 5, color: "black" }}>{part}</Text>;
+    });
+  };
 
   return (
     <View style={{ flex: 1 }}>
@@ -401,8 +421,8 @@ const GroupDetails = ({ guid, setIsShowingMedia, setMediaDetails }) => {
                   >
                     {m.data.entities.sender.entity.name.split(" ")[0]}
                   </Text>
-
-                  {urlRegex.test(m.data.text.trim()) ? (
+                  <Text>{highlightURLs(m.data.text)}</Text>
+                  {/* {urlRegex.test(m.data.text.trim()) ? (
                     <TouchableOpacity
                       onPress={() => openUrl({ url: m.data.text })}
                     >
@@ -427,7 +447,7 @@ const GroupDetails = ({ guid, setIsShowingMedia, setMediaDetails }) => {
                     >
                       {m.data.text}
                     </Text>
-                  )}
+                  )} */}
                 </TouchableOpacity>
               </View>
               <Text
