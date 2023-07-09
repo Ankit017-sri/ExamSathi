@@ -98,7 +98,7 @@ function Test({ navigation }) {
           {isRivisionOpen && (
             <View
               style={{
-                borderBottomColor: "red",
+                borderBottomColor: "#FA833F",
                 borderBottomWidth: 4,
                 // backgroundColor: "red",
                 width: 40,
@@ -136,7 +136,7 @@ function Test({ navigation }) {
           {!isRivisionOpen && (
             <View
               style={{
-                borderBottomColor: "red",
+                borderBottomColor: "#FA833F",
                 borderBottomWidth: 4,
                 // backgroundColor: "red",
                 width: 40,

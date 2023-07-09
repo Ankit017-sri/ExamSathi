@@ -25,11 +25,10 @@ export default function TabBar() {
         tabBarStyle: {
           position: "absolute",
           backgroundColor: "#084347",
-          height: 75,
+          height: 65,
           paddingBottom: 10,
-          marginTop: 10,
+          marginTop: 0,
           display: tabBarVisible ? "flex" : "none",
-          // display: "none",
         },
       }}
     >

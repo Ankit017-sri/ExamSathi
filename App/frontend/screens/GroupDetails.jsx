@@ -555,7 +555,7 @@ const GroupDetails = ({
       <View
         style={{
           flexDirection: "row",
-          marginBottom: 80,
+          marginBottom: 73,
           justifyContent: "space-between",
           alignItems: "center",
           marginTop: 10,

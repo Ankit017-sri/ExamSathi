@@ -169,7 +169,7 @@ const Group = () => {
           </Text>
         </TouchableOpacity>
         {findex === index ? (
-          <View style={{ backgroundColor: "#3696FF", width: 50, height: 5 }} />
+          <View style={{ backgroundColor: "#FA833F", width: 50, height: 5 }} />
         ) : null}
       </View>
     );
@@ -197,7 +197,7 @@ const Group = () => {
           // height: 155,
         }}
       >
-        <CustomHeader title="ExamSathi" share />
+        <CustomHeader title="Exam Sathi" share />
         <FlatList
           ref={listViewRef}
           initialScrollIndex={index}
