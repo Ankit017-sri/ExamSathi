@@ -18,6 +18,15 @@ import baseUrl from "../baseUrl";
 import AuthContext from "../auth/context";
 import { useNavigation } from "@react-navigation/native";
 import { CometChat } from "@cometchat-pro/react-native-chat";
+import { Mixpanel } from "mixpanel-react-native";
+
+const trackAutomaticEvents = true;
+const mixpanel = new Mixpanel(
+  "f601299fc807c669258f66d0997f015e",
+  trackAutomaticEvents
+);
+
+mixpanel.init();
 
 const CustomHeader = ({
   title,
@@ -56,6 +65,10 @@ const CustomHeader = ({
   };
 
   const Share = () => {
+    mixpanel.track("Header_share_button_click", {
+      buttonName: "shareButton",
+    });
+
     let url = `whatsapp://send?text=" + ${shareMessage}`;
     appShareCount();
     Linking.openURL(url)
@@ -199,6 +212,7 @@ const CustomHeader = ({
             }}
           >
             <TouchableOpacity
+              id="shareButton"
               style={{
                 flexDirection: "row",
                 borderRadius: 50,

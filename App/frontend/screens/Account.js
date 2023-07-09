@@ -18,6 +18,15 @@ import authStorage from "../auth/storage";
 import axios from "axios";
 import baseUrl from "../baseUrl";
 import { CometChat } from "@cometchat-pro/react-native-chat";
+import { Mixpanel } from "mixpanel-react-native";
+
+const trackAutomaticEvents = true;
+const mixpanel = new Mixpanel(
+  "f601299fc807c669258f66d0997f015e",
+  trackAutomaticEvents
+);
+
+mixpanel.init();
 
 const AccountScreen = ({ navigation }) => {
   const authContext = useContext(AuthContext);
@@ -238,13 +247,16 @@ const AccountScreen = ({ navigation }) => {
             // marginRight: 40,
           }}
           activeOpacity={0.6}
-          onPress={async () =>
+          onPress={async () => {
+            mixpanel.track("Profile_share_button_click", {
+              buttonName: "shareButton",
+            });
             await Share.share({
               message: `मित्रा, हे app डाउनलोड कर आणि ग्रुप मध्ये जॉईन हो! भरतीच्या तयारी साठी खूप उपयुक्त आहे. ह्यात भरपूर free टेस्ट, fast updates आणि discussion ग्रुप आहेत. 
   Exam Sathi app
   https://play.google.com/store/apps/details?id=com.examSathi.examSathi`,
-            })
-          }
+            });
+          }}
         >
           <Text
             style={{

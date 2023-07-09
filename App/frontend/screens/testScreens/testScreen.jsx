@@ -17,9 +17,19 @@ import RevisionQuizScreen from "../RevisionQuizScreen";
 import CustomHeader from "../../components/CustomHeader";
 import PastQuiz from "../PastQuiz";
 import AuthContext from "../../auth/context";
+import { Mixpanel } from "mixpanel-react-native";
+
+const trackAutomaticEvents = true;
+const mixpanel = new Mixpanel(
+  "f601299fc807c669258f66d0997f015e",
+  trackAutomaticEvents
+);
+
+mixpanel.init();
 
 function Test({ navigation }) {
   const [isRivisionOpen, setIsRivisionOpen] = useState(true);
+  const [currTab, setCurrTab] = useState();
 
   const { tabBarVisible } = useContext(AuthContext);
 
@@ -34,6 +44,27 @@ function Test({ navigation }) {
       }
     );
   };
+
+  useEffect(() => {
+    let currTab;
+    if (isRivisionOpen) currTab = "Revison";
+    else currTab = "Exam";
+    mixpanel.timeEvent(`time_spent_on_${currTab}_tab`);
+
+    return () => {
+      mixpanel
+        .eventElapsedTime(`time_spent_on_${currTab}_tab`)
+        .then((duration) => {
+          mixpanel.track(`time_spent_on_${currTab}_tab`, {
+            duration: `${duration + " second"}`,
+          });
+          mixpanel.clearSuperProperties(`time_spent_on_${currTab}_tab`);
+        })
+        .catch((error) => {
+          console.error("Error calculating screen time:", error);
+        });
+    };
+  }, [isRivisionOpen]);
 
   return (
     <View
@@ -51,7 +82,7 @@ function Test({ navigation }) {
         translucent
       />
       <CustomHeader
-        title="Exam Sathi"
+        title="ExamSathi"
         share
         navigation={navigation}
         bgColor={"#084347"}

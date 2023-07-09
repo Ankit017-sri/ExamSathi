@@ -206,7 +206,7 @@ const Group = () => {
           // height: 155,
         }}
       >
-        <CustomHeader title="Exam Sathi" share />
+        <CustomHeader title="ExamSathi" share />
         <FlatList
           ref={listViewRef}
           initialScrollIndex={index}

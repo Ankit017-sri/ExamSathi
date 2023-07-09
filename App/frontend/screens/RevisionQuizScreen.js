@@ -38,6 +38,13 @@ import Colors from "../constants/Colors";
 import baseUrl from "../baseUrl";
 import AuthContext from "../auth/context";
 import cache from "../utilities/cache";
+import { Mixpanel } from "mixpanel-react-native";
+
+const trackAutomaticEvents = true;
+const mixpanel = new Mixpanel(
+  "f601299fc807c669258f66d0997f015e",
+  trackAutomaticEvents
+);
 
 const RevisionQuizScreen = ({ navigation }) => {
   const [questions, setQuestions] = useState([]);
@@ -86,6 +93,10 @@ https://bit.ly/exam-sathi-app-playstore`;
   };
 
   const Share = () => {
+    mixpanel.track("Revison_Share_button_click", {
+      buttonName: "shareButton",
+    });
+
     let url = `whatsapp://send?text=" + ${shareMessage}`;
     Linking.openURL(url)
       .then((data) => {
