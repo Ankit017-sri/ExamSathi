@@ -34,14 +34,15 @@ const InputComponent = ({
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
-        backgroundColor: "#084347",
-        borderRadius: 20,
+        backgroundColor: "#d2dddd",
+        borderRadius: 25,
         padding: 3,
         width: "100%",
+        elevation: 5,
       }}
     >
       <TextInput
-        placeholder="  send message"
+        placeholder="Send message ..."
         placeholderTextColor={"gray"}
         onChangeText={setTextInput}
         value={textInput}
@@ -52,7 +53,7 @@ const InputComponent = ({
           { height: Math.max(40, textInputHeight) },
           {
             fontSize: 14,
-            color: "white",
+            color: "black",
             width: "63%",
             marginLeft: 10,
           },
@@ -64,7 +65,7 @@ const InputComponent = ({
           flexDirection: "row",
           justifyContent: "flex-start",
           alignItems: "center",
-          backgroundColor: "#084347",
+          backgroundColor: "#d2dddd",
           borderRadius: 12,
           padding: 3,
           // width: "30%",
@@ -74,24 +75,36 @@ const InputComponent = ({
           name="camera"
           size={20}
           style={{ marginRight: 12 }}
-          color={"white"}
+          color={"#084347"}
           onPress={onPressCamera}
         />
         <Icon
           name="attach"
-          size={24}
+          size={26}
           style={{ marginRight: 14 }}
-          color={"white"}
+          color={"#084347"}
           onPress={onPressAttach}
         />
+      </View>
+      <View
+        style={{
+          backgroundColor: "#084347",
+          justifyContent: "center",
+          alignItems: "center",
+          flexDirection: "row",
+          padding: 8,
+          paddingHorizontal: 9,
+          borderRadius: 50,
+        }}
+      >
         <Icon
           name="send"
           size={26}
           disabled={textInput !== "" ? false : true}
           style={
             textInput !== ""
-              ? { paddingRight: 9 }
-              : { paddingRight: 9, opacity: 0.4, color: "white" }
+              ? { paddingRight: 0 }
+              : { paddingRight: 0, opacity: 0.4, color: "white" }
           }
           color={"white"}
           onPress={onPressSend}

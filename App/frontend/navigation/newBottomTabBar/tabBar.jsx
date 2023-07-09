@@ -47,14 +47,14 @@ export default function TabBar() {
                 style={{
                   fontSize: 14,
                   color: "#FFF",
-                  marginLeft: 15,
+                  marginLeft: 25,
                   fontWeight: "bold",
                 }}
               >
                 भरती परिवार
               </Text>
             ) : (
-              <Text style={{ fontSize: 14, color: "#506477", marginLeft: 18 }}>
+              <Text style={{ fontSize: 14, color: "#506477", marginLeft: 25 }}>
                 भरती परिवार
               </Text>
             ));
@@ -63,18 +63,19 @@ export default function TabBar() {
             <View style={{}}>
               <Image
                 style={{
-                  width: 30,
-                  height: 30,
+                  width: 38,
+                  height: 38,
                   resizeMode: "contain",
                   marginHorizontal: 5,
                 }}
-                source={require("../../assets/images/group.png")}
-              ></Image>
+                source={require("../../assets/footerBharti.png")}
+              />
               {/* <Text style={{  marginLeft: 5, color: '#fff' }}>भरती परिवार</Text> */}
             </View>
           ),
         }}
       />
+
       <Tab.Screen
         name="Test"
         component={Test}
@@ -89,14 +90,14 @@ export default function TabBar() {
                 style={{
                   fontSize: 14,
                   color: "#FFF",
-                  marginLeft: 15,
+                  marginLeft: 25,
                   fontWeight: "bold",
                 }}
               >
                 Test जंक्शन
               </Text>
             ) : (
-              <Text style={{ fontSize: 14, color: "#506477", marginLeft: 18 }}>
+              <Text style={{ fontSize: 14, color: "#506477", marginLeft: 25 }}>
                 Test जंक्शन
               </Text>
             ));
@@ -105,12 +106,12 @@ export default function TabBar() {
             <View style={{ alignItems: "center" }}>
               <Image
                 style={{
-                  width: 30,
-                  height: 30,
+                  width: 38,
+                  height: 38,
                   resizeMode: "contain",
                   marginHorizontal: 5,
                 }}
-                source={require("../../assets/images/test.png")}
+                source={require("../../assets/footerTestJunction.png")}
               ></Image>
               {/* <Text style={{  marginLeft: 5, color: '#fff' }}>भरती जंक्शन</Text> */}
             </View>

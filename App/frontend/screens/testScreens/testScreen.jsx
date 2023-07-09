@@ -91,7 +91,10 @@ function Test({ navigation }) {
               padding: 12,
             }}
           >
-            <Image source={require("../../assets/images/group.png")} />
+            <Image
+              source={require("../../assets/liveIcon.png")}
+              style={{ width: 36, height: 28 }}
+            />
             <Text style={{ color: "white", fontSize: 15, marginLeft: 6 }}>
               लाईव्ह रिविजन
             </Text>
@@ -101,8 +104,10 @@ function Test({ navigation }) {
               style={{
                 borderBottomColor: "#FA833F",
                 borderBottomWidth: 4,
-                // backgroundColor: "red",
-                width: 40,
+                borderTopLeftRadius: 20,
+                borderTopRightRadius: 20,
+
+                width: 60,
               }}
             />
           )}
@@ -129,7 +134,10 @@ function Test({ navigation }) {
               padding: 12,
             }}
           >
-            <Image source={require("../../assets/images/group.png")} />
+            <Image
+              source={require("../../assets/testIcon.png")}
+              style={{ width: 28, height: 28 }}
+            />
             <Text style={{ color: "white", fontSize: 15, marginLeft: 6 }}>
               टेस्ट झोन
             </Text>
@@ -139,8 +147,10 @@ function Test({ navigation }) {
               style={{
                 borderBottomColor: "#FA833F",
                 borderBottomWidth: 4,
+                borderTopLeftRadius: 20,
+                borderTopRightRadius: 20,
                 // backgroundColor: "red",
-                width: 40,
+                width: 60,
               }}
             />
           )}

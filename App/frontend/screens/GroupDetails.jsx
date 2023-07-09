@@ -347,13 +347,13 @@ const GroupDetails = ({
       if (urlRegex.test(part)) {
         return (
           <TouchableOpacity onPress={() => openUrl({ url: part })}>
-            <Text key={index} style={{ color: "blue" }}>
+            <Text key={index} style={{ color: "#039be5", marginBottom: 2 }}>
               {part}
             </Text>
           </TouchableOpacity>
         );
       } else if (part !== "")
-        return <Text style={{ color: "black" }}>{part}</Text>;
+        return <Text style={{ color: "black", marginBottom: 2 }}>{part}</Text>;
     });
   };
 
@@ -370,12 +370,14 @@ const GroupDetails = ({
                     : "flex-start",
               }}
             >
+              {/* Sending Text Color */}
               <View
                 style={{
-                  padding: 10,
+                  paddingHorizontal: 8,
+                  paddingVertical: 5,
                   backgroundColor:
-                    userDetail?.name == m?.sender.name ? "#3696FF" : "#fff",
-                  marginVertical: 5,
+                    userDetail?.name == m?.sender.name ? "#e7f3fe" : "#fff",
+                  marginTop: 5,
                   maxWidth: "80%",
                   minWidth: 80,
                   marginLeft: 10,
@@ -413,10 +415,11 @@ const GroupDetails = ({
                 >
                   <Text
                     style={{
-                      color: "#ABAB96",
-                      fontSize: 15,
-                      fontWeight: "bold",
+                      color: "#7f67fc",
+                      fontSize: 14,
+                      marginBottom: 2,
                       marginLeft: 0,
+                      fontWeight: "400",
                     }}
                   >
                     {m.data.entities.sender.entity.name.split(" ")[0]}
@@ -429,8 +432,10 @@ const GroupDetails = ({
               <Text
                 style={{
                   padding: 1,
-                  marginLeft: 10,
+                  marginLeft: 12,
                   marginRight: 6,
+                  marginBottom: 5,
+                  fontSize: 11,
                   color: "#8A8A8A",
                   alignSelf:
                     userDetail?.name == m?.sender.name
@@ -447,7 +452,7 @@ const GroupDetails = ({
               <View
                 style={{
                   backgroundColor:
-                    userDetail?.name == m?.sender.name ? "#3696FF" : "#fff",
+                    userDetail?.name == m?.sender.name ? "#e7f3fe" : "#fff",
                   margin: 5,
                   width: 210,
                   borderRadius: 10,
@@ -455,6 +460,7 @@ const GroupDetails = ({
                     userDetail?.name == m?.sender.name
                       ? "flex-end"
                       : "flex-start",
+                  elevation: 5,
                 }}
               >
                 <Text
@@ -463,7 +469,7 @@ const GroupDetails = ({
                     marginBottom: 5,
                     fontSize: 14,
                     fontWeight: "bold",
-                    color: "#ABAB96",
+                    color: "#f57830",
                   }}
                 >
                   {m.data.entities.sender.entity.name.split(" ")[0]}
@@ -538,6 +544,8 @@ const GroupDetails = ({
                       padding: 1,
                       marginLeft: 10,
                       marginRight: 6,
+                      fontSize: 11,
+
                       color: "#8A8A8A",
                     }}
                   >

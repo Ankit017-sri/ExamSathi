@@ -48,7 +48,7 @@ const Login = () => {
   const handleMobileChange = (text) => {
     setMobile(text);
     if (text.length !== 10) {
-      setMobileError("Please enter a valid 10-digit mobile number");
+      setMobileError("कृपया दहा अंकी नंबर टाका");
     } else {
       setMobileError("");
     }
@@ -168,16 +168,43 @@ const Login = () => {
         style={{
           width: 70,
           height: 70,
-          borderRadius: 5,
-          marginBottom: 40,
+          borderRadius: 10,
+          marginBottom: 5,
+          shadowOffset: { width: 0, height: 5 },
+          elevation: 20,
+          shadowRadius: 10,
+          shadowColor: "black",
         }}
       />
+      <View
+        style={{
+          marginBottom: 10,
+          alignItems: "center",
+          justifyContent: "center",
+          flexDirection: "column",
+          marginBottom: 20,
+        }}
+      >
+        <Text
+          style={{
+            color: "#583b01",
+            fontWeight: "bold",
+            fontSize: 24,
+          }}
+        >
+          ExamSathi
+        </Text>
+        <Text style={{ color: "#583b01", fontWeight: "bold", fontSize: 20 }}>
+          आपले भरती परिवार
+        </Text>
+      </View>
+
       <View style={styles.cardContainer}>
         <View style={styles.formContainer}>
           <Text style={styles.label}>Name:</Text>
           <TextInput
             placeholderTextColor="#808080"
-            placeholder="Enter your name"
+            placeholder="आपले नाव लिहा"
             value={name}
             onChangeText={(text) => {
               setNameError("");
@@ -193,7 +220,7 @@ const Login = () => {
           <Text style={styles.label}>Mobile:</Text>
           <TextInput
             placeholderTextColor="#808080"
-            placeholder="Enter your mobile number."
+            placeholder="आपला मोबाइल नंबर लिहा"
             value={mobile}
             onChangeText={(text) => handleMobileChange(text)}
             keyboardType="numeric"
@@ -215,6 +242,15 @@ const Login = () => {
           </TouchableOpacity>
         </View>
       </View>
+
+      <Image
+        source={require("../assets/images/loginPageImage.png")}
+        style={{
+          width: "100%",
+          height: 200,
+          marginTop: 15,
+        }}
+      />
     </View>
   );
 };
@@ -226,6 +262,7 @@ const styles = StyleSheet.create({
     height: null,
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: "#ffe6b6",
   },
   cardContainer: {
     width: "80%",
@@ -261,7 +298,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   button: {
-    backgroundColor: "#4f83cc",
+    backgroundColor: "#0a574f",
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 5,

@@ -153,13 +153,14 @@ const Group = () => {
           }}
         >
           <Image
-            style={{ width: 35, height: 35, resizeMode: "contain" }}
+            style={{ width: 30, height: 30, resizeMode: "contain" }}
             source={{ uri: item?.icon }}
           />
+
           {/* <Image style={{ width: 30, height: 30, resizeMode: 'contain', marginTop: 2 }} source={require('../../assets/images/books.png')} /> */}
           <Text
             style={{
-              fontWeight: "600",
+              fontWeight: `${findex === index ? "bold" : "300"}`,
               marginVertical: 5,
               fontSize: 13,
               color: "#fff",
@@ -169,7 +170,15 @@ const Group = () => {
           </Text>
         </TouchableOpacity>
         {findex === index ? (
-          <View style={{ backgroundColor: "#FA833F", width: 50, height: 5 }} />
+          <View
+            style={{
+              backgroundColor: "#FA833F",
+              width: 50,
+              height: 5,
+              borderTopLeftRadius: 50,
+              borderTopRightRadius: 50,
+            }}
+          />
         ) : null}
       </View>
     );
