@@ -509,6 +509,10 @@ const RecentQuiz = ({ navigation }) => {
             // width: "45%",
             width: "100%",
             alignItems: "center",
+            backgroundColor:'#FEF7DD',
+            borderWidth:1,
+            borderColor:'#FFD976'
+          
           }}
         >
           <>
@@ -562,14 +566,14 @@ const RecentQuiz = ({ navigation }) => {
               </Text>
             </View>
             <TouchableOpacity
-              style={{ ...styles.button, width: "100%" }}
+              style={{ ...styles.button, width: "100%" ,backgroundColor:'#FFD976'}}
               activeOpacity={0.6}
               onPress={() => {
                 setTitle(title);
                 startQuiz(item._id);
               }}
             >
-              <Text style={{ color: "#fff", fontSize: 14 }}>Start Test</Text>
+              <Text style={{ color: "#6C2B18", fontSize: 14, elevation:8 }}>Start Test</Text>
             </TouchableOpacity>
           </>
         </View>
@@ -602,7 +606,7 @@ const RecentQuiz = ({ navigation }) => {
               }}
               style={{ flexDirection: "row" }}
             >
-              <Text style={{ marginRight: 4 }}>View All</Text>
+              <Text style={{ marginRight: 4, color:'black',fontWeight:'bold' }}>View All</Text>
               <Icon
                 name="chevron-forward-circle-outline"
                 size={20}
@@ -754,7 +758,7 @@ const RecentQuiz = ({ navigation }) => {
                 paddingHorizontal: 30,
                 alignSelf: "center",
                 height: 40,
-                backgroundColor: isSubmitting ? "#aaa" : Colors.primary,
+                backgroundColor: isSubmitting ? "#aaa" :'#084347',
                 marginHorizontal: 10,
               }}
               activeOpacity={0.6}
@@ -910,7 +914,7 @@ const RecentQuiz = ({ navigation }) => {
                   All
                 </Text>
               </TouchableOpacity> */}
-              {[...allQuizData, { tag: "history" }].map((item, index) => {
+              {[...allQuizData, { tag: "सोडवले टेस्ट" }].map((item, index) => {
                 console.log(item.tag);
                 return (
                   <TouchableOpacity
@@ -1020,7 +1024,7 @@ const RecentQuiz = ({ navigation }) => {
                   title={"Latest चालू घडामोडी टेस्ट!"}
                 /> */}
 
-                {activeTag === "history"
+                {activeTag === "सोडवले टेस्ट"
                   ? customNavigative.navigate("PastQuizz")
                   : tagDetails.map((quiz, index) => {
                       return (

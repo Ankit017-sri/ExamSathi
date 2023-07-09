@@ -63,20 +63,20 @@ const InputComponent = ({
         <IconCamera
           name="camera"
           size={20}
-          style={{ paddingRight: 9 }}
+          style={{ paddingRight: 12 }}
           color={"white"}
           onPress={onPressCamera}
         />
         <Icon
           name="attach"
           size={24}
-          style={{ paddingRight: 9 }}
+          style={{ marginRight: 14 }}
           color={"white"}
           onPress={onPressAttach}
         />
         <Icon
           name="send"
-          size={20}
+          size={26}
           disabled={textInput !== "" ? false : true}
           style={
             textInput !== ""

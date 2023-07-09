@@ -141,7 +141,7 @@ const PastQuiz = ({ navigation }) => {
               </Text>
             </View>
             <TouchableOpacity
-              style={{ ...styles.button, width: "100%" }}
+              style={{ ...styles.button, width: "100%",elevation:9 }}
               activeOpacity={0.6}
               onPress={() => {
                 customNavigation.navigate("QuizDetails", { quiz: item });
