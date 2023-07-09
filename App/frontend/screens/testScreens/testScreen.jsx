@@ -15,6 +15,7 @@ import RecentQuizScreen from "../RecentQuiz";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import RevisionQuizScreen from "../RevisionQuizScreen";
 import CustomHeader from "../../components/CustomHeader";
+import PastQuiz from "../PastQuiz";
 
 function Test({ navigation }) {
   const [isRivisionOpen, setIsRivisionOpen] = useState(true);

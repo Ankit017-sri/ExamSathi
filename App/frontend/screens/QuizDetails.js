@@ -9,10 +9,10 @@ import CustomHeader from '../components/CustomHeader';
 import Loader from '../components/Loader';
 import Colors from '../constants/Colors';
 
-const QuizDetails = ({navigation}) => {
-  const data = navigation.getState().routes[1]?.params.quiz;
-
-  console.log(navigation.getState().routes[1]?.params.quiz._id);
+const QuizDetails = ({navigation,route}) => {
+  const {quiz} = route?.params;
+  const data=quiz;
+  console.log(quiz);
 
   const [loading, setLoading] = useState(false);
   const [submittedQuizData, setSubmittedQuizData] = useState([]);
@@ -74,7 +74,32 @@ const QuizDetails = ({navigation}) => {
 
   return (
     <View style={styles.container}>
-      <CustomHeader title="Details" isBack navigation={navigation} />
+      <View
+          style={{
+            width: "100%",
+            backgroundColor: "#084347",
+            paddingVertical: 14,
+            paddingLeft: 12,
+            paddingTop: 30,
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "flex-start",
+            alignItems: "center",
+          }}
+        >
+          <Text
+            style={{
+              fontSize: 20,
+              fontWeight: "bold",
+              color: "#fff",
+              paddingHorizontal: 12,
+              alignSelf: "flex-start",
+            }}
+          >
+            Quiz Details
+          </Text>
+        </View>
+      {/* <CustomHeader title="Details" isBack navigation={navigation} /> */}
       {loading || (!data.quizDetails && !questions.quizDetails) ? (
         <Loader />
       ) : (
@@ -123,7 +148,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    paddingBottom: 20,
+    // paddingBottom: 20,
   },
   quesContainer: {
     // borderWidth: 1,

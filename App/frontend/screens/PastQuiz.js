@@ -4,7 +4,7 @@ import React, {
   useContext,
   useCallback,
   useRef,
-} from 'react';
+} from "react";
 import {
   View,
   Text,
@@ -13,36 +13,52 @@ import {
   ScrollView,
   ActivityIndicator,
   FlatList,
-} from 'react-native';
-import axios from 'axios';
-import AuthContext from '../auth/context';
-import Colors from '../constants/Colors';
-import CustomHeader from '../components/CustomHeader';
-import Loader from '../components/Loader';
-import baseUrl from '../baseUrl';
-import {useFocusEffect} from '@react-navigation/native';
-import Icon from 'react-native-vector-icons/Ionicons';
+  BackHandler,
+} from "react-native";
+import axios from "axios";
+import AuthContext from "../auth/context";
+import Colors from "../constants/Colors";
+import CustomHeader from "../components/CustomHeader";
+import Loader from "../components/Loader";
+import baseUrl from "../baseUrl";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import Icon from "react-native-vector-icons/Ionicons";
 
-const PastQuiz = ({navigation}) => {
+const PastQuiz = ({ navigation }) => {
   // const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
   const [allQuizData, setAllQuizdata] = useState([]);
-  const [activeTag, setActiveTag] = useState('');
+  const [activeTag, setActiveTag] = useState("");
   const [tagDetails, setTagDetails] = useState([]);
   const [allCategoryData, setAllCategoryData] = useState([]);
   const [allQuiz, setAllQuiz] = useState([]);
   const [viewAll, setViewAll] = useState(false);
-  const [title, setTitle] = useState('');
-
-  const {token} = useContext(AuthContext);
+  const [title, setTitle] = useState("");
+  const customNavigation = useNavigation();
+  const { token } = useContext(AuthContext);
   const scrollRef = useRef();
+
+  function handleBackButtonClick() {
+    customNavigation.navigate("MainScreen");
+    return true;
+  }
+
+  useEffect(() => {
+    BackHandler.addEventListener("hardwareBackPress", handleBackButtonClick);
+    return () => {
+      BackHandler.removeEventListener(
+        "hardwareBackPress",
+        handleBackButtonClick
+      );
+    };
+  }, []);
 
   useFocusEffect(
     useCallback(() => {
       // fetchData();
       fetchAllData();
-    }, []),
+    }, [])
   );
   // const fetchData = async () => {
   //   try {
@@ -61,16 +77,16 @@ const PastQuiz = ({navigation}) => {
   const fetchAllData = async () => {
     try {
       const response = await axios.get(`${baseUrl}/quizData/submitted`, {
-        headers: {Authorization: `Bearer ${token}`},
+        headers: { Authorization: `Bearer ${token}` },
       });
       // console.log(response.data);
       setAllQuizdata(response.data);
       const all = [];
-      response.data.forEach(element => {
+      response.data.forEach((element) => {
         all.push(...element.categories);
       });
       setAllCategoryData(all);
-      setActiveTag('all');
+      setActiveTag("all");
       setTagDetails(all);
       setIsLoading(false);
     } catch (error) {
@@ -79,54 +95,59 @@ const PastQuiz = ({navigation}) => {
     }
   };
 
-  const Card = ({item, title}) => {
+  const Card = ({ item, title }) => {
     return (
       <View
         style={{
-          flexDirection: 'row',
+          flexDirection: "row",
           marginLeft: 10,
           marginVertical: 4,
-          width: viewAll ? '45%' : 210,
-        }}>
+          width: viewAll ? "45%" : 210,
+        }}
+      >
         <View
           style={{
             ...styles.card,
-            width: '100%',
-            alignItems: 'center',
-          }}>
+            width: "100%",
+            alignItems: "center",
+          }}
+        >
           <>
             <Text
               style={{
-                textAlign: 'center',
+                textAlign: "center",
                 fontSize: 16,
-                fontWeight: 'bold',
+                fontWeight: "bold",
                 color: Colors.text,
                 marginBottom: 20,
                 marginTop: 10,
-                color: '#000',
-              }}>
+                color: "#000",
+              }}
+            >
               {item.quizTitle}
             </Text>
             <View
               style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
+                flexDirection: "row",
+                justifyContent: "space-between",
                 marginBottom: 10,
-              }}>
-              <Text style={{fontSize: 12, color: '#000'}}>
+              }}
+            >
+              <Text style={{ fontSize: 12, color: "#000" }}>
                 Time: {item.maxMarks == 100 ? 90 : item.maxMarks} min
               </Text>
-              <Text style={{marginLeft: 16, fontSize: 12, color: '#000'}}>
+              <Text style={{ marginLeft: 16, fontSize: 12, color: "#000" }}>
                 Marks: {item.maxMarks}
               </Text>
             </View>
             <TouchableOpacity
-              style={{...styles.button, width: '100%'}}
+              style={{ ...styles.button, width: "100%" }}
               activeOpacity={0.6}
               onPress={() => {
-                navigation.navigate('QuizDetailScreen', {quiz: item});
-              }}>
-              <Text style={{color: '#fff', fontSize: 14}}>View details</Text>
+                customNavigation.navigate("QuizDetails", { quiz: item });
+              }}
+            >
+              <Text style={{ color: "#fff", fontSize: 14 }}>View details</Text>
             </TouchableOpacity>
           </>
         </View>
@@ -134,29 +155,32 @@ const PastQuiz = ({navigation}) => {
     );
   };
 
-  const TestLists = ({data, title}) => {
+  const TestLists = ({ data, title }) => {
     return (
       <View
         style={{
           padding: 6,
-        }}>
+        }}
+      >
         <View
           style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
+            flexDirection: "row",
+            justifyContent: "space-between",
             marginHorizontal: 10,
-          }}>
+          }}
+        >
           <Text style={styles.title}>{title}</Text>
           {data?.length > 1 && (
             <TouchableOpacity
               onPress={() => {
                 setAllQuiz(data);
                 setTitle(title);
-                scrollRef.current.scrollTo({y: 0, animated: false});
+                scrollRef.current.scrollTo({ y: 0, animated: false });
                 setViewAll(true);
               }}
-              style={{flexDirection: 'row'}}>
-              <Text style={{marginRight: 4, color: '#000'}}>View All</Text>
+              style={{ flexDirection: "row" }}
+            >
+              <Text style={{ marginRight: 4, color: "#000" }}>View All</Text>
               <Icon
                 name="chevron-forward-circle-outline"
                 size={20}
@@ -167,9 +191,9 @@ const PastQuiz = ({navigation}) => {
         </View>
         {data && (
           <FlatList
-            renderItem={({item}) => <Card item={item} title={title} />}
+            renderItem={({ item }) => <Card item={item} title={title} />}
             data={data.slice(0, 10)}
-            keyExtractor={item => item._id}
+            keyExtractor={(item) => item._id}
             horizontal
           />
         )}
@@ -179,7 +203,32 @@ const PastQuiz = ({navigation}) => {
   return (
     <>
       <View style={styles.container}>
-        {/* <CustomHeader title="Past Quiz" /> */}
+        {/* <CustomHeader title="Details" isBack navigation={navigation} /> */}
+        <View
+          style={{
+            width: "100%",
+            backgroundColor: "#084347",
+            paddingVertical: 14,
+            paddingLeft: 12,
+            paddingTop: 30,
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "flex-start",
+            alignItems: "center",
+          }}
+        >
+          <Text
+            style={{
+              fontSize: 20,
+              fontWeight: "bold",
+              color: "#fff",
+              paddingHorizontal: 12,
+              alignSelf: "flex-start",
+            }}
+          >
+            Past Quiz
+          </Text>
+        </View>
         {isLoading ? (
           <Loader />
         ) : (
@@ -207,131 +256,150 @@ const PastQuiz = ({navigation}) => {
           //     </TouchableOpacity>
           //   ))} */}
           // </ScrollView>
-          <View style={{flex: 0.9}}>
+          <View style={{ flex: 0.9 }}>
             {viewAll ? (
               <View
                 style={{
-                  flexDirection: 'row',
+                  flexDirection: "row",
                   // justifyContent: "space-between",
                   paddingVertical: 4,
                   paddingHorizontal: 6,
-                }}>
+                }}
+              >
                 <TouchableOpacity
                   onPress={() => {
                     setViewAll(false);
-                    scrollRef.current.scrollTo({y: 0, animated: false});
-                  }}>
+                    scrollRef.current.scrollTo({ y: 0, animated: false });
+                  }}
+                >
                   <Icon name="arrow-back" size={25} />
                 </TouchableOpacity>
-                <Text style={[styles.title, {marginLeft: 20, color: '#000'}]}>
+                <Text style={[styles.title, { marginLeft: 20, color: "#000" }]}>
                   {title} Tests
                 </Text>
               </View>
             ) : (
-              false && <ScrollView
-                horizontal
-                style={{maxHeight: 60, minHeight: 60, paddingHorizontal: 12}}
-                contentContainerStyle={{alignItems: 'center'}}>
-                <TouchableOpacity
-                  onPress={() => {
-                    setActiveTag('all');
-                    setTagDetails(allCategoryData);
+              false && (
+                <ScrollView
+                  horizontal
+                  style={{
+                    maxHeight: 60,
+                    minHeight: 60,
+                    paddingHorizontal: 12,
                   }}
-                  style={[
-                    styles.tag,
-                    {
-                      backgroundColor: activeTag == 'all' ? '#90AAD5' : 'white',
-                    },
-                  ]}>
-                  <Text
-                    style={{
-                      fontSize: 16,
-                      alignSelf: 'center',
-                      verticalAlign: 'middle',
-                      color: '#000',
-                    }}>
-                    All
-                  </Text>
-                </TouchableOpacity>
-                {  allQuizData.map((item, index) => {
-                  return (
-                    <TouchableOpacity
-                      style={[
-                        styles.tag,
-                        {
-                          backgroundColor:
-                            activeTag == item.tag ? '#90AAD5' : 'white',
-                        },
-                      ]}
-                      onPress={() => {
-                        setActiveTag(item.tag);
-                        setTagDetails(item.categories);
+                  contentContainerStyle={{ alignItems: "center" }}
+                >
+                  <TouchableOpacity
+                    onPress={() => {
+                      setActiveTag("all");
+                      setTagDetails(allCategoryData);
+                    }}
+                    style={[
+                      styles.tag,
+                      {
+                        backgroundColor:
+                          activeTag == "all" ? "#90AAD5" : "white",
+                      },
+                    ]}
+                  >
+                    <Text
+                      style={{
+                        fontSize: 16,
+                        alignSelf: "center",
+                        verticalAlign: "middle",
+                        color: "#000",
                       }}
-                      key={index}>
-                      <Text
-                        style={{
-                          fontSize: 16,
-                          alignSelf: 'center',
-                          verticalAlign: 'middle',
-                          color: '#000',
-                        }}>
-                        {item.tag}
-                      </Text>
-                    </TouchableOpacity>
-                  );
-                })}
-              </ScrollView>
+                    >
+                      All
+                    </Text>
+                  </TouchableOpacity>
+                  {allQuizData.map((item, index) => {
+                    return (
+                      <TouchableOpacity
+                        style={[
+                          styles.tag,
+                          {
+                            backgroundColor:
+                              activeTag == item.tag ? "#90AAD5" : "white",
+                          },
+                        ]}
+                        onPress={() => {
+                          setActiveTag(item.tag);
+                          setTagDetails(item.categories);
+                        }}
+                        key={index}
+                      >
+                        <Text
+                          style={{
+                            fontSize: 16,
+                            alignSelf: "center",
+                            verticalAlign: "middle",
+                            color: "#000",
+                          }}
+                        >
+                          {item.tag}
+                        </Text>
+                      </TouchableOpacity>
+                    );
+                  })}
+                </ScrollView>
+              )
             )}
-            <ScrollView style={{paddingTop: 8}} ref={scrollRef}>
+            <ScrollView style={{ paddingTop: 8 }} ref={scrollRef}>
               {viewAll ? (
                 <View
                   style={{
                     flex: 1,
-                    flexDirection: 'row',
-                    flexWrap: 'wrap',
-                    alignItems: 'flex-start',
-                  }}>
+                    flexDirection: "row",
+                    flexWrap: "wrap",
+                    alignItems: "flex-start",
+                  }}
+                >
                   {allQuiz.map((item, index) => {
                     return <Card item={item} key={index} />;
                   })}
                   {allQuiz.length == 0 && (
                     <View
                       style={{
-                        flexDirection: 'row',
+                        flexDirection: "row",
                         marginBottom: 20,
-                        justifyContent: 'center',
-                      }}>
+                        justifyContent: "center",
+                      }}
+                    >
                       <View
                         style={{
                           ...styles.card,
-                          width: '90%',
-                          alignItems: 'center',
+                          width: "90%",
+                          alignItems: "center",
                           // marginRight: 15,
                           marginHorizontal: 20,
                           // marginTop: -10,
-                        }}>
+                        }}
+                      >
                         <Text
                           style={{
-                            textAlign: 'center',
+                            textAlign: "center",
                             fontSize: 18,
-                            fontWeight: 'bold',
+                            fontWeight: "bold",
                             color: Colors.text,
-                          }}>
+                          }}
+                        >
                           {title}
                         </Text>
 
                         <Icon
                           name="checkmark-circle-outline"
                           size={50}
-                          color={'#26b1bf'}
+                          color={"#26b1bf"}
                         />
                         <Text
                           style={{
-                            textAlign: 'center',
+                            textAlign: "center",
                             fontSize: 20,
-                            fontWeight: 'bold',
+                            fontWeight: "bold",
                             color: Colors.text,
-                          }}>
+                          }}
+                        >
                           All Submitted
                         </Text>
                       </View>
@@ -352,40 +420,44 @@ const PastQuiz = ({navigation}) => {
                   {tagDetails?.length == 0 && (
                     <View
                       style={{
-                        flexDirection: 'row',
+                        flexDirection: "row",
                         marginBottom: 20,
-                        justifyContent: 'center',
-                      }}>
+                        justifyContent: "center",
+                      }}
+                    >
                       <View
                         style={{
                           ...styles.card,
-                          width: '80%',
-                          alignItems: 'center',
+                          width: "80%",
+                          alignItems: "center",
                           // marginRight: 15,
                           // marginTop: -10,
-                        }}>
+                        }}
+                      >
                         <Text
                           style={{
-                            textAlign: 'center',
+                            textAlign: "center",
                             fontSize: 18,
-                            fontWeight: 'bold',
+                            fontWeight: "bold",
                             color: Colors.text,
-                          }}>
+                          }}
+                        >
                           {title}
                         </Text>
 
                         <Icon
                           name="search-circle-outline"
                           size={50}
-                          color={'#26b1bf'}
+                          color={"#26b1bf"}
                         />
                         <Text
                           style={{
-                            textAlign: 'center',
+                            textAlign: "center",
                             fontSize: 20,
-                            fontWeight: 'bold',
+                            fontWeight: "bold",
                             color: Colors.text,
-                          }}>
+                          }}
+                        >
                           No Quizzes Submitted yet
                         </Text>
                       </View>
@@ -407,7 +479,7 @@ const styles = StyleSheet.create({
     // alignItems: "center",
     // justifyContent: "center",
     // paddingBottom: 100,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
 
   // cardContainer: {
@@ -428,7 +500,7 @@ const styles = StyleSheet.create({
   },
   cardTitle: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: Colors.text,
   },
   cardBody: {
@@ -437,16 +509,16 @@ const styles = StyleSheet.create({
   cardText: {
     fontSize: 16,
     marginTop: 10,
-    color: 'gray',
+    color: "gray",
   },
   cardFooter: {
     padding: 20,
   },
   title: {
     fontSize: 18,
-    fontWeight: '500',
+    fontWeight: "500",
     marginBottom: 4,
-    color: '#000',
+    color: "#000",
   },
   listContainer: {
     elevation: 10,
@@ -462,17 +534,17 @@ const styles = StyleSheet.create({
   },
   cardContainer: {
     // flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     paddingVertical: 20,
     marginBottom: 20,
   },
   button: {
     height: 35,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     borderRadius: 5,
-    backgroundColor: '#777777',
+    backgroundColor: "#777777",
     elevation: 5,
   },
   card: {
@@ -480,8 +552,8 @@ const styles = StyleSheet.create({
     padding: 15,
     paddingVertical: 25,
     elevation: 5,
-    backgroundColor: '#fff',
-    justifyContent: 'space-evenly',
+    backgroundColor: "#fff",
+    justifyContent: "space-evenly",
   },
 });
 

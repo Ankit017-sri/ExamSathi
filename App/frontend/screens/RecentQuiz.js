@@ -1,5 +1,5 @@
 import Icon from "react-native-vector-icons/Ionicons";
-import { useFocusEffect } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 // import { FlashList } from "@shopify/flash-list";
 import axios from "axios";
 import React, {
@@ -57,7 +57,7 @@ const RecentQuiz = ({ navigation }) => {
   const SampleArr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
   const [allQuiz, setAllQuiz] = useState([]);
   const [isloading, setIsLoading] = useState(true);
-
+  const customNavigative = useNavigation();
   // const [latest15All, setLatest15All] = useState([]);
   // const [latest15Feed, setLatest15Feed] = useState([]);
   // const [currentAffairsAll, setCurrentAffairsAll] = useState([]);
@@ -66,7 +66,7 @@ const RecentQuiz = ({ navigation }) => {
   // const [PYQFeed, setPYQFeed] = useState([]);
   // const [latest100All, setLatest100All] = useState([]);
   // const [latest100Feed, setLatest100Feed] = useState([]);
-
+  const customNavigation = useNavigation();
   const [allQuizData, setAllQuizdata] = useState([]);
   const [activeTag, setActiveTag] = useState("");
   const [tagDetails, setTagDetails] = useState([]);
@@ -370,7 +370,7 @@ const RecentQuiz = ({ navigation }) => {
         //   break;
         // }
 
-        navigation.navigate("QuizDetailScreen", { quiz: quizData });
+        customNavigation.navigate("QuizDetails", { quiz: quizData });
       })
       .catch((e) => {
         alert("Something went wrong. Please try again.");
@@ -678,7 +678,7 @@ const RecentQuiz = ({ navigation }) => {
       {loading || isloading ? (
         <Loader />
       ) : quizStarted ? (
-        <View style={{ marginBottom: 20}}>
+        <View style={{ marginBottom: 20 }}>
           <View
             style={{
               flexDirection: "row",
@@ -745,7 +745,7 @@ const RecentQuiz = ({ navigation }) => {
               flexDirection: "row",
               justifyContent: "space-between",
               paddingHorizontal: 10,
-              width: "100%"
+              width: "100%",
             }}
           >
             <TouchableOpacity
@@ -782,6 +782,7 @@ const RecentQuiz = ({ navigation }) => {
                         fontSize: 16,
                         fontWeight: "600",
                         justifyContent: "center",
+                        color: "gray",
                       }}
                     >
                       <Icon
@@ -800,6 +801,7 @@ const RecentQuiz = ({ navigation }) => {
                       fontSize: 16,
                       fontWeight: "600",
                       justifyContent: "center",
+                      color: "gray",
                     }}
                   >
                     Next
@@ -1018,19 +1020,17 @@ const RecentQuiz = ({ navigation }) => {
                   title={"Latest चालू घडामोडी टेस्ट!"}
                 /> */}
 
-                {activeTag === "history" ? (
-                  <PastQuizScreen />
-                ) : (
-                  tagDetails.map((quiz, index) => {
-                    return (
-                      <TestLists
-                        data={quiz.quizzes}
-                        title={quiz.category}
-                        key={index}
-                      />
-                    );
-                  })
-                )}
+                {activeTag === "history"
+                  ? customNavigative.navigate("PastQuizz")
+                  : tagDetails.map((quiz, index) => {
+                      return (
+                        <TestLists
+                          data={quiz.quizzes}
+                          title={quiz.category}
+                          key={index}
+                        />
+                      );
+                    })}
                 {tagDetails?.length == 0 && (
                   <View
                     style={{
