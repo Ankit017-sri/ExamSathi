@@ -1,5 +1,5 @@
 /* eslint-disable */
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState, useContext } from "react";
 import {
   Animated,
   Text,
@@ -16,9 +16,13 @@ import { createMaterialTopTabNavigator } from "@react-navigation/material-top-ta
 import RevisionQuizScreen from "../RevisionQuizScreen";
 import CustomHeader from "../../components/CustomHeader";
 import PastQuiz from "../PastQuiz";
+import AuthContext from "../../auth/context";
 
 function Test({ navigation }) {
   const [isRivisionOpen, setIsRivisionOpen] = useState(true);
+
+  const { tabBarVisible } = useContext(AuthContext);
+
   const logout = (navigation) => {
     CometChat.logout().then(
       () => {
@@ -141,7 +145,9 @@ function Test({ navigation }) {
           )}
         </TouchableOpacity>
       </View>
-      <ScrollView style={{ flex: 1, width: "100%", marginBottom: 70 }}>
+      <ScrollView
+        style={{ flex: 1, width: "100%", marginBottom: tabBarVisible ? 70 : 5 }}
+      >
         {isRivisionOpen ? <RevisionQuizScreen /> : <RecentQuizScreen />}
       </ScrollView>
     </View>

@@ -46,7 +46,7 @@ const GroupDetails = ({
   const [loading, setLoading] = useState(true);
 
   const scrollViewRef = useRef(null);
-  const { setTabBarVisible } = useContext(AuthContext);
+  const { setTabBarVisible, tabBarVisible } = useContext(AuthContext);
 
   const scrollToBottom = () => {
     scrollViewRef.current.scrollToEnd({ animated: true });

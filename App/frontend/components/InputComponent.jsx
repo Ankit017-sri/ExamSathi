@@ -1,8 +1,9 @@
-import { View, Text } from "react-native";
-import React, { useState } from "react";
+import { View } from "react-native";
+import React, { useContext, useState } from "react";
 import IconCamera from "react-native-vector-icons/Feather";
 import Icon from "react-native-vector-icons/Ionicons";
 import { TextInput } from "react-native-gesture-handler";
+import AuthContext from "../auth/context";
 
 const InputComponent = ({
   onPressAttach,
@@ -23,6 +24,8 @@ const InputComponent = ({
     );
     setTextInputHeight(calculatedHeight);
   };
+
+  // const { setTabBarVisible } = useContext(AuthContext);
 
   return (
     <View
@@ -48,6 +51,8 @@ const InputComponent = ({
           { height: Math.max(40, textInputHeight) },
           { fontSize: 14, color: "white", paddingLeft: 16, width: "70%" },
         ]}
+        // onFocus={() => setTabBarVisible(false)}
+        // onBlur={() => setTabBarVisible(true)}
       />
       <View
         style={{

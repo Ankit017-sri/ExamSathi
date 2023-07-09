@@ -57,9 +57,9 @@ const RevisionQuizScreen = ({ navigation }) => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [randomNums, setRandomNums] = useState({ attempting: 0, online: 0 });
   const [score, setScore] = useState(0);
-  const customNavigation=useNavigation();
+  const customNavigation = useNavigation();
 
-  const { token, Id } = useContext(AuthContext);
+  const { token, Id, setTabBarVisible } = useContext(AuthContext);
 
   const socket = useRef();
   const scrollViewRef = useRef(null);
@@ -307,13 +307,16 @@ https://bit.ly/exam-sathi-app-playstore`;
   useEffect(() => {
     socket.current = io(baseUrl);
     socket.current.emit("new-user-add", { Id });
-    // socket.current.on("get-active-users", (data) => {
-    //   setLen(data);
-    // });
+
     socket.current.on("receive-feedback", (data) => {
       setFeedbacks([...feedbacks, data]);
     });
   }, []);
+
+  useEffect(() => {
+    if (isQuizStarted) setTabBarVisible(false);
+    else setTabBarVisible(true);
+  }, [isQuizStarted]);
 
   const handleScroll = (event) => {
     const offsetY = event.nativeEvent.contentOffset.y;
@@ -329,7 +332,7 @@ https://bit.ly/exam-sathi-app-playstore`;
         backgroundColor: "white",
         // borderWidth: 2,
         flex: 1,
-        height: Dimensions.get("window").height - 100,
+        height: Dimensions.get("window").height,
         // alignItems: "center",
         // alignSelf: "center",
       }}
