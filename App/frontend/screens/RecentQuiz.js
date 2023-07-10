@@ -692,46 +692,49 @@ const RecentQuiz = ({ navigation }) => {
       {loading || isloading ? (
         <Loader />
       ) : quizStarted ? (
-        <View style={{ marginBottom: 20 }}>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "center",
-              marginBottom: 10,
-              marginTop: 10,
-            }}
-          >
-            {timerMinutes === 0 && timerSeconds === 0 && timerHours === 0 ? (
-              <Text style={{ color: "red", fontSize: 15, fontWeight: "bold" }}>
-                Times Up
-              </Text>
-            ) : (
-              <>
+        <ScrollView>
+          <View style={{ marginBottom: 20 }}>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "center",
+                marginBottom: 10,
+                marginTop: 10,
+              }}
+            >
+              {timerMinutes === 0 && timerSeconds === 0 && timerHours === 0 ? (
                 <Text
-                  style={{
-                    color: Colors.primary,
-                    fontSize: 15,
-                    fontWeight: "bold",
-                  }}
+                  style={{ color: "red", fontSize: 15, fontWeight: "bold" }}
                 >
-                  Time Remaining:{" "}
+                  Times Up
                 </Text>
-                <Text
-                  style={{
-                    color: timerMinutes < 3 ? "red" : Colors.primary,
-                    fontSize: 15,
-                    fontWeight: "bold",
-                  }}
-                >
-                  {timerHours}:{timerMinutes}:
-                  {timerSeconds < 10 ? `0${timerSeconds}` : timerSeconds}
-                </Text>
-              </>
-            )}
-          </View>
+              ) : (
+                <>
+                  <Text
+                    style={{
+                      color: Colors.primary,
+                      fontSize: 15,
+                      fontWeight: "bold",
+                    }}
+                  >
+                    Time Remaining:{" "}
+                  </Text>
+                  <Text
+                    style={{
+                      color: timerMinutes < 3 ? "red" : Colors.primary,
+                      fontSize: 15,
+                      fontWeight: "bold",
+                    }}
+                  >
+                    {timerHours}:{timerMinutes}:
+                    {timerSeconds < 10 ? `0${timerSeconds}` : timerSeconds}
+                  </Text>
+                </>
+              )}
+            </View>
 
-          <View style={{ height: Dimensions.get("window").height - 20 }}>
-            {/* <FlashList
+            <View style={{ height: Dimensions.get("window").height - 20 }}>
+              {/* <FlashList
               data={quizData.quizDetails}
               key={quizData._id}
               // keyExtractor={(item) => item._id}
@@ -745,51 +748,75 @@ const RecentQuiz = ({ navigation }) => {
               )}
             /> */}
 
-            <Pagination
-              data={quizData.quizDetails}
-              onSelect={onSelect}
-              page={page}
-              selected={selected}
-              setSelected={setSelected}
-              scrollList={scrollList}
-            />
-          </View>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              paddingHorizontal: 10,
-              width: "100%",
-            }}
-          >
-            <TouchableOpacity
+              <Pagination
+                data={quizData.quizDetails}
+                onSelect={onSelect}
+                page={page}
+                selected={selected}
+                setSelected={setSelected}
+                scrollList={scrollList}
+              />
+            </View>
+            <View
               style={{
-                ...styles.button,
-                paddingHorizontal: 30,
-                alignSelf: "center",
-                height: 40,
-                backgroundColor: isSubmitting ? "#aaa" : "#084347",
-                marginHorizontal: 10,
+                flexDirection: "row",
+                justifyContent: "space-between",
+                paddingHorizontal: 10,
+                width: "100%",
               }}
-              activeOpacity={0.6}
-              onPress={() => submitHandler()}
-              disabled={isSubmitting}
             >
-              <Text style={{ color: "#fff", fontSize: 18, fontWeight: "bold" }}>
-                Submit
-              </Text>
-            </TouchableOpacity>
-            {page < lastPage - 1 ? (
-              <View
+              <TouchableOpacity
                 style={{
-                  flexDirection: "row",
+                  ...styles.button,
+                  paddingHorizontal: 30,
+                  alignSelf: "center",
+                  height: 40,
+                  backgroundColor: isSubmitting ? "#aaa" : "#084347",
+                  marginHorizontal: 10,
                 }}
+                activeOpacity={0.6}
+                onPress={() => submitHandler()}
+                disabled={isSubmitting}
               >
-                {page !== 0 && (
+                <Text
+                  style={{ color: "#fff", fontSize: 18, fontWeight: "bold" }}
+                >
+                  Submit
+                </Text>
+              </TouchableOpacity>
+              {page < lastPage - 1 ? (
+                <View
+                  style={{
+                    flexDirection: "row",
+                  }}
+                >
+                  {page !== 0 && (
+                    <TouchableOpacity
+                      onPress={handlePrev}
+                      disabled={isSubmitting}
+                      style={{ marginRight: 20 }}
+                    >
+                      <Text
+                        style={{
+                          fontSize: 16,
+                          fontWeight: "600",
+                          justifyContent: "center",
+                          color: "gray",
+                        }}
+                      >
+                        <Icon
+                          name="chevron-back-outline"
+                          size={25}
+                          color={Colors.primary}
+                        />{" "}
+                        Prev
+                      </Text>
+                    </TouchableOpacity>
+                  )}
+
                   <TouchableOpacity
-                    onPress={handlePrev}
+                    onPress={handleNext}
                     disabled={isSubmitting}
-                    style={{ marginRight: 20 }}
                   >
                     <Text
                       style={{
@@ -797,6 +824,35 @@ const RecentQuiz = ({ navigation }) => {
                         fontWeight: "600",
                         justifyContent: "center",
                         color: "gray",
+                      }}
+                    >
+                      Next
+                      <Icon
+                        name="chevron-forward-outline"
+                        size={25}
+                        color={Colors.primary}
+                      />
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              ) : (
+                <View
+                  style={{
+                    flexDirection: "row",
+                    marginBottom: 6,
+                  }}
+                >
+                  <TouchableOpacity
+                    onPress={handlePrev}
+                    disabled={isSubmitting}
+                    // style={{ marginBottom: 6 }}
+                  >
+                    <Text
+                      style={{
+                        fontSize: 16,
+                        fontWeight: "600",
+                        justifyContent: "center",
+                        marginRight: 20,
                       }}
                     >
                       <Icon
@@ -807,74 +863,27 @@ const RecentQuiz = ({ navigation }) => {
                       Prev
                     </Text>
                   </TouchableOpacity>
-                )}
-
-                <TouchableOpacity onPress={handleNext} disabled={isSubmitting}>
-                  <Text
-                    style={{
-                      fontSize: 16,
-                      fontWeight: "600",
-                      justifyContent: "center",
-                      color: "gray",
-                    }}
-                  >
-                    Next
-                    <Icon
-                      name="chevron-forward-outline"
-                      size={25}
-                      color={Colors.primary}
-                    />
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            ) : (
-              <View
-                style={{
-                  flexDirection: "row",
-                  marginBottom: 6,
-                }}
-              >
-                <TouchableOpacity
-                  onPress={handlePrev}
-                  disabled={isSubmitting}
-                  // style={{ marginBottom: 6 }}
-                >
-                  <Text
-                    style={{
-                      fontSize: 16,
-                      fontWeight: "600",
-                      justifyContent: "center",
-                      marginRight: 20,
-                    }}
-                  >
-                    <Icon
-                      name="chevron-back-outline"
-                      size={25}
-                      color={Colors.primary}
-                    />{" "}
-                    Prev
-                  </Text>
-                </TouchableOpacity>
-                <View>
-                  <Text
-                    style={{
-                      fontSize: 16,
-                      fontWeight: "600",
-                      justifyContent: "center",
-                    }}
-                  >
-                    Next
-                    <Icon
-                      name="chevron-forward-outline"
-                      size={25}
-                      color="grey"
-                    />
-                  </Text>
+                  <View>
+                    <Text
+                      style={{
+                        fontSize: 16,
+                        fontWeight: "600",
+                        justifyContent: "center",
+                      }}
+                    >
+                      Next
+                      <Icon
+                        name="chevron-forward-outline"
+                        size={25}
+                        color="grey"
+                      />
+                    </Text>
+                  </View>
                 </View>
-              </View>
-            )}
+              )}
+            </View>
           </View>
-        </View>
+        </ScrollView>
       ) : (
         <View style={{ flex: 0.9 }}>
           {viewAll ? (
