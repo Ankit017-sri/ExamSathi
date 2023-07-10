@@ -359,7 +359,12 @@ const GroupDetails = ({
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: "#bee6d3", padding: 7 }}>
+    <View
+      style={{
+        flex: 1,
+        paddingHorizontal: 7,
+      }}
+    >
       <ScrollView ref={scrollViewRef} onContentSizeChange={scrollToBottom}>
         {messages.map((m) =>
           m.data.text ? (
@@ -555,7 +560,7 @@ const GroupDetails = ({
           marginBottom: 73,
           justifyContent: "space-between",
           alignItems: "center",
-          marginTop: 10,
+          marginTop: 5,
         }}
       >
         <InputComponent
