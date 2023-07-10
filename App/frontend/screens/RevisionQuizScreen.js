@@ -8,6 +8,7 @@ import React, {
 import {
   Alert,
   Animated,
+  BackHandler,
   Dimensions,
   Image,
   Keyboard,
@@ -183,6 +184,25 @@ https://bit.ly/exam-sathi-app-playstore`;
   );
 
   useEffect(() => {
+    const backAction = () => {
+      if (isQuizStarted) {
+        setTabBarVisible(true);
+        customNavigation.goBack();
+        return true;
+      } else {
+        return false;
+      }
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+
+    return () => backHandler.remove();
+  }, [isQuizStarted]);
+
+  useEffect(() => {
     if (currentQuestionIndex === questions.length && questions.length > 0) {
       setQuizFinished(true);
     } else if (isQuizStarted) {
@@ -195,7 +215,7 @@ https://bit.ly/exam-sathi-app-playstore`;
   }, [currentQuestionIndex, isQuizStarted]);
 
   useEffect(() => {
-    const timesOfDay = ["18:00:00", "19:00:00", "20:00:00", "21:00:00"];
+    const timesOfDay = ["18:00:00", "19:00:00", "20:00:00", "22:29:00"];
     const timesForRemovingDiscuss = [
       "18:35:00",
       "19:35:00",
@@ -345,14 +365,10 @@ https://bit.ly/exam-sathi-app-playstore`;
         flex: 1,
         height: Dimensions.get("window").height,
         // alignItems: "center",
+        justifyContent: "center",
         // alignSelf: "center",
       }}
     >
-      {/* <CustomHeader
-        title="Revision"
-        share
-        // sub={`${memCount} members, ${len} online`}
-      /> */}
       {!isQuizStarted && isDiscuss && (
         <View style={{ padding: 4, backgroundColor: "white" }}>
           <TouchableOpacity
@@ -382,9 +398,7 @@ https://bit.ly/exam-sathi-app-playstore`;
       {!isQuizStarted && (
         <View
           style={{
-            padding: 12,
-            flex: 4,
-            top: 250,
+            padding: 10,
           }}
         >
           <View
@@ -497,151 +511,155 @@ https://bit.ly/exam-sathi-app-playstore`;
           </View>
         </View>
       )}
-      <ScrollView
-        style={{
-          // marginBottom: 50,
-          backgroundColor: "#fff",
-        }}
-        ref={scrollViewRef}
-        onContentSizeChange={() =>
-          scrollViewRef.current.scrollToEnd({ animated: true })
-        }
-        scrollEventThrottle={16}
-        onScroll={handleScroll}
-      >
-        {!quizFinished &&
-          isQuizStarted &&
-          questions.map(
-            (que, index) =>
-              index <= currentQuestionIndex && (
-                <View>
-                  {index === currentQuestionIndex ? (
-                    <QuesCard
-                      data={questions[currentQuestionIndex]}
-                      quesNo={currentQuestionIndex + 1}
-                      selected={selectedOptions}
-                      setSelected={setSelectedOptions}
-                      onSelect={handleOptionPress}
-                      attempting={randomNums?.attempting}
-                      isRevision
-                      timeRemaining={
-                        timerMinutes +
-                        ":" +
-                        (timerSeconds < 10 ? `0${timerSeconds}` : timerSeconds)
-                      }
-                    />
-                  ) : (
-                    <CompletedQuesCard
-                      quesData={que}
-                      quesNo={index + 1}
-                      selectedOp={selectedOptions[index]}
-                      setScore={setScore}
-                      score={score}
-                    />
-                  )}
-                </View>
-              )
-          )}
-        {quizFinished && isSubmitted && (
-          <View>
-            {questions.map((question, index) => (
-              <CompletedQuesCard
-                quesData={question}
-                selectedOp={selectedOptions[index]}
-                quesNo={index + 1}
-              />
-            ))}
-            {/* <View>
+      {isQuizStarted && (
+        <ScrollView
+          style={{
+            borderWidth: 4,
+            backgroundColor: "#fff",
+          }}
+          ref={scrollViewRef}
+          onContentSizeChange={() =>
+            scrollViewRef.current.scrollToEnd({ animated: true })
+          }
+          scrollEventThrottle={16}
+          onScroll={handleScroll}
+        >
+          {!quizFinished &&
+            isQuizStarted &&
+            questions.map(
+              (que, index) =>
+                index <= currentQuestionIndex && (
+                  <View>
+                    {index === currentQuestionIndex ? (
+                      <QuesCard
+                        data={questions[currentQuestionIndex]}
+                        quesNo={currentQuestionIndex + 1}
+                        selected={selectedOptions}
+                        setSelected={setSelectedOptions}
+                        onSelect={handleOptionPress}
+                        attempting={randomNums?.attempting}
+                        isRevision
+                        timeRemaining={
+                          timerMinutes +
+                          ":" +
+                          (timerSeconds < 10
+                            ? `0${timerSeconds}`
+                            : timerSeconds)
+                        }
+                      />
+                    ) : (
+                      <CompletedQuesCard
+                        quesData={que}
+                        quesNo={index + 1}
+                        selectedOp={selectedOptions[index]}
+                        setScore={setScore}
+                        score={score}
+                      />
+                    )}
+                  </View>
+                )
+            )}
+          {quizFinished && isSubmitted && (
+            <View>
+              {questions.map((question, index) => (
+                <CompletedQuesCard
+                  quesData={question}
+                  selectedOp={selectedOptions[index]}
+                  quesNo={index + 1}
+                />
+              ))}
+              {/* <View>
               <Text>Result</Text>
             </View> */}
-            <FlatList
-              style={{
-                marginBottom: 20,
-                marginTop: 10,
-                paddingVertical: 10,
-                marginHorizontal: 20,
-              }}
-              data={feedbacks}
-              // ref={ref}
-              keyExtractor={(item) => item}
-              renderItem={({ item, index }) => (
-                <View
-                  style={{
-                    ...styles.card,
-                    marginBottom: 10,
-                    paddingHorizontal: 6,
-                  }}
-                >
-                  <Text
+              <FlatList
+                style={{
+                  marginBottom: 20,
+                  marginTop: 10,
+                  paddingVertical: 10,
+                  marginHorizontal: 20,
+                }}
+                data={feedbacks}
+                // ref={ref}
+                keyExtractor={(item) => item}
+                renderItem={({ item, index }) => (
+                  <View
                     style={{
-                      marginLeft: 6,
-
-                      flex: 1,
-                      // paddingVertical: 1,
-
-                      fontSize: 16,
+                      ...styles.card,
+                      marginBottom: 10,
+                      paddingHorizontal: 6,
                     }}
                   >
-                    {item}
-                  </Text>
-                </View>
-              )}
-            />
+                    <Text
+                      style={{
+                        marginLeft: 6,
 
-            {!isFeedbackSent && (
-              <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-                <View>
-                  <KeyboardAvoidingView
-                    behavior={Platform.OS === "ios" ? "padding" : "height"}
-                  >
-                    <View>
-                      <Text style={{ marginHorizontal: 20 }}>
-                        Send us your feedback
-                      </Text>
-                      <View style={styles.inputContainer}>
-                        <TextInput
-                          style={styles.input}
-                          value={feedback}
-                          multiline={true}
-                          numberOfLines={3}
-                          onChangeText={(text) => setFeedback(text)}
-                          placeholder=" Type your feedback here..."
-                        />
-                        <TouchableOpacity
-                          style={{
-                            flexDirection: "row",
-                            justifyContent: "center",
-                            alignItems: "center",
-                            borderWidth: 1,
-                            borderColor: Colors.primary,
-                            borderRadius: 5,
-                            height: 40,
-                            width: "100%",
-                            backgroundColor: "#90AAD5",
-                            marginTop: 10,
-                            marginBottom: 20,
-                          }}
-                          activeOpacity={0.6}
-                          onPress={() => sendFeedBack()}
-                        >
-                          <Text
+                        flex: 1,
+                        // paddingVertical: 1,
+
+                        fontSize: 16,
+                      }}
+                    >
+                      {item}
+                    </Text>
+                  </View>
+                )}
+              />
+
+              {!isFeedbackSent && (
+                <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+                  <View>
+                    <KeyboardAvoidingView
+                      behavior={Platform.OS === "ios" ? "padding" : "height"}
+                    >
+                      <View>
+                        <Text style={{ marginHorizontal: 20 }}>
+                          Send us your feedback
+                        </Text>
+                        <View style={styles.inputContainer}>
+                          <TextInput
+                            style={styles.input}
+                            value={feedback}
+                            multiline={true}
+                            numberOfLines={3}
+                            onChangeText={(text) => setFeedback(text)}
+                            placeholder=" Type your feedback here..."
+                          />
+                          <TouchableOpacity
                             style={{
-                              fontSize: 17,
-                              color: Colors.primary,
+                              flexDirection: "row",
+                              justifyContent: "center",
+                              alignItems: "center",
+                              borderWidth: 1,
+                              borderColor: Colors.primary,
+                              borderRadius: 5,
+                              height: 40,
+                              width: "100%",
+                              backgroundColor: "#90AAD5",
+                              marginTop: 10,
+                              marginBottom: 20,
                             }}
+                            activeOpacity={0.6}
+                            onPress={() => sendFeedBack()}
                           >
-                            Send
-                          </Text>
-                        </TouchableOpacity>
+                            <Text
+                              style={{
+                                fontSize: 17,
+                                color: Colors.primary,
+                              }}
+                            >
+                              Send
+                            </Text>
+                          </TouchableOpacity>
+                        </View>
                       </View>
-                    </View>
-                  </KeyboardAvoidingView>
-                </View>
-              </TouchableWithoutFeedback>
-            )}
-          </View>
-        )}
-      </ScrollView>
+                    </KeyboardAvoidingView>
+                  </View>
+                </TouchableWithoutFeedback>
+              )}
+            </View>
+          )}
+        </ScrollView>
+      )}
     </View>
   );
 };

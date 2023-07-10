@@ -22,6 +22,7 @@ import {
   View,
   Alert,
   ActivityIndicator,
+  ImageBackground,
 } from "react-native";
 import { launchCamera, launchImageLibrary } from "react-native-image-picker";
 import DocumentPicker from "react-native-document-picker";
@@ -83,7 +84,7 @@ const GroupDetails = ({
 
   const getMessages = async () => {
     setLoading(true);
-    let limit = 30;
+    let limit = 100;
     // let latestId = await CometChat.getLastDeliveredMessageId();
     var messagesRequest = new CometChat.MessagesRequestBuilder()
       .setGUID(guid)
@@ -358,7 +359,7 @@ const GroupDetails = ({
   };
 
   return (
-    <View style={{ flex: 1, paddingHorizontal: 10 }}>
+    <View style={{ flex: 1, backgroundColor: "#bee6d3", padding: 7 }}>
       <ScrollView ref={scrollViewRef} onContentSizeChange={scrollToBottom}>
         {messages.map((m) =>
           m.data.text ? (
@@ -424,27 +425,19 @@ const GroupDetails = ({
                   >
                     {m.data.entities.sender.entity.name.split(" ")[0]}
                   </Text>
-                  {/* <View style={{ marginVertical: -25 }}> */}
                   {highlightURLs(m.data.text)}
-                  {/* </View> */}
                 </TouchableOpacity>
+                <Text
+                  style={{
+                    padding: 1,
+                    fontSize: 11,
+                    color: "#8A8A8A",
+                    alignSelf: "flex-end",
+                  }}
+                >
+                  {moment.unix(m?.sentAt).format("h:mm a")}
+                </Text>
               </View>
-              <Text
-                style={{
-                  padding: 1,
-                  marginLeft: 12,
-                  marginRight: 6,
-                  marginBottom: 5,
-                  fontSize: 11,
-                  color: "#8A8A8A",
-                  alignSelf:
-                    userDetail?.name == m?.sender.name
-                      ? "flex-end"
-                      : "flex-start",
-                }}
-              >
-                {moment.unix(m?.sentAt).format("h:mm a")}
-              </Text>
             </View>
           ) : (
             m.data.attachments &&
@@ -508,12 +501,11 @@ const GroupDetails = ({
                                 m.data.attachments && m.data.attachments[0].url,
                               height: 180,
                               width: 200,
-                              margin: 5,
                             }}
                             style={{
-                              marginLeft: 5,
-                              marginBottom: 5,
                               resizeMode: "cover",
+                              borderRadius: 7,
+                              marginBottom: 5,
                             }}
                           />
                         </TouchableOpacity>

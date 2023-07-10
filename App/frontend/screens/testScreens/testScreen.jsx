@@ -180,18 +180,14 @@ function Test({ navigation }) {
                 borderBottomWidth: 4,
                 borderTopLeftRadius: 20,
                 borderTopRightRadius: 20,
-                // backgroundColor: "red",
                 width: 60,
               }}
             />
           )}
         </TouchableOpacity>
       </View>
-      <ScrollView
-        style={{ flex: 1, width: "100%", marginBottom: tabBarVisible ? 70 : 5 }}
-      >
-        {isRivisionOpen ? <RevisionQuizScreen /> : <RecentQuizScreen />}
-      </ScrollView>
+
+      {isRivisionOpen ? <RevisionQuizScreen /> : <RecentQuizScreen />}
     </View>
   );
 }

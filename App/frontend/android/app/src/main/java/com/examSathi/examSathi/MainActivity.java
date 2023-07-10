@@ -1,4 +1,4 @@
-package com.examsathi;
+package com.examSathi.examSathi;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;

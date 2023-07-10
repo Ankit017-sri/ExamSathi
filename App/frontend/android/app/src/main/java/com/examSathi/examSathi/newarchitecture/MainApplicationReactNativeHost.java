@@ -1,4 +1,4 @@
-package com.examsathi.newarchitecture;
+package com.examSathi.examSathi.newarchitecture;
 
 import android.app.Application;
 import androidx.annotation.NonNull;
@@ -19,9 +19,9 @@ import com.facebook.react.fabric.CoreComponentsRegistry;
 import com.facebook.react.fabric.FabricJSIModuleProvider;
 import com.facebook.react.fabric.ReactNativeConfig;
 import com.facebook.react.uimanager.ViewManagerRegistry;
-import com.examsathi.BuildConfig;
-import com.examsathi.newarchitecture.components.MainComponentsRegistry;
-import com.examsathi.newarchitecture.modules.MainApplicationTurboModuleManagerDelegate;
+import com.examSathi.examSathi.BuildConfig;
+import com.examSathi.examSathi.newarchitecture.components.MainComponentsRegistry;
+import com.examSathi.examSathi.newarchitecture.modules.MainApplicationTurboModuleManagerDelegate;
 import java.util.ArrayList;
 import java.util.List;
 

@@ -40,6 +40,8 @@ const VideoMessage = ({
         style={{
           width: "100%",
           height: 200,
+          borderRadius: 7,
+          overflow: "hidden",
         }}
       >
         <View
@@ -49,7 +51,7 @@ const VideoMessage = ({
             width: "100%",
             alignItems: "center",
             justifyContent: "center",
-            borderRadius: 10,
+            // borderRadius: 10,
           }}
         >
           <Icon name="play-circle" size={44} color={"white"} />
@@ -64,23 +66,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    borderRadius: 10,
     padding: 6,
-  },
-  //   backgroundImage: {
-  //     flex: 1,
-  //     resizeMode: "cover",
-  //     width: "100%",
-  //     height: "100%",
-  //   },
-  //   playButtonContainer: {
-  //     ...StyleSheet.absoluteFillObject,
-  //     alignItems: "center",
-  //     justifyContent: "center",
-  //   },
-  playButton: {
-    width: 50,
-    height: 50,
   },
 });
 

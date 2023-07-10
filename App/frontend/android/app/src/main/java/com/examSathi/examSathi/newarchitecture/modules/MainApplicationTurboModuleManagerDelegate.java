@@ -1,4 +1,4 @@
-package com.examsathi.newarchitecture.modules;
+package com.examSathi.examSathi.newarchitecture.modules;
 
 import com.facebook.jni.HybridData;
 import com.facebook.react.ReactPackage;
