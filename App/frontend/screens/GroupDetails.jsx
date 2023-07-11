@@ -23,6 +23,7 @@ import {
   Alert,
   ActivityIndicator,
   ImageBackground,
+  FlatList,
 } from "react-native";
 import { launchCamera, launchImageLibrary } from "react-native-image-picker";
 import DocumentPicker from "react-native-document-picker";
@@ -45,6 +46,7 @@ const GroupDetails = ({
   const [visible, setVisible] = useState(false);
   const [userDetail, setUserDetail] = useState({});
   const [loading, setLoading] = useState(true);
+  const [prevMsgLoading, setPrevMsgLoading] = useState(false);
 
   const scrollViewRef = useRef(null);
   const { setTabBarVisible, tabBarVisible } = useContext(AuthContext);
@@ -53,9 +55,9 @@ const GroupDetails = ({
     scrollViewRef.current.scrollToEnd({ animated: true });
   };
 
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
+  // useEffect(() => {
+  //   scrollToBottom();
+  // }, [messages]);
 
   useEffect(() => {
     let listenerID = "ExamSathi232829";
@@ -66,15 +68,18 @@ const GroupDetails = ({
         onTextMessageReceived: (textMessage) => {
           if (textMessage.conversationId === "group_" + guid) {
             setMessages((messages) => [...messages, textMessage]);
+            scrollToBottom();
           }
         },
         onMediaMessageReceived: (mediaMessage) => {
           if (mediaMessage.conversationId === "group_" + guid) {
             setMessages((messages) => [...messages, mediaMessage]);
+            scrollToBottom();
           }
         },
         onCustomMessageReceived: (customMessage) => {
           console.log("Custom message received successfully", customMessage);
+          scrollToBottom();
         },
       })
     );
@@ -82,20 +87,26 @@ const GroupDetails = ({
     return () => CometChat.removeMessageListener(listenerID);
   }, [guid]);
 
-  const getMessages = async () => {
-    setLoading(true);
-    let limit = 100;
-    // let latestId = await CometChat.getLastDeliveredMessageId();
-    var messagesRequest = new CometChat.MessagesRequestBuilder()
+  // let messagesRequest;
+  const limit = 100;
+  let messagesRequest = useRef(null);
+
+  useEffect(() => {
+    // let limit = 30;
+    messagesRequest.current = new CometChat.MessagesRequestBuilder()
       .setGUID(guid)
       .setLimit(limit)
-      // .setMessageId(latestId)
       .build();
-    messagesRequest.fetchPrevious().then(
+
+    setMessages([]);
+  }, [guid]);
+
+  const getMessages = async () => {
+    setLoading(true);
+    messagesRequest.current.fetchPrevious().then(
       (messages) => {
-        // console.log('Message list fetched:');
         setLoading(false);
-        setMessages(messages);
+        setMessages((msgs) => [...msgs, ...messages.reverse()]);
       },
       (error) => {
         console.log("Message fetching failed with error:", error);
@@ -116,6 +127,7 @@ const GroupDetails = ({
         console.log("Message sent successfully:", message);
         setMessages([...messages, message]);
         setMessageText("");
+        scrollToBottom();
       },
       (error) => {
         console.log("Message sending failed with error:", error);
@@ -180,7 +192,6 @@ const GroupDetails = ({
 
   useEffect(() => {
     getMessages();
-    console.log("GROUPS_JOINED " + groupsJoined);
   }, [guid, groupsJoined]);
 
   useEffect(() => {
@@ -365,9 +376,36 @@ const GroupDetails = ({
         paddingHorizontal: 7,
       }}
     >
-      <ScrollView ref={scrollViewRef} onContentSizeChange={scrollToBottom}>
-        {messages.map((m) =>
-          m.data.text ? (
+      {loading && (
+        <View style={{ marginVertical: 10 }}>
+          <ActivityIndicator size="large" />
+        </View>
+      )}
+      <FlatList
+        data={messages}
+        keyExtractor={(item) => item.id + Math.random()}
+        inverted
+        onEndReached={getMessages}
+        onEndReachedThreshold={1}
+        renderItem={(itemData) => {
+          const m = itemData.item;
+          if (m.data.action === "joined")
+            return (
+              <View
+                style={{
+                  alignSelf: "center",
+                  backgroundColor: "#969696",
+                  marginTop: 5,
+                  padding: 5,
+                  paddingHorizontal: 7,
+                  borderRadius: 5,
+                }}
+              >
+                <Text style={{ color: "#fff" }}>{m.message}</Text>
+              </View>
+            );
+
+          return m.data.text ? (
             <View
               style={{
                 alignSelf:
@@ -376,7 +414,6 @@ const GroupDetails = ({
                     : "flex-start",
               }}
             >
-              {/* Sending Text Color */}
               <View
                 style={{
                   paddingHorizontal: 8,
@@ -445,8 +482,7 @@ const GroupDetails = ({
               </View>
             </View>
           ) : (
-            m.data.attachments &&
-            m.data.attachments[0].url !== "" && (
+            m.data.attachments && m.data.attachments[0].url !== "" && (
               <View
                 style={{
                   backgroundColor:
@@ -538,11 +574,10 @@ const GroupDetails = ({
                   )}
                   <Text
                     style={{
-                      padding: 1,
-                      marginLeft: 10,
                       marginRight: 6,
+                      marginBottom: 6,
                       fontSize: 11,
-
+                      alignSelf: "flex-end",
                       color: "#8A8A8A",
                     }}
                   >
@@ -551,9 +586,10 @@ const GroupDetails = ({
                 </View>
               </View>
             )
-          )
-        )}
-      </ScrollView>
+          );
+        }}
+      />
+
       <View
         style={{
           flexDirection: "row",

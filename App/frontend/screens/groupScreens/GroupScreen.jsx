@@ -33,6 +33,7 @@ const Group = () => {
   const [mediaDetails, setMediaDetails] = useState({ url: "", type: "" });
   const [currTab, setCurrTab] = useState("सराव अड्डा");
   const [groupsJoined, setGroupsJoined] = useState(false);
+  // const [unreadMessagesCount, setUnreadMessagesCount] = useState([]);
 
   const listViewRef = useRef(null);
 
@@ -54,10 +55,6 @@ const Group = () => {
       }
     );
   }, []);
-
-  // useEffect(() => {
-  //   if (groups.length > 1) setselectedGroup("daily_revision");
-  // }, [groups]);
 
   useEffect(() => {
     listViewRef.current.scrollToIndex({
@@ -84,18 +81,17 @@ const Group = () => {
       }
     );
   };
-  const unReadMsg = (uid) => {
-    let UID = uid;
-
-    CometChat.getUnreadMessageCountForUser(UID).then(
-      (array) => {
-        console.log("Message count fetched", array);
-      },
-      (error) => {
-        console.log("Error in getting message count", error);
-      }
-    );
-  };
+  // const unReadMsg = (guid) => {
+  //   CometChat.getUnreadMessageCountForGroup(guid).then(
+  //     (array) => {
+  //       // setUnreadMessagesCount((prev) => [...prev, array]);
+  //       console.log("Message count fetched", array);
+  //     },
+  //     (error) => {
+  //       console.log("Error in getting message count", error);
+  //     }
+  //   );
+  // };
 
   useEffect(() => {
     const backAction = () => {
@@ -135,6 +131,7 @@ const Group = () => {
   const GroupList = ({ item, index: findex }) => {
     joingroup(item.guid);
     // unReadMsg(item.guid);
+
     return (
       <View style={{ justifyContent: "center", alignItems: "center" }}>
         <TouchableOpacity
