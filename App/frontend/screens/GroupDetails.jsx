@@ -48,11 +48,11 @@ const GroupDetails = ({
   const [loading, setLoading] = useState(true);
   const [prevMsgLoading, setPrevMsgLoading] = useState(false);
 
-  const scrollViewRef = useRef(null);
+  const FlatListRef = useRef(null);
   const { setTabBarVisible, tabBarVisible } = useContext(AuthContext);
 
   const scrollToBottom = () => {
-    scrollViewRef.current.scrollToEnd({ animated: true });
+    FlatListRef.current.scrollToStart({ animated: true });
   };
 
   // useEffect(() => {
@@ -67,13 +67,13 @@ const GroupDetails = ({
       new CometChat.MessageListener({
         onTextMessageReceived: (textMessage) => {
           if (textMessage.conversationId === "group_" + guid) {
-            setMessages((messages) => [...messages, textMessage]);
+            setMessages((messages) => [textMessage, ...messages]);
             scrollToBottom();
           }
         },
         onMediaMessageReceived: (mediaMessage) => {
           if (mediaMessage.conversationId === "group_" + guid) {
-            setMessages((messages) => [...messages, mediaMessage]);
+            setMessages((messages) => [mediaMessage, ...messages]);
             scrollToBottom();
           }
         },
@@ -91,15 +91,15 @@ const GroupDetails = ({
   const limit = 100;
   let messagesRequest = useRef(null);
 
-  useEffect(() => {
-    // let limit = 30;
-    messagesRequest.current = new CometChat.MessagesRequestBuilder()
-      .setGUID(guid)
-      .setLimit(limit)
-      .build();
+  // useEffect(() => {
+  //   // let limit = 30;
+  //   messagesRequest.current = new CometChat.MessagesRequestBuilder()
+  //     .setGUID(guid)
+  //     .setLimit(limit)
+  //     .build();
 
-    setMessages([]);
-  }, [guid]);
+  //   setMessages([]);
+  // }, [guid]);
 
   const getMessages = async () => {
     setLoading(true);
@@ -125,7 +125,7 @@ const GroupDetails = ({
     CometChat.sendMessage(textMessage).then(
       (message) => {
         console.log("Message sent successfully:", message);
-        setMessages([...messages, message]);
+        setMessages((messages) => [message, ...messages]);
         setMessageText("");
         scrollToBottom();
       },
@@ -191,6 +191,12 @@ const GroupDetails = ({
   };
 
   useEffect(() => {
+    messagesRequest.current = new CometChat.MessagesRequestBuilder()
+      .setGUID(guid)
+      .setLimit(limit)
+      .build();
+
+    setMessages([]);
     getMessages();
   }, [guid, groupsJoined]);
 
@@ -383,6 +389,7 @@ const GroupDetails = ({
       )}
       <FlatList
         data={messages}
+        ref={FlatListRef}
         keyExtractor={(item) => item.id + Math.random()}
         inverted
         onEndReached={getMessages}

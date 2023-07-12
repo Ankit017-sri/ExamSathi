@@ -81,6 +81,7 @@ const Group = () => {
       }
     );
   };
+
   // const unReadMsg = (guid) => {
   //   CometChat.getUnreadMessageCountForGroup(guid).then(
   //     (array) => {
