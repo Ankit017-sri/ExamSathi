@@ -401,14 +401,14 @@ const GroupDetails = ({
               <View
                 style={{
                   alignSelf: "center",
-                  backgroundColor: "#969696",
-                  marginTop: 5,
-                  padding: 5,
-                  paddingHorizontal: 7,
+                  backgroundColor: "#a7a7a7",
+                  marginTop: 4,
+                  padding: 4,
+                  paddingHorizontal: 5,
                   borderRadius: 5,
                 }}
               >
-                <Text style={{ color: "#fff" }}>{m.message}</Text>
+                <Text style={{ color: "#fff", fontSize: 13 }}>{m.message}</Text>
               </View>
             );
 
